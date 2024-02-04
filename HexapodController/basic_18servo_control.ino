@@ -27,6 +27,29 @@ Axis l6_m3(23, -3.14, 3.14);
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  l1_m1.set_mapping(0,1);
+  l1_m2.set_mapping(0,1);
+  l1_m3.set_mapping(0,1);
+  
+  l2_m1.set_mapping(0,1);
+  l2_m2.set_mapping(0,1);
+  l2_m3.set_mapping(0,1);
+  
+  l3_m1.set_mapping(0,1);
+  l3_m2.set_mapping(0,1);
+  l3_m3.set_mapping(0,1);
+  
+  l4_m1.set_mapping(0,1);
+  l4_m2.set_mapping(0,1);
+  l4_m3.set_mapping(0,1);
+
+  l5_m1.set_mapping(0,1);
+  l5_m2.set_mapping(0,1);
+  l5_m3.set_mapping(0,1);
+
+  l6_m1.set_mapping(0,1);
+  l6_m2.set_mapping(0,1);
+  l6_m3.set_mapping(0,1);
 }
 
 
@@ -39,85 +62,42 @@ String remove_to_space(String command) {
 }
 
 void loop() {
-  static double position_value = 2;
-  static double speed_value = 1;
+  double position_value;
 
   if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n');
-
-
     position_value = command.toFloat();
-    command = remove_to_space(command);
-
-    speed_value = command.toFloat();
-    command = remove_to_space(command);
 
     Serial.println(position_value);
-    Serial.println(speed_value);
-    Serial.println(3);
-    // Update the corresponding Axis instance based on the input
-    l3_m3.move_to_pos(position_value);
-    Serial.println("moved");
-    l3_m1.move_to_pos_at_speed(position_value, speed_value);
-    l3_m2.move_to_pos_at_speed(position_value, speed_value);
+    move_to_pos(position_value);
+    Serial.println("lemon");
   }
-  // l1_m1.move_to_pos_at_speed(position_value, speed_value);
-  // l1_m2.move_to_pos_at_speed(position_value, speed_value);
-  // l1_m3.move_to_pos_at_speed(position_value, speed_value);
-  
-  // l2_m1.move_to_pos_at_speed(position_value, speed_value);
-  // l2_m2.move_to_pos_at_speed(position_value, speed_value);
-  // l2_m3.move_to_pos_at_speed(position_value, speed_value);
-
-  // l1_m1.run_speed();
-  // l1_m2.run_speed();
-  // l1_m3.run_speed();
-  
-  // l2_m1.run_speed();
-  // l2_m2.run_speed();
-  // l2_m3.run_speed();
-  
-  l3_m1.run_speed();
-  l3_m2.run_speed();
-  // l3_m3.run_speed();
-  
-  // l4_m1.run_speed();
-  // l4_m2.run_speed();
-  // l4_m3.run_speed();
-
-  // l5_m1.run_speed();
-  // l5_m2.run_speed();
-  // l5_m3.run_speed();
-
-  // l6_m1.run_speed();
-  // l6_m2.run_speed();
-  // l6_m3.run_speed();
 
 }
 
 // Function to update the Axis instance based on axis number, position value, and speed value
-void move_to_pos_at_speed(double position_value, double speed_value) {
-  l1_m1.move_to_pos_at_speed(position_value, speed_value);
-  l1_m2.move_to_pos_at_speed(position_value, speed_value);
-  l1_m3.move_to_pos_at_speed(position_value, speed_value);
+void move_to_pos(double position_value) {
+  l1_m1.move_to_pos(position_value);
+  l1_m2.move_to_pos(position_value);
+  l1_m3.move_to_pos(position_value);
   
-  l2_m1.move_to_pos_at_speed(position_value, speed_value);
-  l2_m2.move_to_pos_at_speed(position_value, speed_value);
-  l2_m3.move_to_pos_at_speed(position_value, speed_value);
+  l2_m1.move_to_pos(position_value);
+  l2_m2.move_to_pos(position_value);
+  l2_m3.move_to_pos(position_value);
   
-  l3_m1.move_to_pos_at_speed(position_value, speed_value);
-  l3_m2.move_to_pos_at_speed(position_value, speed_value);
-  l3_m3.move_to_pos_at_speed(position_value, speed_value);
+  l3_m1.move_to_pos(position_value);
+  l3_m2.move_to_pos(position_value);
+  l3_m3.move_to_pos(position_value);
   
-  l4_m1.move_to_pos_at_speed(position_value, speed_value);
-  l4_m2.move_to_pos_at_speed(position_value, speed_value);
-  l4_m3.move_to_pos_at_speed(position_value, speed_value);
+  l4_m1.move_to_pos(position_value);
+  l4_m2.move_to_pos(position_value);
+  l4_m3.move_to_pos(position_value);
 
-  l5_m1.move_to_pos_at_speed(position_value, speed_value);
-  l5_m2.move_to_pos_at_speed(position_value, speed_value);
-  l5_m3.move_to_pos_at_speed(position_value, speed_value);
+  l5_m1.move_to_pos(position_value);
+  l5_m2.move_to_pos(position_value);
+  l5_m3.move_to_pos(position_value);
 
-  l6_m1.move_to_pos_at_speed(position_value, speed_value);
-  l6_m2.move_to_pos_at_speed(position_value, speed_value);
-  l6_m3.move_to_pos_at_speed(position_value, speed_value);
+  l6_m1.move_to_pos(position_value);
+  l6_m2.move_to_pos(position_value);
+  l6_m3.move_to_pos(position_value);
 }
