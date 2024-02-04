@@ -48,7 +48,7 @@ You find these by: `Zack write this`
 
 ## Zack
 
-1. L1M1 - TBD
+1. L1M1 - 2.30
 2. L1M2 - 2.60
 3. L1M3 - 2.45
 4. L2M1 - 2.30
@@ -64,7 +64,7 @@ You find these by: `Zack write this`
 14. L5M2 - 2.05
 15. L5M3 - 2.30
 16. L6M1 - 2.25
-17. L6M2 - TBD
+17. L6M2 - 2.30
 18. L6M3 - 2.65
 
 - L1 - 132
