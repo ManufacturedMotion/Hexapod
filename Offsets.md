@@ -8,12 +8,12 @@ You find these by: `Zack write this`
 
 1. L1M1 - 1.87
 2. L1M2 - 2.30
-3. L1M3 - TBD
+3. L1M3 - 2.80
 4. L2M1 - 2.00
 5. L2M2 - 2.30
 6. L2M3 - 2.68
 7. L3M1 - 1.80
-8. L3M2 - TBD
+8. L3M2 - 2.20
 9. L3M3 - 2.70
 10. L4M1 - 2.20
 11. L4M2 - 2.20
