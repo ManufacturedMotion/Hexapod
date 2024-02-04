@@ -17,7 +17,7 @@ Teensy
 
 Axis::Axis(uint8_t pwm_pin, double min_pos, double max_pos) {
     servo.attach(pwm_pin);
-    servo.write(0);
+    //servo.write(0);
     _min_pos = min_pos;
     _max_pos = max_pos;
 }
@@ -64,6 +64,7 @@ uint8_t Axis::run_speed() {
 _Bool Axis::set_mapping(double zero_pos, double map_mult) {
     _zero_pos = zero_pos;
     _map_mult = map_mult;
+    move_to_pos(zero_pos);
     return true;
 }
 
