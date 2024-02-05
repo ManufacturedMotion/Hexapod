@@ -15,6 +15,10 @@ Teensy
 #include <PWMServo.h>
 #include <elapsedMillis.h>
 
+Axis::Axis(){
+    //dummy constructor
+}
+
 Axis::Axis(uint8_t pwm_pin, double min_pos, double max_pos) {
     servo.attach(pwm_pin);
     //servo.write(0);
@@ -64,7 +68,7 @@ uint8_t Axis::run_speed() {
 _Bool Axis::set_mapping(double zero_pos, double map_mult) {
     _zero_pos = zero_pos;
     _map_mult = map_mult;
-    move_to_pos(zero_pos);
+    move_to_pos(0);
     return true;
 }
 
