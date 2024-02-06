@@ -15,10 +15,6 @@ Teensy
 #include <PWMServo.h>
 #include <elapsedMillis.h>
 
-Axis::Axis(){
-    //dummy constructor
-}
-
 Axis::Axis(uint8_t pwm_pin, double min_pos, double max_pos) {
     servo.attach(pwm_pin);
     //servo.write(0);

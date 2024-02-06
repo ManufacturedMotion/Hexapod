@@ -21,7 +21,6 @@ TO DO:
 
 class Axis {
     public:
-	Axis(); //default dummy constructor
         Axis(uint8_t pwm_pin, double min_pos, double max_pos);
         uint8_t move_to_pos(double pos);
         uint8_t move_to_pos_at_speed(double pos, double target_speed);
