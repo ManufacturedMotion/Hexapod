@@ -1,5 +1,6 @@
 #include "leg.hpp"
 #include "axis.hpp"
+#include "config.hpp"
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
@@ -7,14 +8,14 @@
 Leg::Leg(uint8_t leg_number) {
     _leg_number = leg_number;
     for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
-        axes[i] = Axis(pwm_pins[_leg_number-1][i], min_pos[_leg_number-1][i], max_pos[_leg_number-1][i]);
-        axes[i].set_mapping(offsets[_leg_number-1][i], map_mults[_leg_number-1][i]);
+        axes[i] = Axis(PWM_PINS[_leg_number-1][i], MIN_POS[_leg_number-1][i], MAX_POS[_leg_number-1][i]);
+        axes[i].setMapping(ZERO_POINTS[_leg_number-1][i], SCALE_FACT[_leg_number-1][i]);
     }
 }
 
-_Bool Leg::inverse_kinematics(double x, double y, double z) {
+_Bool Leg::inverseKinematics(double x, double y, double z) {
 
-    if (!check_safe_coords(x,y,z))
+    if (!checkSafeCoords(x,y,z))
         return false; 
     double potential_results[3];
     if (fabs(y < 0.0005)) {
@@ -57,28 +58,28 @@ _Bool Leg::inverse_kinematics(double x, double y, double z) {
     return true;
 }
 
-_Bool Leg::check_safe_coords(double x, double y, double z) {
+_Bool Leg::checkSafeCoords(double x, double y, double z) {
     //If coords within robot body
     //  return false;
     
     return true;
 }
 
-_Bool Leg::rapid_move(double x,  double y, double z) {
-    if (inverse_kinematics(x, y, z)) {
-        move_axes();
+_Bool Leg::rapidMove(double x,  double y, double z) {
+    if (inverseKinematics(x, y, z)) {
+        moveAxes();
         return true;
     }
     return false;
 }
 
-_Bool Leg::linear_move(double x,  double y, double z, double speed) {
+_Bool Leg::linearMove(double x,  double y, double z, double speed) {
     return false;
 }
 
-void Leg::move_axes() {
+void Leg::moveAxes() {
     for (uint8_t i = 0; i < NUM_AXES; i++) {
-        axes[i].move_to_pos(_next_angles[i]);
+        axes[i].moveToPos(_next_angles[i]);
     }
     for (uint8_t i = 0; i < NUM_AXES; i++) {
         current_angles[i] = _next_angles[i];

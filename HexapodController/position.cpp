@@ -1,4 +1,4 @@
-#include <position.hpp>
+#include "position.hpp"
 #include <stdbool.h>
 #include <math.h>
 
@@ -12,7 +12,7 @@ void Position::set(double new_X, double new_Y, double new_Z, double new_roll, do
     yaw = new_yaw;
 }
 
-void Position::set_pos(const Position& pos) {
+void Position::setPos(const Position& pos) {
     X = pos.X;
     Y = pos.Y;
     Z = pos.Z;
@@ -21,7 +21,7 @@ void Position::set_pos(const Position& pos) {
     yaw = pos.yaw;
 }
 
-void Position::scalar_mult(double factor) {
+void Position::scalarMult(double factor) {
     X = X * factor;
     Y = Y * factor;
     Z = Z * factor;
@@ -30,7 +30,7 @@ void Position::scalar_mult(double factor) {
     yaw = yaw * factor;
 }
 
-void Position::independent_scalar_mult(double factors[6]) {
+void Position::independentScalarMult(double factors[6]) {
     X = X * factors[0];
     Y = Y * factors[1];
     Z = Z * factors[2];
@@ -39,7 +39,7 @@ void Position::independent_scalar_mult(double factors[6]) {
     yaw = yaw * factors[5];
 }
 
-void Position::subtract_pos(const Position& pos) {
+void Position::subtractPos(const Position& pos) {
     X = X - pos.X;
     Y = Y - pos.Y;
     Z = Z - pos.Z;
@@ -48,7 +48,7 @@ void Position::subtract_pos(const Position& pos) {
     yaw = yaw - pos.yaw;
 }
 
-void Position::add_pos(const Position& pos) {
+void Position::addPos(const Position& pos) {
     X = X + pos.X;
     Y = Y + pos.Y;
     Z = Z + pos.Z;
@@ -72,4 +72,3 @@ _Bool Position::equals(const Position& pos) {
         return false;
     return true;
 }
-
