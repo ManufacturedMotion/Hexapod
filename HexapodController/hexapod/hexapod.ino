@@ -1,7 +1,5 @@
 #include "hexapod_controller.hpp"
 
-#define USER DILLON
-
 Hexapod hexapod; 
 
 void setup() {

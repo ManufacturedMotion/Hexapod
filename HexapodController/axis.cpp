@@ -15,15 +15,20 @@ Teensy
 #include <PWMServo.h>
 #include <elapsedMillis.h>
 
-Axis::Axis(uint8_t pwm_pin, double MIN_POS, double max_pos) {
+Axis::Axis() {
+    _max_pos = 0;
+    _min_pos = 0;	
+}
+
+void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos) {
     servo.attach(pwm_pin);
     //servo.write(0);
-    _MIN_POS = MIN_POS;
+    _max_pos = min_pos;
     _max_pos = max_pos;
 }
 
 uint8_t Axis::moveToPos(double pos) {
-    if (pos < _MIN_POS || pos > _max_pos)
+    if (pos < _min_pos || pos > _max_pos)
         return 255;     //Move out of range
     if (_next_go_time > _millis)
         return 254;     //Moving too quickly
@@ -36,7 +41,7 @@ uint8_t Axis::moveToPos(double pos) {
 }
 
 uint8_t Axis::moveToPosAtSpeed(double pos, double target_speed) { //Must call runSpeed() frequently when using this function
-    if (pos < _MIN_POS || pos > _max_pos)
+    if (pos < _min_pos || pos > _max_pos)
         return 255;
     double speed = target_speed;
     uint8_t retval = 0;
@@ -84,8 +89,8 @@ _Bool Axis::setMaxPos(double max_pos) {
     _max_pos = max_pos;
     return true;
 }
-_Bool Axis::setMinPos(double MIN_POS) {
-    _MIN_POS = MIN_POS;
+_Bool Axis::setMinPos(double min_pos) {
+    _min_pos = min_pos;
     return true;
 }
 

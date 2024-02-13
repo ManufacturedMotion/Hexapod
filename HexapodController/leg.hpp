@@ -10,7 +10,8 @@
 
 	class Leg {
 		public:
-			Leg(uint8_t leg_number);
+			Leg();
+			void initializeAxes(uint8_t leg_number);
 			double current_angles[NUM_AXES_PER_LEG];
 			double current_cartesian[NUM_AXES_PER_LEG];
 			_Bool rapidMove(double x,  double y, double z);

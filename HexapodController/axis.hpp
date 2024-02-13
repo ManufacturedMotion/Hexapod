@@ -21,11 +21,12 @@
 
 	class Axis {
 		public:
-			Axis(uint8_t pwm_pin, double MIN_POS, double max_pos);
+			Axis();
+			void initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos);
 			uint8_t moveToPos(double pos);
 			uint8_t moveToPosAtSpeed(double pos, double target_speed);
 			_Bool setMaxPos(double max_pos);
-			_Bool setMinPos(double MIN_POS);
+			_Bool setMinPos(double min_pos);
 			double getCurrentPos();
 			_Bool setMapping(double offset, double map_mult);
 			_Bool setMaxSpeed(double max_speed);
@@ -35,7 +36,7 @@
 		private:
 			double _max_speed;      //rad/s
 			double _max_pos;        //rad
-			double _MIN_POS;        //rad
+			double _min_pos;        //rad
 			double _map_mult;       //unitless
 			double _zero_pos;       //rad
 			uint64_t _next_go_time; //milliseconds

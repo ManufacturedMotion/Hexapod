@@ -1,15 +1,26 @@
 #include "leg.hpp"
+#include "hexapod.hpp"
 #include "axis.hpp"
 #include "config.hpp"
 #include <stdint.h>
 #include <stdbool.h>
 #include <math.h>
 
-Leg::Leg(uint8_t leg_number) {
+double zero_points[NUM_LEGS][NUM_AXES_PER_LEG] = ZERO_POINTS;
+int pwm_pins[NUM_LEGS][NUM_AXES_PER_LEG] = PWM_PINS;
+double min_pos[NUM_LEGS][NUM_AXES_PER_LEG] = MIN_POS;
+double max_pos[NUM_LEGS][NUM_AXES_PER_LEG] = MAX_POS;
+double scale_fact[NUM_LEGS][NUM_AXES_PER_LEG] = SCALE_FACT;
+
+Leg::Leg() {
+    _leg_number = 0;
+}
+
+void Leg::initializeAxes(uint8_t leg_number) {
     _leg_number = leg_number;
     for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
-        axes[i] = Axis(PWM_PINS[_leg_number-1][i], MIN_POS[_leg_number-1][i], MAX_POS[_leg_number-1][i]);
-        axes[i].setMapping(ZERO_POINTS[_leg_number-1][i], SCALE_FACT[_leg_number-1][i]);
+        axes[i].initializePositionLimits(pwm_pins[_leg_number-1][i], min_pos[_leg_number-1][i], max_pos[_leg_number-1][i]);
+        axes[i].setMapping(zero_points[_leg_number-1][i], scale_fact[_leg_number-1][i]);
     }
 }
 
@@ -47,12 +58,12 @@ _Bool Leg::inverseKinematics(double x, double y, double z) {
     // potential_results[1] = theta1_tool0 + theta1_tool1;
     // potential_results[2] = -(PI - theta2_tool);
 
-    for (uint8_t i = 0; i < NUM_AXES; i++) {
+    for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
         if (potential_results[i] != potential_results[i])  //Check for NaN
             return false;
     }
     
-    for (uint8_t i = 0; i < NUM_AXES; i++) {
+    for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
         _next_angles[i] = potential_results[i];
     }
     return true;
@@ -78,10 +89,10 @@ _Bool Leg::linearMove(double x,  double y, double z, double speed) {
 }
 
 void Leg::moveAxes() {
-    for (uint8_t i = 0; i < NUM_AXES; i++) {
+    for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
         axes[i].moveToPos(_next_angles[i]);
     }
-    for (uint8_t i = 0; i < NUM_AXES; i++) {
+    for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
         current_angles[i] = _next_angles[i];
     }
 }

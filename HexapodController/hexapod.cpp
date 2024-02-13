@@ -8,7 +8,7 @@
 
 Hexapod::Hexapod() { 
     for (uint8_t i = 1; i <= NUM_LEGS; i++) {
-        legs[i-1] = Leg(i);
+        legs[i - 1].initializeAxes(i);
     }
 }
 
