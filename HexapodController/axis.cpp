@@ -23,7 +23,7 @@ Axis::Axis() {
 void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos) {
     servo.attach(pwm_pin);
     //servo.write(0);
-    _max_pos = min_pos;
+    _min_pos = min_pos;
     _max_pos = max_pos;
 }
 
