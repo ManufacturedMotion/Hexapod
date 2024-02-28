@@ -1,0 +1,3 @@
+[submodule "Hexapod"]
+	path = Hexapod
+	url = git@github.com:ManufacturedMotion/Hexapod.git
