@@ -1,6 +1,3 @@
 [submodule "Hexapod"]
 	path = Hexapod
 	url = git@github.com:ManufacturedMotion/Hexapod.git
-[submodule "HexapodController"]
-	path = HexapodController
-	url = git@github.com:ManufacturedMotion/HexapodController.git
