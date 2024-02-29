@@ -8,7 +8,7 @@
 	#define DILLON 3
 	#define USER DILLON
 	
-	#define PWM_PINS {{5, 6, 7}, {2, 3, 4}, {8, 9, 10},  {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}
+	#define PWM_PINS {{2, 3, 4}, {5, 6, 7}, {8, 9, 10}, {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}
 
 	#if USER == DANNY	
 
