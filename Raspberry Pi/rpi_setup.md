@@ -5,7 +5,7 @@ This guide will walk you through how to setup your Raspberry Pi Zero W to have t
 ## Flashing the SD Card
 
 1. [Get the Raspberry Pi Imaging Tool](https://www.raspberrypi.com/software/).
-2. Choose `Raspberry Pi Zero 2 W` for the `Raspberry Pi Device`.
+2. Choose `Raspberry Pi Zero W` for the `Raspberry Pi Device`.
 3. Choose `Raspberry Pi OS Lite` for the `Operating System`.
 4. Choose the appropriate MicroSD card for `Storage`.
 5. Click `Next`.
@@ -36,7 +36,7 @@ This guide will walk you through how to setup your Raspberry Pi Zero W to have t
 
 ### Testing Serial
 
-- [testing_serial.py](Raspberry\%Pi/rpi_setup.md) & [testing_serial.ino](Raspberry\%Pi/testing_serial.ino)
+- [testing_serial.py](testing_serial.py) & [testing_serial.ino](testing_serial.ino)
   - Used to ensure your Raspberry Pi is configured properly and that the Raspberry pi can take command via SSH and pass them via serial to the Teensy 4.1.
   - Usage: `python3 raspi_serial.py "Hello World"`
   - If you aren't able to run the file, make sure it is an executable by doing: `chmod +x raspi_serial.py`
