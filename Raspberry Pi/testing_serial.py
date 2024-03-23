@@ -2,7 +2,7 @@ import serial
 import sys
 
 # Define the serial connection
-ser = serial.Serial('/dev/ttyS0', 9600, timeout=1)
+ser = serial.Serial('/dev/ttyS0', 115200, timeout=1)
 
 def send_to_teensy(data):
     # Append a newline character at the end of the data

@@ -3,8 +3,8 @@ char buffer[bufferSize];
 int bufferIndex = 0;
 
 void setup() {
-  Serial.begin(9600);
-  Serial4.begin(9600);
+  Serial.begin(115200);
+  Serial4.begin(115200);
 }
 
 void loop() {
