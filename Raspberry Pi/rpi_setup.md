@@ -31,6 +31,8 @@ This guide will walk you through how to setup your Raspberry Pi Zero W to have t
 
 1. Run `sudo apt-get update`
 2. Run `sudo apt-get install python3-serial`
+3. Run `sudo apt-get install flask` or `sudo apt-get install pip` --> `pip install flask`
+4. Run `sudo apt-get upgrade`
 
 ## Example Files
 

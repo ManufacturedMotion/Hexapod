@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexapod Control</title>
+    <style>
+        body {
+            background-color: #404040; /* charcoal grey background */
+            margin: 0;
+            font-family: Arial, sans-serif;
+            color: white; /* white text */
+        }
+        .container {
+            max-width: 800px; /* maximum width of the content */
+            margin: auto; /* horizontally center the container */
+            padding: 20px;
+            text-align: center; /* center align text */
+        }
+        #hexapod-logo {
+            max-width: 100%; /* ensure the image fits within container */
+            height: auto; /* maintain aspect ratio */
+            margin-bottom: 20px; /* space below the logo */
+        }
+        #serial-data {
+            background-color: #222; /* dark grey background for serial data display */
+            padding: 10px;
+            border: 1px solid #666; /* medium grey border */
+            border-radius: 5px;
+            margin-bottom: 20px; /* space below serial data display */
+            text-align: left; /* left align text */
+            overflow: auto; /* allow scrolling if content exceeds box height */
+            max-height: 200px; /* limit height to prevent excessive scrolling */
+        }
+        #command-input {
+            width: 70%; /* width of command input field */
+            padding: 10px;
+            border: 1px solid #666; /* medium grey border */
+            border-radius: 5px;
+        }
+        #command-form button {
+            padding: 10px 20px;
+            background-color: #4CAF50; /* green button */
+            color: white; /* white text */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #command-form button:hover {
+            background-color: #45a049; /* darker green on hover */
+        }
+        h2, h3 {
+            font-family: Arial, sans-serif; /* font family */
+            font-size: 16px; /* font size */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://github.com/ManufacturedMotion/Hexapod/blob/main/Images/hexapod_logo.png?raw=true" alt="Hexapod Logo" id="hexapod-logo">
+        
+        <h3>Recent Commands</h3> <!-- Added header for recent serial commands -->
+        <div id="serial-data"></div> <!-- Moved serial monitor below recent serial commands -->
+
+        <h2>Send Serial Command</h2>
+        <form id="command-form">
+            <input type="text" id="command-input" placeholder="Enter command">
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        // Set to store unique commands
+        var uniqueCommands = new Set();
+
+        // Function to send command
+        function sendCommand(command) {
+            $.post('/send_command', { command: command }, function(response) {
+                console.log(response);
+            });
+        }
+
+        // Submit form on enter key press
+        $('#command-input').keypress(function(event) {
+            if (event.keyCode == 13) {
+                event.preventDefault(); // Prevent form submission
+                var command = $('#command-input').val();
+                sendCommand(command); // Send command
+                $('#command-input').val(''); // Clear input field
+            }
+        });
+
+        // Submit form on button click
+        $('#command-form').submit(function(event) {
+            event.preventDefault(); // Prevent form submission
+            var command = $('#command-input').val();
+            sendCommand(command); // Send command
+            $('#command-input').val(''); // Clear input field
+        });
+
+        // Function to fetch data from serial port
+        function fetchData() {
+            $.get('/data', function(data) {
+                // Only display unique commands
+                if (!uniqueCommands.has(data)) {
+                    $('#serial-data').append('<p>' + data + '</p>'); // Append new data to the serial monitor
+                    uniqueCommands.add(data); // Add command to set
+                }
+            });
+        }
+
+        // Fetch data every second
+        setInterval(fetchData, 1000);
+    });
+</script>
+
+</body>
+</html>
