@@ -36,7 +36,7 @@ This guide will walk you through how to setup your Raspberry Pi Zero W to have t
 
 ### Testing Serial
 
-- [testing_serial.py](testing_serial.py) & [testing_serial.ino](testing_serial.ino)
+- [testing_serial.py](test_files/testing_serial.py) & [testing_serial.ino](test_files/testing_serial.ino)
   - Used to ensure your Raspberry Pi is configured properly and that the Raspberry pi can take command via SSH and pass them via serial to the Teensy 4.1.
   - Usage: `python3 raspi_serial.py "Hello World"`
   - If you aren't able to run the file, make sure it is an executable by doing: `chmod +x raspi_serial.py`
@@ -69,7 +69,7 @@ Follow the instructions listed [here](https://retropie.org.uk/docs/Nintendo-Swit
 
 ### Testing Bluetooth Controller
 
-Once completed, run [controller_config.py](controller_config.py) to make sure multiple joysticks and axes are detected. This should return something similar to:
+Once completed, run [controller_test.py](test_files/controller_test.py) to make sure multiple joysticks and axes are detected. Before running the program, make sure your controller says `SW1` -- If it says `SW4` mash multiple buttons on the controller until it switches to `SW4`. Running the program should return:
 
 ```terminal
 Joystick 0:
@@ -80,14 +80,4 @@ Joystick 1:
   Name: Nintendo Switch Pro Controller IMU
   Axes: 6
   Buttons: 0
-```
-
-Once successful, run [controller_test.py](controller_test.py) which should return:
-
-```terminal
-Number of connected joysticks: 1
-Controller initialized: Nintendo Switch Pro Controller
-Button data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-Axes data: [0.0009765625, -0.00048828125, 0.0009765625, 0.0]
-...
 ```
