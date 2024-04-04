@@ -1,22 +1,39 @@
 import time
 import serial
 from controller_setup import *
+from webserver import start_server, command_queue as web_command_queue
+from threading import Thread
+import queue
 
 ser = serial.Serial('/dev/ttyS0', 115200, timeout=1)
 poll_rate = 10  # Polling 10 times per second
 polling_interval = 1.0 / poll_rate
+teensy_command_queue = queue.Queue()
 
 def send_to_teensy(data):
     ser.write((data + '\n').encode())
+
+def read_from_serial():
+    while True:
+        if ser.in_waiting > 0:
+            serial_data = ser.readline().decode().strip()
+            teensy_command_queue.put(serial_data)
 
 def main():
     controller, controller_status =  init_controller()
     send_to_teensy(controller_status)
 
+    serial_thread = Thread(target=read_from_serial)
+    serial_thread.daemon = True
+    serial_thread.start()
+
     try:
         while True:
             start_time = time.time()
             pygame.event.pump()
+
+            if not web_command_queue.empty():
+                send_to_teensy(web_command_queue.get())
 
             axes_data = [round(controller.get_axis(i), 2) for i in range(controller.get_numaxes())]
             axes_data[1] = -axes_data[1]
@@ -51,4 +68,5 @@ def main():
         pygame.quit()
 
 if __name__ == "__main__":
+    start_server()
     main()
