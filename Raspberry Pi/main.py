@@ -1,31 +1,33 @@
 import time
 import serial
 from controller_setup import *
-from webserver import start_server, command_queue as web_command_queue
-from threading import Thread
-import queue
+from webserver_setup import start_server, command_queue as web_command_queue, serial_data_queue
+from multiprocessing import Process, Queue
 
 ser = serial.Serial('/dev/ttyS0', 115200, timeout=1)
 poll_rate = 10  # Polling 10 times per second
 polling_interval = 1.0 / poll_rate
-teensy_command_queue = queue.Queue()
+teensy_command_queue = Queue()
 
 def send_to_teensy(data):
     ser.write((data + '\n').encode())
 
-def read_from_serial():
+def read_from_serial(serial_queue, serial_data_queue):
     while True:
         if ser.in_waiting > 0:
             serial_data = ser.readline().decode().strip()
-            teensy_command_queue.put(serial_data)
+            serial_queue.put(serial_data)
+            serial_data_queue.put(serial_data)  # Put data into the serial_data_queue as well
+            print(serial_data)
 
 def main():
     controller, controller_status =  init_controller()
     send_to_teensy(controller_status)
 
-    serial_thread = Thread(target=read_from_serial)
-    serial_thread.daemon = True
-    serial_thread.start()
+    serial_queue = Queue()
+    serial_process = Process(target=read_from_serial, args=(serial_queue, serial_data_queue))
+    serial_process.daemon = True
+    serial_process.start()
 
     try:
         while True:
@@ -43,7 +45,7 @@ def main():
             num_buttons = controller.get_numbuttons()
             buttons_data = [controller.get_button(i) for i in range(num_buttons)]
 
-            #Button mapping is defined in controller_setup.py
+            # Button mapping is defined in controller_setup.py
             button_out = ""
             for button, action in button_mapping.items():
                 button_index = list(button_mapping.keys()).index(button)
