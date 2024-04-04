@@ -3,10 +3,10 @@ os.environ["SDL_VIDEODRIVER"] = "dummy"
 import pygame
 
 button_mapping = {
-    "A": "P1 stand",
+    "A": "P1",
     "B": None,
-    "Y": "P0 starfish",
-    "X": "P2 sit",
+    "Y": "P0",
+    "X": "P2",
     "TURBO": None,
     "LB": None,
     "RB": None,
