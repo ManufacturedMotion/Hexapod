@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, jsonify
+from multiprocessing import Queue
 from threading import Thread
-import queue
 
 app = Flask(__name__)
-command_queue = queue.Queue()
-serial_data_queue = queue.Queue()  # Queue for storing serial data
+command_queue = Queue()
+serial_data_queue = Queue()  # Queue for storing serial data
 
 @app.route('/')
 def index():
