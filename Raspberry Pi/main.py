@@ -40,7 +40,7 @@ def main():
             axes_data = [round(controller.get_axis(i), 2) for i in range(controller.get_numaxes())]
             axes_data[1] = -axes_data[1]
             axes_data[3] = -axes_data[3]
-            joystick_out = " G1 X" + str(axes_data[0]) + " Y" + str(axes_data[1])
+            joystick_out = "  G1 X" + str(axes_data[0]) + " Y" + str(axes_data[1])
 
             num_buttons = controller.get_numbuttons()
             buttons_data = [controller.get_button(i) for i in range(num_buttons)]
@@ -50,7 +50,7 @@ def main():
             for button, action in button_mapping.items():
                 button_index = list(button_mapping.keys()).index(button)
                 if action is not None and buttons_data[button_index] != 0:
-                    button_out += f" {action}"
+                    button_out += f"  {action}"
 
             try:
                 if (axes_data[0] or axes_data[1]):
