@@ -13,7 +13,7 @@ def send_to_teensy(data):
     try:
         ser.write((data + '\n').encode())
         ser.flush()  # Ensure data is sent immediately
-        print("Data sent successfully")
+        print("Data: \"" + data + "\" sent successfully")
     except Exception as e:
         print(f"Failed to send data: {e}")
 
@@ -41,6 +41,8 @@ def main():
             pygame.event.pump()
             joystick_out = ""
             button_out = ""
+            macro_file = ""
+            execute_macro = False
 
             if not web_command_queue.empty():
                 send_to_teensy(web_command_queue.get())
@@ -58,6 +60,20 @@ def main():
                 button_index = list(button_mapping.keys()).index(button)
                 if action is not None and buttons_data[button_index] != 0:
                     button_out += f'{action}'
+                    if "macro" in button_out:
+                        macro_file = button_out + '.txt'
+                        execute_macro = True
+
+            if execute_macro:
+                try:
+                    with open(macro_file, 'r') as file:
+                        for line in file:
+                            send_to_teensy(line.strip())
+                            time.sleep(0.2)
+                    execute_macro = False
+                    button_out = ""
+                except FileNotFoundError:
+                    print("Macro file not found!")
 
             try:
                 if (axes_data[0] or axes_data[1]):
