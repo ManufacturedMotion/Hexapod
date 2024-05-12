@@ -12,8 +12,8 @@ button_mapping = {
     "RB": None,
     "LT": None,
     "RT": None,
-    "BACK": None,
-    "START": None,
+    "BACK": "macro_2",
+    "START": "macro_1",
     "HOME": None,
     "J1": "G0 X0 Y0 Z200 R0 P0 W0",
     "J2": None
