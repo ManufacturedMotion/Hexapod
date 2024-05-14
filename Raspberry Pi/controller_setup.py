@@ -1,6 +1,8 @@
 import os
-os.environ["SDL_VIDEODRIVER"] = "dummy"
 import pygame
+import time
+
+os.environ["SDL_VIDEODRIVER"] = "dummy"
 
 button_mapping = {
     "A": "P1",
@@ -19,25 +21,28 @@ button_mapping = {
     "J2": None
 }
 
-def init_controller():
+def controller_check_loop(controller_queue):
     pygame.init()
     pygame.joystick.init()
+    
+    controller_connected = False
 
-    num_joysticks = pygame.joystick.get_count()
-    joystick_info = "M118 Joysticks:" + str(num_joysticks)
-    for i in range(num_joysticks):
-        joystick = pygame.joystick.Joystick(i)
-        joystick.init()
-        joystick_info += "\nM118 Joystick {}:".format(i)
-        joystick_info += "  Name: {}".format(joystick.get_name())
-        joystick_info += "  Axes: {}".format(joystick.get_numaxes())
-        joystick_info += "  Buttons: {}".format(joystick.get_numbuttons())
+    while True:
+        num_joysticks = pygame.joystick.get_count()
+        if num_joysticks == 0:
+            if controller_connected:
+                controller_connected = False
+                controller_queue.put("Err: No Controller Connected")
+            time.sleep(1)  # Wait for a second before trying again
+        else:
+            if not controller_connected:
+                controller_connected = True
+                joystick_info = f"M118 Joystick 0: Name: {pygame.joystick.Joystick(0).get_name()} Axes: {pygame.joystick.Joystick(0).get_numaxes()} Buttons: {pygame.joystick.Joystick(0).get_numbuttons()}"
+                controller_queue.put("Controller Connected")
+                print(joystick_info)
+            time.sleep(1)
 
-    if num_joysticks == 0:
-        joystick_info = "Err: No Controller Connected"
-
-    # Initialize the first joystick
-    controller = pygame.joystick.Joystick(0)
-    controller.init()
-
-    return controller, joystick_info
+if __name__ == "__main__":
+    from multiprocessing import Queue
+    controller_queue = Queue()
+    controller_check_loop(controller_queue)
