@@ -14,18 +14,34 @@ Who are we?
 - [Zack Schwid](https://www.linkedin.com/in/zacharyschwid/)
 - [Dillon Kane](https://www.linkedin.com/in/dillonkane/)
 
-## Getting Started
-
 This project is not yet ready for others to recreate as we're still making significant changes to the code, electronics, and CAD files. But this github repo will always have the most up-to-date information and files.
 
 Once this project is closer to completion we will be leaving detailed documentation on how to build one of your own (but note: it is a very involved project).
 
-## Project Glossary 
+## Mark1
 
-- [3D Models](./Finalized%203D%20Printed%20Parts/)
-- [Bill of Materials](./Bill-of-Materials/BOM.md)
-- [Code](./HexapodController/)
-- [Electronics](./PCB/)
+This version of the Hexapod will be completed in the summer of 2024. This Hexapod will come in under the $500 budget, utilizing a Raspberry Pi Zero W + Teensy 4.1 for the main command and control interface. While this hexapod was a great proof of concept (it is controllable via a generic bluetooth controller, has one default gait, etc) we quickly realized that this version would be a bottleneck for our ambitions -- both in hardware and software limitations. That's why we decided to end the Mark 1 journey once it is fully walking, and pivot into creating a much feature-full Mark2.
+
+The files for the Mark1 will all be available shortly, but we would encourage anyone wanting to repro this project to wait until we finish Mark2, as we are tracking quite a few limitations in this design.
+
+## Mark1 Project Glossary
+
+- [3D Models](<Mark1/Mark1 3D Prints>)
+- [Bill of Materials](<Mark1/Mark1 Bill-of-Materials/BOM.md>)
+- [Teensy Code](./HexapodController/)
+- [Raspberry Pi Zero Code](<Mark1/Mark1 RPi Zero W>)
+- [Electronics](<./Mark1/Mark1 PCB>)
+
+## Mark2
+
+We're just getting started on planning for Mark2, but some of the details include:
+
+- Raspberry Pi 5
+- Switching over to ROS2 on Ubuntu
+- Redesigned PCB to include new features
+- Improved CAD
+
+For more info on what we're planning to change, checkout our Github issues!
 
 ## Coding Standards
 
