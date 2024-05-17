@@ -6,7 +6,7 @@ from multiprocessing import Process, Queue
 import pygame
 
 ser = serial.Serial('/dev/ttyS0', 115200, timeout=1)
-poll_rate = 10  # Polling 10 times per second
+poll_rate = 20  # Polling 10 times per second
 polling_interval = 1.0 / poll_rate
 teensy_command_queue = Queue()
 
