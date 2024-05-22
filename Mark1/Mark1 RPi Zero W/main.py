@@ -103,7 +103,7 @@ def main():
                                 with open(macro_file, 'r') as file:
                                     for line in file:
                                         send_to_teensy(line.strip())
-                                        time.sleep(0.2)
+                                        time.sleep(0.05)
                                 execute_macro = False
                                 button_out = ""
                             except FileNotFoundError:
