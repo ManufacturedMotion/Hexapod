@@ -20,11 +20,11 @@ Once this project is closer to completion we will be leaving detailed documentat
 
 ## Mark1
 
-This version of the Hexapod will be completed in the summer of 2024. This Hexapod will come in under the $500 budget, utilizing a Raspberry Pi Zero W + Teensy 4.1 for the main command and control interface. While this hexapod was a great proof of concept (it is controllable via a generic bluetooth controller, has one default gait, etc) we quickly realized that this version would be a bottleneck for our ambitions -- both in hardware and software limitations. That's why we decided to end the Mark 1 journey once it is fully walking, and pivot into creating a much feature-full Mark2.
+This version of the Hexapod is mostly functional as of June 2024. This Hexapod came in under the $500 budget, utilizing a Raspberry Pi Zero W + Teensy 4.1 for the main command and control interface. While this hexapod was a great proof of concept, we quickly realized that this version would be a bottleneck for our ambitions -- both in hardware and software limitations. That's why we decided to end the Mk1 journey with it is fully walking, and completely revamp the Hexapod into a much feature-full Mk2. The Mk2 is expected to be the definitive version of the Hexapod, with smaller revisions under the Mk2 umbrella.  
 
-The files for the Mark1 will all be available shortly, but we would encourage anyone wanting to repro this project to wait until we finish Mark2, as we are tracking quite a few limitations in this design.
+The files for the Mk1 will be available shortly, but we would encourage anyone wanting to repro this project to wait until we finish Mk2, as we are tracking quite a few limitations in this design. Including issues with pairing controllers, limited gait and motions, and overall it is not a polished design.
 
-## Mark1 Project Glossary
+## Mk1 Project Glossary
 
 - [3D Models](<Mark1/Mark1 3D Prints>)
 - [Bill of Materials](<Mark1/Mark1 Bill-of-Materials/BOM.md>)
@@ -32,7 +32,7 @@ The files for the Mark1 will all be available shortly, but we would encourage an
 - [Raspberry Pi Zero Code](<Mark1/Mark1 RPi Zero W>)
 - [Electronics](<./Mark1/Mark1 PCB>)
 
-## Mark2
+## Mk2
 
 We're just getting started on planning for Mark2, but some of the details include:
 
@@ -45,7 +45,7 @@ For more info on what we're planning to change, checkout our Github issues!
 
 ## Coding Standards
 
-We follow [Google's C++ coding standards](https://google.github.io/styleguide/cppguide.html#Function_Names) with the exceptions and highlights below
+We primarily follow [Google's C++ coding standards](https://google.github.io/styleguide/cppguide.html#Function_Names) with the exceptions and highlights below:
 
 ### Naming Conventions
 
@@ -63,8 +63,8 @@ We follow [Google's C++ coding standards](https://google.github.io/styleguide/cp
 
 ### Misc Standards
 
-- Every file should have exactly 1 empty line as the last line
-- There should not be any spaces at the end of a line
+- Every file should have exactly 1 empty line as the last line.
+- There should not be any spaces at the end of a line.
 
 ## License
 
