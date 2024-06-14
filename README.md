@@ -45,7 +45,7 @@ For more info on what we're planning to change, checkout our Github issues!
 
 ## Coding Standards
 
-We follow [Google's C++ coding standards](https://google.github.io/styleguide/cppguide.html#Function_Names) with the exceptions and highlights below.
+We primarily follow [Google's C++ coding standards](https://google.github.io/styleguide/cppguide.html#Function_Names) with the exceptions and highlights below:
 
 ### Naming Conventions
 
@@ -63,8 +63,8 @@ We follow [Google's C++ coding standards](https://google.github.io/styleguide/cp
 
 ### Misc Standards
 
-- Every file should have exactly 1 empty line as the last line
-- There should not be any spaces at the end of a line
+- Every file should have exactly 1 empty line as the last line.
+- There should not be any spaces at the end of a line.
 
 ## License
 
