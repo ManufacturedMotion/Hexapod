@@ -18,21 +18,21 @@ This project is not yet ready for others to recreate as we're still making signi
 
 Once this project is closer to completion we will be leaving detailed documentation on how to build one of your own (but note: it is a very involved project).
 
-## Mark1
+## Mk1
 
-This version of the Hexapod will be completed in the summer of 2024. This Hexapod will come in under the $500 budget, utilizing a Raspberry Pi Zero W + Teensy 4.1 for the main command and control interface. While this hexapod was a great proof of concept (it is controllable via a generic bluetooth controller, has one default gait, etc) we quickly realized that this version would be a bottleneck for our ambitions -- both in hardware and software limitations. That's why we decided to end the Mark 1 journey once it is fully walking, and pivot into creating a much feature-full Mark2.
+This version of the Hexapod will be completed in the summer of 2024. This Hexapod will come in under the $500 budget, utilizing a Raspberry Pi Zero W + Teensy 4.1 for the main command and control interface. While this hexapod was a great proof of concept (it is controllable via a generic bluetooth controller, has one default gait, etc) we quickly realized that this version would be a bottleneck for our ambitions -- both in hardware and software limitations. That's why we decided to end the Mark 1 journey once it is fully walking, and pivot into creating a much feature-full Mk2.
 
-The files for the Mark1 will all be available shortly, but we would encourage anyone wanting to repro this project to wait until we finish Mark2, as we are tracking quite a few limitations in this design.
+The files for the Mk1 are available, but may be incomplete due to the project pivot. We would encourage anyone wanting to build their own hexapod to wait until we finish Mk2, as we are tracking quite a few limitations in the design. All aspects of the Hexapod are being improved for Mk2, including every 3D printed part and the electronics to be more feature rich.
 
-## Mark1 Project Glossary
+## Mk1 Project Glossary
 
-- [3D Models](<Mark1/Mark1 3D Prints>)
-- [Bill of Materials](<Mark1/Mark1 Bill-of-Materials/BOM.md>)
+- [3D Models](<Mk1/Mk1 3D Prints>)
+- [Bill of Materials](<Mk1/Mk1 Bill-of-Materials/BOM.md>)
 - [Teensy Code](./HexapodController/)
-- [Raspberry Pi Zero Code](<Mark1/Mark1 RPi Zero W>)
-- [Electronics](<./Mark1/Mark1 PCB>)
+- [Raspberry Pi Zero Code](<Mk1/Mk1_Hexapod_Command>)
+- [Electronics](<./Mk1/Mk1 PCB>)
 
-## Mark2
+## Mk2
 
 We're just getting started on planning for Mark2, but some of the details include:
 
@@ -45,7 +45,7 @@ For more info on what we're planning to change, checkout our Github issues!
 
 ## Coding Standards
 
-We follow [Google's C++ coding standards](https://google.github.io/styleguide/cppguide.html#Function_Names) with the exceptions and highlights below
+We follow [Google's C++ coding standards](https://google.github.io/styleguide/cppguide.html#Function_Names) with the exceptions and highlights below.
 
 ### Naming Conventions
 
