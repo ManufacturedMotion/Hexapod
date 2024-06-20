@@ -2042,6 +2042,29 @@ Number of pins: &lt;b&gt;2&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 <wire x1="1.3" y1="-2.3" x2="1.3" y2="-1.8" width="0.2" layer="21"/>
 <wire x1="-1.3" y1="-1.8" x2="1.3" y2="-1.8" width="0.2" layer="21"/>
 </package>
+<package name="JST-XH-04-PACKAGE-LONG-PAD">
+<description>&lt;b&gt;JST XH Connector Long Pads (Package)&lt;/b&gt;&lt;p&gt;
+Wire to board connector.
+
+Pitch: 2,54 mm, (0.100")&lt;p&gt;
+Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
+
+&lt;b&gt;Created by Rembrandt Electronics&lt;/b&gt;&lt;p&gt;
+&lt;b&gt;www.rembrandtelectronics.com&lt;/b&gt;&lt;p&gt;</description>
+<wire x1="6.2" y1="-2.3575" x2="6.2" y2="3.3925" width="0.254" layer="21"/>
+<wire x1="6.2" y1="3.3925" x2="-6.2" y2="3.3925" width="0.254" layer="21"/>
+<wire x1="-6.2" y1="3.3925" x2="-6.2" y2="-2.3575" width="0.254" layer="21"/>
+<wire x1="-6.2" y1="-2.3575" x2="6.2" y2="-2.3575" width="0.254" layer="21"/>
+<pad name="3" x="1.27" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="2" x="-1.27" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="1" x="-3.81" y="0" drill="1.016" shape="long" rot="R90"/>
+<pad name="4" x="3.81" y="0" drill="1.016" shape="long" rot="R90"/>
+<text x="-6.655" y="-2.04" size="1.016" layer="25" ratio="10" rot="R90">&gt;NAME</text>
+<text x="-6.0025" y="3.8925" size="1.016" layer="27" ratio="10">&gt;VALUE</text>
+<text x="-5.4675" y="-1.4875" size="1.016" layer="51" ratio="10">1</text>
+<wire x1="-3.8" y1="-2.3" x2="-3.8" y2="-1.8" width="0.254" layer="21"/>
+<wire x1="3.9" y1="-2.3" x2="3.9" y2="-1.8" width="0.254" layer="21"/>
+</package>
 </packages>
 </library>
 </libraries>
@@ -2324,6 +2347,10 @@ design rules under a new name.</description>
 <attribute name="NAME" x="-20.755" y="-45.04" size="1.016" layer="25" ratio="10" rot="R90"/>
 <attribute name="VALUE" x="-19.8025" y="-39.1075" size="1.016" layer="27" ratio="10"/>
 </element>
+<element name="FAN" library="Rembrandt Electronics - JST XH Connectors v1-0" package="JST-XH-04-PACKAGE-LONG-PAD" value="JST-XH-04-PIN-LONG-PAD" x="-14" y="-51" smashed="yes">
+<attribute name="NAME" x="-20.655" y="-53.04" size="1.016" layer="25" ratio="10" rot="R90"/>
+<attribute name="VALUE" x="-20.0025" y="-47.1075" size="1.016" layer="27" ratio="10"/>
+</element>
 </elements>
 <signals>
 <signal name="5V">
@@ -2393,16 +2420,10 @@ design rules under a new name.</description>
 <via x="27" y="51.5" extent="1-16" drill="0.35"/>
 <via x="24.5" y="51.25" extent="1-16" drill="0.35"/>
 <via x="27.25" y="51.25" extent="1-16" drill="0.35"/>
-<contactref element="S1" pad="5"/>
-<contactref element="S1" pad="6"/>
-<contactref element="S1" pad="7"/>
-<contactref element="S1" pad="8"/>
 <contactref element="LED_RING" pad="P$1"/>
-<wire x1="-5.31" y1="-27.5042" x2="-12" y2="-33" width="0" layer="19" extent="1-1"/>
-<wire x1="-2.77" y1="-27.5042" x2="-5.31" y2="-27.5042" width="0" layer="19" extent="1-1"/>
-<wire x1="-0.23" y1="-27.5042" x2="-2.77" y2="-27.5042" width="0" layer="19" extent="1-1"/>
-<wire x1="2.31" y1="-27.5042" x2="-0.23" y2="-27.5042" width="0" layer="19" extent="1-1"/>
-<wire x1="19.46" y1="9.52" x2="2.31" y2="-27.5042" width="0" layer="19" extent="1-1"/>
+<contactref element="FAN" pad="3"/>
+<wire x1="-12" y1="-33" x2="-12.73" y2="-51" width="0" layer="19" extent="1-1"/>
+<wire x1="19.46" y1="9.52" x2="-12" y2="-33" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="GND">
 <contactref element="LEG0" pad="P$2"/>
@@ -2537,10 +2558,12 @@ design rules under a new name.</description>
 <via x="54.75" y="53.75" extent="1-16" drill="0.35"/>
 <via x="29.5" y="51.25" extent="1-16" drill="0.35"/>
 <via x="65.25" y="51.25" extent="1-16" drill="0.35"/>
-<contactref element="R1" pad="2"/>
 <contactref element="LED_RING" pad="P$2"/>
-<wire x1="7.0033" y1="-13.1176" x2="-14.5" y2="-33" width="0" layer="19" extent="1-1"/>
-<wire x1="2.77" y1="9.52" x2="7.0033" y2="-13.1176" width="0" layer="19" extent="1-1"/>
+<contactref element="R1" pad="1"/>
+<contactref element="FAN" pad="4"/>
+<wire x1="-14.5" y1="-33" x2="-10.19" y2="-51" width="0" layer="19" extent="1-1"/>
+<wire x1="4.9967" y1="-13.1176" x2="-14.5" y2="-33" width="0" layer="19" extent="1-1"/>
+<wire x1="2.77" y1="9.52" x2="4.9967" y2="-13.1176" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="L0M1">
 <contactref element="LEG0" pad="P$3"/>
@@ -2847,8 +2870,8 @@ design rules under a new name.</description>
 <wire x1="7" y1="12.25" x2="7" y2="29.5" width="0.1524" layer="1"/>
 <wire x1="13.25" y1="35.75" x2="13.41" y2="35.98" width="0.1524" layer="1"/>
 <wire x1="7" y1="12.25" x2="8.01" y2="12.08" width="0.1524" layer="1"/>
-<contactref element="R1" pad="1"/>
-<wire x1="4.9967" y1="-13.1176" x2="4.74" y2="12.13" width="0" layer="19" extent="1-1"/>
+<contactref element="R1" pad="2"/>
+<wire x1="7.0033" y1="-13.1176" x2="8.01" y2="12.08" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="12V_PRE">
 <contactref element="BATTERY" pad="+"/>
@@ -2908,7 +2931,15 @@ design rules under a new name.</description>
 <signal name="3.3V">
 <contactref element="RPI5" pad="1"/>
 <contactref element="X1" pad="1"/>
-<wire x1="-17.77" y1="-43" x2="24.5" y2="51.35" width="0" layer="19" extent="1-1"/>
+<contactref element="S1" pad="8"/>
+<contactref element="S1" pad="7"/>
+<contactref element="S1" pad="6"/>
+<contactref element="S1" pad="5"/>
+<wire x1="2.31" y1="-27.5042" x2="24.5" y2="51.35" width="0" layer="19" extent="1-1"/>
+<wire x1="-0.23" y1="-27.5042" x2="2.31" y2="-27.5042" width="0" layer="19" extent="1-1"/>
+<wire x1="-2.77" y1="-27.5042" x2="-0.23" y2="-27.5042" width="0" layer="19" extent="1-1"/>
+<wire x1="-5.31" y1="-27.5042" x2="-2.77" y2="-27.5042" width="0" layer="19" extent="1-1"/>
+<wire x1="-17.77" y1="-43" x2="-5.31" y2="-27.5042" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="PWRSIG">
 <contactref element="X1" pad="2"/>
@@ -2916,6 +2947,16 @@ design rules under a new name.</description>
 <contactref element="U$1" pad="0-RX1/CS1/CRX2"/>
 <wire x1="27.04" y1="51.35" x2="75.26" y2="31.5" width="0" layer="19" extent="1-1"/>
 <wire x1="-15.23" y1="-43" x2="27.04" y2="51.35" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="FAN_PWM">
+<contactref element="FAN" pad="1"/>
+<contactref element="RPI5" pad="32"/>
+<wire x1="-17.81" y1="-51" x2="62.6" y2="53.89" width="0" layer="19" extent="1-1"/>
+</signal>
+<signal name="FAN_RPM">
+<contactref element="FAN" pad="2"/>
+<contactref element="RPI5" pad="38"/>
+<wire x1="-15.27" y1="-51" x2="70.22" y2="53.89" width="0" layer="19" extent="1-1"/>
 </signal>
 </signals>
 <mfgpreviewcolors>
