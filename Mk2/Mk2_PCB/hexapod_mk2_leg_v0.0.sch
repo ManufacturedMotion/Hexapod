@@ -501,9 +501,31 @@ Number of pins: &lt;b&gt;6&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 <nets>
 <net name="5V" class="0">
 <segment>
-<pinref part="MAIN" gate="-1" pin="S"/>
-<wire x1="30.48" y1="78.74" x2="27.94" y2="78.74" width="0.1524" layer="91"/>
-<label x="25.4" y="78.74" size="1.778" layer="95"/>
+<pinref part="S1" gate="-2" pin="S"/>
+<wire x1="30.48" y1="55.88" x2="27.94" y2="55.88" width="0.1524" layer="91"/>
+<label x="25.4" y="55.88" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="S2" gate="-2" pin="S"/>
+<wire x1="30.48" y1="43.18" x2="27.94" y2="43.18" width="0.1524" layer="91"/>
+<label x="25.4" y="43.18" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="S3" gate="-2" pin="S"/>
+<wire x1="30.48" y1="30.48" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
+<label x="25.4" y="30.48" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="MAIN" gate="-3" pin="S"/>
+<wire x1="30.48" y1="73.66" x2="27.94" y2="73.66" width="0.1524" layer="91"/>
+<label x="25.4" y="73.66" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="GND" class="0">
+<segment>
+<pinref part="LIMIT" gate="-2" pin="S"/>
+<wire x1="30.48" y1="17.78" x2="27.94" y2="17.78" width="0.1524" layer="91"/>
+<label x="25.4" y="17.78" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="S1" gate="-1" pin="S"/>
@@ -520,44 +542,22 @@ Number of pins: &lt;b&gt;6&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 <wire x1="30.48" y1="33.02" x2="27.94" y2="33.02" width="0.1524" layer="91"/>
 <label x="25.4" y="33.02" size="1.778" layer="95"/>
 </segment>
-</net>
-<net name="GND" class="0">
 <segment>
-<pinref part="MAIN" gate="-2" pin="S"/>
-<wire x1="30.48" y1="76.2" x2="27.94" y2="76.2" width="0.1524" layer="91"/>
-<label x="25.4" y="76.2" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="S1" gate="-2" pin="S"/>
-<wire x1="30.48" y1="55.88" x2="27.94" y2="55.88" width="0.1524" layer="91"/>
-<label x="25.4" y="55.88" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="S2" gate="-2" pin="S"/>
-<wire x1="30.48" y1="43.18" x2="27.94" y2="43.18" width="0.1524" layer="91"/>
-<label x="25.4" y="43.18" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="S3" gate="-2" pin="S"/>
-<wire x1="30.48" y1="30.48" x2="27.94" y2="30.48" width="0.1524" layer="91"/>
-<label x="25.4" y="30.48" size="1.778" layer="95"/>
-</segment>
-<segment>
-<pinref part="LIMIT" gate="-2" pin="S"/>
-<wire x1="30.48" y1="17.78" x2="27.94" y2="17.78" width="0.1524" layer="91"/>
-<label x="25.4" y="17.78" size="1.778" layer="95"/>
+<pinref part="MAIN" gate="-4" pin="S"/>
+<wire x1="30.48" y1="71.12" x2="27.94" y2="71.12" width="0.1524" layer="91"/>
+<label x="25.4" y="71.12" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="S1SIG" class="0">
 <segment>
-<pinref part="MAIN" gate="-3" pin="S"/>
-<wire x1="30.48" y1="73.66" x2="27.94" y2="73.66" width="0.1524" layer="91"/>
-<label x="25.4" y="73.66" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="S1" gate="-3" pin="S"/>
 <wire x1="30.48" y1="53.34" x2="27.94" y2="53.34" width="0.1524" layer="91"/>
 <label x="25.4" y="53.34" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="MAIN" gate="-1" pin="S"/>
+<wire x1="30.48" y1="78.74" x2="27.94" y2="78.74" width="0.1524" layer="91"/>
+<label x="25.4" y="78.74" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="S3SIG" class="0">
@@ -574,14 +574,14 @@ Number of pins: &lt;b&gt;6&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 </net>
 <net name="S2SIG" class="0">
 <segment>
-<pinref part="MAIN" gate="-4" pin="S"/>
-<wire x1="30.48" y1="71.12" x2="27.94" y2="71.12" width="0.1524" layer="91"/>
-<label x="25.4" y="71.12" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="S2" gate="-3" pin="S"/>
 <wire x1="30.48" y1="40.64" x2="27.94" y2="40.64" width="0.1524" layer="91"/>
 <label x="25.4" y="40.64" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="MAIN" gate="-2" pin="S"/>
+<wire x1="30.48" y1="76.2" x2="27.94" y2="76.2" width="0.1524" layer="91"/>
+<label x="25.4" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="LIMIT" class="0">
