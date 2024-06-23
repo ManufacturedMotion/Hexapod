@@ -20,7 +20,8 @@ Welcome to the Hexapod Command system for the Mk2 platform. This guide will walk
 
 1. Follow the Ubuntu setup instructions on first boot. We recommend naming your profile `hexapod-<lastname>` on the system `hexapod<lastname>`.
 2. Follow the instructions at [Install Docker Engine on Ubuntu](https://docs.docker.com/engine/install/ubuntu/).
-3. Once installed follow [Linux post-installation steps for Docker Engine](https://docs.docker.com/engine/install/linux-postinstall/) to run Docker commands without root privilges.
+3. Once installed follow [Linux post-installation steps for Docker Engine](https://docs.docker.com/engine/install/linux-postinstall/) to run Docker commands without root privileges.
+4. Run `apt install docker-compose`.
 
 ## 4. Connect Xbox Core (Series S, X, etc) Controller
 
@@ -29,4 +30,6 @@ Welcome to the Hexapod Command system for the Mk2 platform. This guide will walk
 
 ## 3. Download the Docker Image
 
-1. 
+1. Download the code in [Container Folder](./container). This code does not need to live anywhere specific, but having it in `Documents` is recommended.
+2. Run `./build.sh`.
+3. Run `./init_dev.sh` or `./init_prod.sh` depending on interfaces required.
