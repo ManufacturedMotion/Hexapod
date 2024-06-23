@@ -1,1 +1,1 @@
-docker compose -f docker-compose-interactive.yml up
+docker compose -f docker-compose-dev.yml up
