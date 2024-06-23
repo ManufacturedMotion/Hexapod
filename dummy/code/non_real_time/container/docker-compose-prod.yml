@@ -1,9 +1,0 @@
-version: "3.8"
-services:
-  Hexapod:
-    image: hexapod:latest
-    container_name: hexapod_latest
-    volumes:
-#     - ./src:/app/src
-     - /var/run/dbus/:/var/run/dbus/:z
-    privileged: true
