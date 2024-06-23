@@ -197,7 +197,7 @@
 <hole x="77.5" y="53" drill="3"/>
 <hole x="77.5" y="4" drill="3"/>
 <text x="20.87" y="24.85" size="1.016" layer="21">VOLT_DIV</text>
-<text x="78" y="58" size="1.5" layer="21" rot="SR180" align="center-left">Main Board Mk 2, V1.0
+<text x="53.001" y="57.876" size="1.5" layer="21" rot="SR0" align="center-left">Main Board Mk 2, V1.0
 June 2024</text>
 <rectangle x1="49.1465" y1="22.3275" x2="49.1985" y2="22.3405" layer="22" rot="R180"/>
 <rectangle x1="49.1205" y1="22.3405" x2="49.1985" y2="22.3535" layer="22" rot="R180"/>
