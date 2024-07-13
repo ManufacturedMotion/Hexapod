@@ -1,0 +1,1 @@
+docker exec -it hexapod_latest /bin/bash

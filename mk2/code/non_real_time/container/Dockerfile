@@ -1,26 +1,23 @@
 FROM ros:iron-ros-base
 USER 0
 
-RUN mkdir -p /app/temp
+# Get updates
+RUN \
+apt-get update && \
+apt-get upgrade -y
+
+# Setup python and system dependencies
+COPY setup /app/setup
+RUN cat /app/setup/system-requirements.txt | xargs apt-get install -y
+RUN pip install -r /app/setup/python-requirements.txt
+
+# Put ros commands on path
+RUN echo "source \"/opt/ros/$ROS_DISTRO/setup.bash\"" >> ~/.bashrc
+
+# Create folder and setup temp directory / work directory
+RUN mkdir -p /app/temp && mkdir -p /app/src/ros2_ws
 ENV XDG_RUNTIME_DIR=/app/temp
-
-RUN apt-get update && apt-get upgrade -y && \
-apt-get install -y \
-python3 \
-python3-pip \
-git \
-cmake \
-dkms \
-libevdev-dev \
-libudev-dev \
-libsdl2-dev \
-libsdl2-image-dev \
-libsdl2-mixer-dev \
-libsdl2-ttf-dev
-
-COPY requirements.txt /requirements.txt
-RUN pip install -r /requirements.txt
-
 COPY src /app/src
-WORKDIR /app/src
-ENTRYPOINT python3 /app/src/controller_test.py
+WORKDIR /app/src/ros2_ws
+
+ENTRYPOINT ["bash" "/app/src/idle_entry_point.sh"]
