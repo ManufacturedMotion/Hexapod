@@ -491,7 +491,6 @@ double Hexapod::getDistance(Position target_pos) {
   Position current_pos = _current_pos;
   double dx = current_pos.X - target_pos.X;
   double dy = current_pos.Y - target_pos.Y;
-  double dz = current_pos.Z - target_pos.Z;
   distance = sqrt(dx * dx + dy * dy); // + dz * dz);
   return distance;
 }
