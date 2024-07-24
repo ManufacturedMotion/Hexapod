@@ -1,7 +1,7 @@
 # Usage
 1. Assure docker and docker-compose are installed on your system and that docker commands can be used without privelege escalation
 2. Navigate to the container directory
-3. Build the container with ```./build.sh``` 
+3. Build the container with ```./build.sh``` (if you are having issues with this, try pasting the .sh file contents and running from cmd line)
 4. Follow the below Development Usage or Producation Usage instructions depending on your use case
 
 # Development Usage 
