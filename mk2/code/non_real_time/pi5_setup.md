@@ -33,3 +33,11 @@ Welcome to the Hexapod Command system for the Mk2 platform. This guide will walk
 1. Download the code in [Container Folder](./container). This code does not need to live anywhere specific, but having it in `Documents` is recommended.
 2. Run `./build.sh`.
 3. Run `./init_dev.sh` or `./init_prod.sh` depending on interfaces required.
+
+## 4. ssh development
+
+1. `sudo apt-get update`
+2. get openssh-server `sudo apt-get install openssh-server`
+3. verify ip `hostname -I`
+4. connect via shh `ssh <pi name>@<ip>`
+5. to safely shutdown the pi remotely run `sudo shutdown -h -P now`
