@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##########################################################################################
-# This entrypoint can be specified to just have the container running indefinetely in idle
+# This entrypoint can be specified to just have the container running indefinitely in idle
 ##########################################################################################
 
 while :

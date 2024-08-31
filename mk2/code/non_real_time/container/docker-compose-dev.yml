@@ -7,4 +7,4 @@ services:
      - ./src:/app/src
      - /var/run/dbus/:/var/run/dbus/:z
     privileged: true
-    entrypoint: ["bash", "/app/src/dev_entry_point.sh"]
+    entrypoint: ["bash", "/app/src/idle_entry_point.sh"]
