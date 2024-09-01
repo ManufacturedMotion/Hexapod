@@ -1,4 +1,3 @@
-version: "3.8"
 services:
   Hexapod:
     image: hexapod:latest
@@ -6,5 +5,6 @@ services:
     volumes:
      - ./src:/app/src
      - /var/run/dbus/:/var/run/dbus/:z
+     - /dev/ttyAMA0:/dev/ttyAMA0:rw
     privileged: true
     entrypoint: ["bash", "/app/src/idle_entry_point.sh"]
