@@ -302,4 +302,3 @@ String getCommandType(String command) {
   }
   return ret_val;
 }
-

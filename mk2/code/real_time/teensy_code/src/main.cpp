@@ -1,4 +1,4 @@
-#include "HexapodController.hpp"
+#include "hexapod_controller.hpp"
 #include <math.h>
 #include <stdbool.h>
 #include <Arduino.h>
@@ -186,7 +186,7 @@ void executeCommand(String command) {
   if (split_command[0].startsWith('g')) {
     splitString(split_command[0], 'G', buffer, num_words);
     if (!buffer[1].equals("0") and !buffer[1].equals("1") and !buffer[1].equals("9")) {
-      SERIAL_OUTPUT.printf("Error: only G0 and G1 implemented.\n");
+      SERIAL_OUTPUT.printf("Error: only G0, G1 and G9 implemented.\n");
     } else {
       String current_command_substring;
       if (buffer[1].equals("0")) {
@@ -211,7 +211,8 @@ void executeCommand(String command) {
         for (uint8_t i = 0; i < cmd_line_word_count; i++) {
           current_command_substring = split_command[i];
           updateVariables(current_command_substring);
-          position.set(x, y, z, roll, pitch, yaw);                                                                                                                  }                                                                                                                                                           SERIAL_OUTPUT.printf("linear move parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);
+          position.set(x, y, z, roll, pitch, yaw);    
+          SERIAL_OUTPUT.printf("linear move setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);                                                                                                              }                                                                                                                                                           SERIAL_OUTPUT.printf("linear move parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);
         hexapod.linearMoveSetup(position, speed);
       }
     }
@@ -231,7 +232,6 @@ void executeCommand(String command) {
     SERIAL_OUTPUT.printf("Unsupported input recieved.\n");
   }
 }
-
 
 //check if we can make a full step with the commands at the top of the command_queue. If we do not change command types and can not make a full step we need to try letting the command queue grow
 _Bool commandQueueNeedsExpansion() {
@@ -308,4 +308,3 @@ String getCommandType(String command) {
   }
   return ret_val;
 }
-

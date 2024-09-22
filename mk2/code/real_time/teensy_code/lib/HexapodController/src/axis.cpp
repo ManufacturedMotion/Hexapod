@@ -22,7 +22,7 @@ Axis::Axis() {
 }
 
 void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos) {
-    servo.attach(pwm_pin);
+    _servo.attach(pwm_pin);
     //servo.write(0);
     _min_pos = min_pos;
     _max_pos = max_pos;
@@ -36,7 +36,7 @@ uint8_t Axis::moveToPos(double pos) {
     uint32_t millis_to_pos = (fabs(getCurrentPos() - pos) / _max_speed) * 1000;
     _next_go_time = millis() + millis_to_pos;
     uint8_t motor_pos = _motorMap(pos); 
-    servo.write(motor_pos);
+    _servo.write(motor_pos);
     _current_pos = pos;
     return motor_pos;
 }

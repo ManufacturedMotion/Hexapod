@@ -34,4 +34,3 @@ Operation::Operation(ThreeByOne op_end_pos, double op_speed, _Bool op_relative, 
 _Bool OperationQueue::isEmpty(){
 	return head == NULL;
 }
-

@@ -48,9 +48,7 @@
 			double _move_progress;
 			uint32_t _move_start_time;
 			_Bool _reverse_axis;
-
-			PWMServo servo;
-			
+			PWMServo _servo;
 			uint8_t _motorMap(double x);
 			double _radsToDegrees(double rads);
 			double _degreesToRads(double degrees);

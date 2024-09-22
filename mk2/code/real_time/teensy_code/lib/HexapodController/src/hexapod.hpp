@@ -37,7 +37,7 @@
 			void rapidMove(Position next_pos, _Bool active_legs[NUM_LEGS]);
 			void runSpeed();
 			_Bool isBusy();
-      double getDistance(Position target_pos);
+      		double getDistance(Position target_pos);
 			_Bool isLowLevelBusy();
 			uint8_t stepSetup(double x, double y, double z, double speed);
 			uint8_t stepSetup(ThreeByOne relative_end_coord, double speed);
@@ -60,16 +60,16 @@
 			double _leg_X_offset[NUM_LEGS] = {-59.09, -108.5, -59.03, 59.03, 108.5, 59.09};
 			double _leg_Y_offset[NUM_LEGS] = {-106.04, 0, 106.1, 106.1, 0, -106.04};
 			double _home_yaws[NUM_LEGS] = { ((-M_PI / 2.0) - 1.0),	(-M_PI / 2.0),	((-M_PI / 2.0) + 1.0), 
-											(1.0), 					( M_PI / 2.0),	(( M_PI / 2.0) + 1.0)  };
+											(1.0), 					( M_PI / 2.0),	(( M_PI / 2.0) + 1.0)};
 			ThreeByOne _stance_offset = ThreeByOne(0.0, 100.0, 0.0);
 			// double _home_yaws[NUM_LEGS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 			double _max_speed = 1000000;
-			_Bool preCheckSafePos(Position pos);
-			_Bool postCheckSafeCoords(double x, double y, double z);
-			uint8_t inverseKinematics(Position pos);
-			uint8_t inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]);
-			uint8_t inverseKinematics(double x, double y, double z, double roll, double pitch, double yaw);
-			void moveLegs();
+			_Bool _preCheckSafePos(Position pos);
+			_Bool _postCheckSafeCoords(double x, double y, double z);
+			uint8_t _inverseKinematics(Position pos);
+			uint8_t _inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]);
+			uint8_t _inverseKinematics(double x, double y, double z, double roll, double pitch, double yaw);
+			void _moveLegs();
 			double _move_progress;
 			uint32_t _move_start_time;
 			_Bool _moving_flag = false;

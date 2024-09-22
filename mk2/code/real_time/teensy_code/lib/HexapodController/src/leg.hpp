@@ -29,9 +29,9 @@
 			double _length0 = 63.00;
 			double _length1 = 92.00;
 			double _length2 = 157.5;
-			void moveAxes();
-			_Bool checkSafeCoords(double x, double y, double z);
-			_Bool inverseKinematics(double x, double y, double z);
+			void _moveAxes();
+			_Bool _checkSafeCoords(double x, double y, double z);
+			_Bool _inverseKinematics(double x, double y, double z);
 			double _next_angles[NUM_AXES_PER_LEG];
 			double _current_cartesian[NUM_AXES_PER_LEG];
 			double _next_cartesian[NUM_AXES_PER_LEG];
@@ -42,7 +42,7 @@
 			uint32_t _move_time;
 			_Bool _moving_flag = false;
 			void * _movement_function;
-			double linearMovement(double move_progress);
+			double _linearMovement(double move_progress);
 	};
 
 #endif

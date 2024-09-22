@@ -35,7 +35,7 @@ We follow [Google's C++ coding standards](https://google.github.io/styleguide/cp
 
 - Class Names: ClassName
 - Constant: kVariableName
-- Defined: VARIABLENAME
+- Defined: VARIABLE_NAME
 - File Names: file_name.extension
 - Function Names: functionName
 - Private Class: _class

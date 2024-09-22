@@ -24,14 +24,14 @@ Leg::Leg() {
 void Leg::initializeAxes(uint8_t leg_number) {
     _leg_number = leg_number;
     for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
-        axes[i].initializePositionLimits(pwm_pins[_leg_number-1][i], min_pos[_leg_number-1][i], max_pos[_leg_number-1][i]);
-        axes[i].setMapping(zero_points[_leg_number-1][i], scale_fact[_leg_number-1][i], reverse_axis[_leg_number-1][i]);
+        axes[i].initializePositionLimits(pwm_pins[_leg_number][i], min_pos[_leg_number][i], max_pos[_leg_number][i]);
+        axes[i].setMapping(zero_points[_leg_number][i], scale_fact[_leg_number][i], reverse_axis[_leg_number][i]);
     }
 }
 
-_Bool Leg::inverseKinematics(double x, double y, double z) {
+_Bool Leg::_inverseKinematics(double x, double y, double z) {
 
-    if (!checkSafeCoords(x,y,z))
+    if (!_checkSafeCoords(x,y,z))
         return false; 
     double potential_results[3];
     if (fabs(y < 0.1)) {
@@ -79,7 +79,7 @@ _Bool Leg::inverseKinematics(double x, double y, double z) {
     return true;
 }
 
-_Bool Leg::checkSafeCoords(double x, double y, double z) {
+_Bool Leg::_checkSafeCoords(double x, double y, double z) {
     //If coords within robot body
     //  return false;
     
@@ -87,8 +87,8 @@ _Bool Leg::checkSafeCoords(double x, double y, double z) {
 }
 
 _Bool Leg::rapidMove(double x,  double y, double z) {
-    if (inverseKinematics(x, y, z)) {
-        moveAxes();
+    if (_inverseKinematics(x, y, z)) {
+        _moveAxes();
         _current_cartesian[0] = x;
         _current_cartesian[1] = y;
         _current_cartesian[2] = z;
@@ -173,7 +173,7 @@ _Bool Leg::linearMoveSetup(double x,  double y, double z, double target_speed, _
     return retval;
 }
 
-void Leg::moveAxes() {
+void Leg::_moveAxes() {
     for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
         axes[i].moveToPos(_next_angles[i]);
         current_angles[i] = _next_angles[i];
