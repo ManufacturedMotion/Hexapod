@@ -215,6 +215,37 @@ void executeCommand(String command) {
           SERIAL_OUTPUT.printf("linear move setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);                                                                                                              }                                                                                                                                                           SERIAL_OUTPUT.printf("linear move parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);
         hexapod.linearMoveSetup(position, speed);
       }
+      else if (buffer[1].equals("8")) {\
+        //TODO: Initialize leg_positions to all 0s, then change the enqueue to not be in an if and remove legs_used 
+        uint32_t movement_time = 0;
+        double leg_positions[NUM_LEGS][NUM_AXES_PER_LEG] = {};
+        uint8_t current_leg;
+        for (uint8_t i = 0; i < cmd_line_word_count; i++) {
+          current_command_substring = split_command[i];
+          String temp;
+          if (current_command_substring.startsWith("L")) {
+            current_command_substring.remove(0,1);
+            current_leg = current_command_substring.toInt();
+          }
+          else if (current_command_substring.startsWith("X")
+                   || current_command_substring.startsWith("Y")
+                   || current_command_substring.startsWith("Z")) {
+            char axis_char = current_command_substring[0];
+            current_command_substring.remove(0,1);
+            leg_positions[current_leg][axis_char - 'X'] = current_command_substring.toFloat();
+          }
+          else if (current_command_substring.startsWith("T")) {
+            current_command_substring.remove(0,1);
+            movement_time = current_command_substring.toInt();
+          }
+          else {
+            SERIAL_OUTPUT.printf("Invalid character sent to G8, valid characters are: L, X, Y, Z, and T\n");
+          }
+        }
+        for (uint8_t leg; leg < NUM_LEGS; leg++) {
+          hexapod.legEnqueue(leg, ThreeByOne(leg_positions[leg]), movement_time, true);
+        }
+      }
     }
   }
   else if (split_command[0].startsWith('p')) {

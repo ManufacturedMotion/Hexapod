@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "leg.hpp"
 #include "three_by_matrices.hpp"
 
 #ifndef OPERATION_QUEUE
@@ -34,9 +35,12 @@ class OperationQueue {
     public:
 		Operation * head = NULL;
         Operation * tail = NULL;
+        Leg * leg;
+        void setLet(Leg * leg);
         void enqueue(ThreeByOne op_end_pos, double op_speed, _Bool op_relative, uint32_t op_wait_time_ms = 0);
         void dequeue();
 		_Bool isEmpty();
+        ThreeByOne getCurrentQueueEndPos();
 		uint32_t length = 0;
     private:
 		

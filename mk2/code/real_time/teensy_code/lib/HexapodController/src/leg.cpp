@@ -200,3 +200,11 @@ ThreeByOne Leg::forwardKinematics(double axis0_angle, double axis1_angle, double
     return length0 + length1 + length2;
 }
 
+ThreeByOne Leg::getCurrentPosition() {
+    return ThreeByOne(_current_cartesian);
+}
+
+ThreeByOne Leg::getEndPosition() {
+    return ThreeByOne(_end_cartesian);
+}
+

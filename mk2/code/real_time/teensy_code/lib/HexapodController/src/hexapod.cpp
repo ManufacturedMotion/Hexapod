@@ -11,6 +11,7 @@
 Hexapod::Hexapod() { 
     for (uint8_t i = 0; i < NUM_LEGS; i++) {
         legs[i].initializeAxes(i);
+		_leg_queues[i].setLeg(&legs[i]);
     }
 }
 
@@ -494,4 +495,24 @@ double Hexapod::getDistance(Position target_pos) {
   double dy = current_pos.Y - target_pos.Y;
   distance = sqrt(dx * dx + dy * dy); // + dz * dz);
   return distance;
+}
+
+void Hexapod::legEnqueue(uint8_t leg, ThreeByOne op_end_pos, 
+						 double op_speed, _Bool op_relative, uint32_t op_wait_time_ms) {
+	_leg_queues[leg].enqueue(op_end_pos, op_speed, op_relative);
+}
+
+void Hexapod::legEnqueue(uint8_t leg, ThreeByOne op_end_pos, 
+						 uint32_t op_time, _Bool op_relative, uint32_t op_wait_time_ms) {
+	double op_speed;
+	if (!relative) {
+		ThreeByOne current_queue_end_pos = _leg_queues[leg].getCurrentQueueEndPos();
+		ThreeByOne distance_to_go = current_queue_end_pos - op_end_pos;
+		op_speed = distance_to_go.magnitude() / double(op_time);
+	}
+	else {
+		op_speed = op_end_pos.magnitude() / double(op_time);
+	}
+	legEnqueue(leg, op_end_pos, op_speed, op_relative, op_wait_time_ms)
+	_leg_queues[leg].enqueue(op_end_pos, op_speed, op_relative);
 }
