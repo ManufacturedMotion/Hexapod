@@ -185,7 +185,7 @@ void executeCommand(String command) {
   //G-code commands
   if (split_command[0].startsWith('g')) {
     splitString(split_command[0], 'G', buffer, num_words);
-    if (!buffer[1].equals("0") and !buffer[1].equals("1") and !buffer[1].equals("9")) {
+    if (!buffer[1].equals("0") and !buffer[1].equals("1") and !buffer[1].equals("9") and !buffer[1].equals("8")) {
       SERIAL_OUTPUT.printf("Error: only G0, G1 and G9 implemented.\n");
     } else {
       String current_command_substring;
@@ -218,33 +218,34 @@ void executeCommand(String command) {
       else if (buffer[1].equals("8")) {\
         //TODO: Initialize leg_positions to all 0s, then change the enqueue to not be in an if and remove legs_used 
         uint32_t movement_time = 0;
-        double leg_positions[NUM_LEGS][NUM_AXES_PER_LEG] = {};
-        uint8_t current_leg;
+        double leg_positions[NUM_LEGS][NUM_AXES_PER_LEG] = {{0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}};
+        uint8_t current_leg = 255;
         for (uint8_t i = 0; i < cmd_line_word_count; i++) {
           current_command_substring = split_command[i];
           String temp;
-          if (current_command_substring.startsWith("L")) {
+          if (current_command_substring.startsWith("l")) {
             current_command_substring.remove(0,1);
             current_leg = current_command_substring.toInt();
           }
-          else if (current_command_substring.startsWith("X")
-                   || current_command_substring.startsWith("Y")
-                   || current_command_substring.startsWith("Z")) {
+          else if (current_command_substring.startsWith("x")
+                   || current_command_substring.startsWith("y")
+                   || current_command_substring.startsWith("z")) {
             char axis_char = current_command_substring[0];
             current_command_substring.remove(0,1);
-            leg_positions[current_leg][axis_char - 'X'] = current_command_substring.toFloat();
+            leg_positions[current_leg][axis_char - 'x'] = current_command_substring.toFloat();
           }
-          else if (current_command_substring.startsWith("T")) {
+          else if (current_command_substring.startsWith("t")) {
             current_command_substring.remove(0,1);
             movement_time = current_command_substring.toInt();
           }
           else {
-            SERIAL_OUTPUT.printf("Invalid character sent to G8, valid characters are: L, X, Y, Z, and T\n");
+            SERIAL_OUTPUT.printf("Invalid character sent to G8, valid characters are: L, X, Y, Z, and T %c\n", current_command_substring[0]);
           }
         }
-        for (uint8_t leg; leg < NUM_LEGS; leg++) {
-          hexapod.legEnqueue(leg, ThreeByOne(leg_positions[leg]), movement_time, true);
-        }
+        if (movement_time != 0)
+          for (uint8_t leg = 0; leg < NUM_LEGS; leg++) {
+            hexapod.legEnqueue(leg, ThreeByOne(leg_positions[leg]), movement_time, true);
+          }
       }
     }
   }

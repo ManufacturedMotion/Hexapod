@@ -36,7 +36,7 @@ class OperationQueue {
 		Operation * head = NULL;
         Operation * tail = NULL;
         Leg * leg;
-        void setLet(Leg * leg);
+        void setLeg(Leg * leg);
         void enqueue(ThreeByOne op_end_pos, double op_speed, _Bool op_relative, uint32_t op_wait_time_ms = 0);
         void dequeue();
 		_Bool isEmpty();

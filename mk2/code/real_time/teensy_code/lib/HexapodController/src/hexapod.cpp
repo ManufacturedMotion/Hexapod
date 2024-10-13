@@ -359,10 +359,10 @@ uint16_t Hexapod::comboMovePerform() {
 				Serial.println(queue_head->wait_time_ms);
 				legWaitSetup(i, queue_head->wait_time_ms);
 				if (!queue_head->wait_time_ms) {
-					legLinearMoveSetup(i+1, queue_head->end_pos, queue_head->speed, queue_head->relative);
+					legLinearMoveSetup(i, queue_head->end_pos, queue_head->speed, queue_head->relative);
 					if (DEBUG) {
 						Serial.printf("Leg %d moving to x:%f y:%f z:%f\nRelative:%d speed:%f\n",
-						i+1, _leg_queues[i].head->end_pos.values[0],
+						i, _leg_queues[i].head->end_pos.values[0],
 						_leg_queues[i].head->end_pos.values[1], _leg_queues[i].head->end_pos.values[2],
 						_leg_queues[i].head->relative, _leg_queues[i].head->speed);
 					}
@@ -505,14 +505,18 @@ void Hexapod::legEnqueue(uint8_t leg, ThreeByOne op_end_pos,
 void Hexapod::legEnqueue(uint8_t leg, ThreeByOne op_end_pos, 
 						 uint32_t op_time, _Bool op_relative, uint32_t op_wait_time_ms) {
 	double op_speed;
-	if (!relative) {
-		ThreeByOne current_queue_end_pos = _leg_queues[leg].getCurrentQueueEndPos();
-		ThreeByOne distance_to_go = current_queue_end_pos - op_end_pos;
-		op_speed = distance_to_go.magnitude() / double(op_time);
+	if (op_end_pos.magnitude() > 0.001) {
+		if (!op_relative) {
+			ThreeByOne current_queue_end_pos = _leg_queues[leg].getCurrentQueueEndPos();
+			ThreeByOne distance_to_go = current_queue_end_pos - op_end_pos;
+			op_speed = distance_to_go.magnitude() / (double(op_time) / 1000.00);
+		}
+		else {
+			op_speed = op_end_pos.magnitude() / (double(op_time) / 1000.00);
+		}
 	}
 	else {
-		op_speed = op_end_pos.magnitude() / double(op_time);
+		op_speed = 100.00;
 	}
-	legEnqueue(leg, op_end_pos, op_speed, op_relative, op_wait_time_ms)
-	_leg_queues[leg].enqueue(op_end_pos, op_speed, op_relative);
+	legEnqueue(leg, op_end_pos, op_speed, op_relative, op_wait_time_ms);
 }
