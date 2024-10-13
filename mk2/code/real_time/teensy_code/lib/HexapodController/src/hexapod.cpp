@@ -9,27 +9,28 @@
 #include <Arduino.h>
 
 Hexapod::Hexapod() { 
-    for (uint8_t i = 1; i <= NUM_LEGS; i++) {
-        legs[i - 1].initializeAxes(i);
+    for (uint8_t i = 0; i < NUM_LEGS; i++) {
+        legs[i].initializeAxes(i);
+		_leg_queues[i].setLeg(&legs[i]);
     }
 }
 
 void Hexapod::moveLegAxisToPos(uint8_t leg_number, uint8_t axis_number, double target_position) {
-	legs[leg_number - 1].axes[axis_number -1].moveToPos(target_position);
+	legs[leg_number].axes[axis_number].moveToPos(target_position);
 }
 
 _Bool Hexapod::moveLegToPos(uint8_t leg_number, double x, double y, double z) {
-	return legs[leg_number - 1].rapidMove(x, y, z);
+	return legs[leg_number].rapidMove(x, y, z);
 }
 
 // _Bool Hexapod::moveLegToPos(uint8_t leg_number, double x, double y, double z) {
-// 	return legs[leg_number - 1].linearMoveSetup(x, y, z);
+// 	return legs[leg_number].linearMoveSetup(x, y, z);
 // }
 
 void Hexapod::moveToZeros() {
-	for (uint8_t i = 1; i <= NUM_LEGS; i++) {
-		for (uint8_t j = 1; j <= NUM_AXES_PER_LEG; j++) {
-			legs[i - 1].axes[j - 1].moveToPos(0);
+	for (uint8_t i = 0; i < NUM_LEGS; i++) {
+		for (uint8_t j = 0; j < NUM_AXES_PER_LEG; j++) {
+			legs[i].axes[j].moveToPos(0);
 		}        
     }
 } 
@@ -39,17 +40,17 @@ void Hexapod::sit() {
 }
             
 void Hexapod::stand() {
-	for (uint8_t i = 1; i <= NUM_LEGS; i++) {
-		legs[i - 1].axes[0].moveToPos(0);
-		legs[i - 1].axes[1].moveToPos(1);
-		legs[i - 1].axes[2].moveToPos(0.75);
+	for (uint8_t i = 0; i < NUM_LEGS; i++) {
+		legs[i].axes[0].moveToPos(0);
+		legs[i].axes[1].moveToPos(1);
+		legs[i].axes[2].moveToPos(0.75);
 	}
 }
 
-uint8_t Hexapod::inverseKinematics(double x, double y, double z, double roll, double pitch, double yaw) {
+uint8_t Hexapod::_inverseKinematics(double x, double y, double z, double roll, double pitch, double yaw) {
 	Position pos;
 	pos.set(x, y, z, roll, pitch, yaw);
-	return inverseKinematics(pos);
+	return _inverseKinematics(pos);
 }
 
 void Hexapod::rapidMove(double x, double y, double z, double roll, double pitch, double yaw) {
@@ -67,8 +68,8 @@ void Hexapod::rapidMove(Position next_pos) {
 }
 
 void Hexapod::rapidMove(Position next_pos, _Bool active_legs[NUM_LEGS]) {
-	inverseKinematics(next_pos, active_legs);
-	moveLegs();
+	_inverseKinematics(next_pos, active_legs);
+	_moveLegs();
 	_current_pos.setPos(next_pos);
 }
 
@@ -130,18 +131,18 @@ uint8_t Hexapod::linearMoveSetup(double x, double y, double z, double roll, doub
 
 uint8_t Hexapod::legLinearMoveSetup(uint8_t leg, double x,  double y, double z, double target_speed, _Bool relative) {
 	ThreeByOne coord = ThreeByOne(x, y, z);
-	coord.rotateYaw(_home_yaws[leg-1]);
+	coord.rotateYaw(_home_yaws[leg]);
 	if (!relative) {
 		coord += _stance_offset;
 	}
 	if (relative) {
-		coord += ThreeByOne(_next_leg_pos[leg-1]);
+		coord += ThreeByOne(_next_leg_pos[leg]);
 	}
-	_next_leg_pos[leg-1][0] = coord.values[0];
-	_next_leg_pos[leg-1][1] = coord.values[1];
-	_next_leg_pos[leg-1][2] = coord.values[2];
+	_next_leg_pos[leg][0] = coord.values[0];
+	_next_leg_pos[leg][1] = coord.values[1];
+	_next_leg_pos[leg][2] = coord.values[2];
 	
-	return legs[leg-1].linearMoveSetup(coord.values[0], coord.values[1], coord.values[2], target_speed, relative);
+	return legs[leg].linearMoveSetup(coord.values[0], coord.values[1], coord.values[2], target_speed, relative);
 }
 
 uint8_t Hexapod::legLinearMoveSetup(uint8_t leg, ThreeByOne end_coord, double target_speed, _Bool relative) {
@@ -182,7 +183,7 @@ void Hexapod::linearMovePerform() {
 	}
 }
 
-void Hexapod::moveLegs() {
+void Hexapod::_moveLegs() {
     for (uint8_t i = 0; i < NUM_LEGS; i++) {
 		if (DEBUG) {
 			Serial.println("Next leg positions");
@@ -254,6 +255,7 @@ uint8_t Hexapod::stepToNeutral(double speed) {
 		_current_step_permutation[1].values[0], _current_step_permutation[1].values[1], _current_step_permutation[1].values[2]);
 	}
 	
+	//TODO -- Zack pls confirm if leg index changes need to be applied here (line 274, 271)
 	double step_path_length = 0.0;
 	for (uint8_t i = 0; i < NUM_STEP_GROUPS; i++) {
 		if (_current_step_permutation[i].magnitude() > 0.1) {
@@ -357,10 +359,10 @@ uint16_t Hexapod::comboMovePerform() {
 				Serial.println(queue_head->wait_time_ms);
 				legWaitSetup(i, queue_head->wait_time_ms);
 				if (!queue_head->wait_time_ms) {
-					legLinearMoveSetup(i+1, queue_head->end_pos, queue_head->speed, queue_head->relative);
+					legLinearMoveSetup(i, queue_head->end_pos, queue_head->speed, queue_head->relative);
 					if (DEBUG) {
 						Serial.printf("Leg %d moving to x:%f y:%f z:%f\nRelative:%d speed:%f\n",
-						i+1, _leg_queues[i].head->end_pos.values[0],
+						i, _leg_queues[i].head->end_pos.values[0],
 						_leg_queues[i].head->end_pos.values[1], _leg_queues[i].head->end_pos.values[2],
 						_leg_queues[i].head->relative, _leg_queues[i].head->speed);
 					}
@@ -398,22 +400,22 @@ _Bool Hexapod::isLowLevelBusy() {
 	return _moving_flag;
 }
 
-uint8_t Hexapod::inverseKinematics(Position pos) {
+uint8_t Hexapod::_inverseKinematics(Position pos) {
 	_Bool active_legs[NUM_LEGS];
 	for (uint8_t i = 0; i < NUM_LEGS; i++) {
 		active_legs[i] = true;
 	} 
-	return inverseKinematics(pos, active_legs);
+	return _inverseKinematics(pos, active_legs);
 }
 
-uint8_t Hexapod::inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]) {
+uint8_t Hexapod::_inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]) {
 	// Just to get something workign assume yaw = 0 
 	// Must rework leg IK or set points align all coordinate systems
 	// Right now we have 6 coordinate systems harder than we want to do
 	// Even if we did like 2 coordinate systems (left / right) would be a big help for this
 	// Discuss with Danny/Dillon best way to accomplish this as there are many confusing effects of either way 
 
-	if (!preCheckSafePos(pos))
+	if (!_preCheckSafePos(pos))
         return 254; // Pre-check fail
 	
 	double potential_results[NUM_LEGS][3];
@@ -442,7 +444,7 @@ uint8_t Hexapod::inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]) {
 	}
 
 	for (uint8_t i = 0; i < NUM_LEGS; i++) {
-		if (!postCheckSafeCoords(potential_results[i][0], potential_results[i][1], potential_results[i][2]))
+		if (!_postCheckSafeCoords(potential_results[i][0], potential_results[i][1], potential_results[i][2]))
 			return 255; // Post-check fail
 	}
 
@@ -461,12 +463,12 @@ uint8_t Hexapod::inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]) {
 
 
 
-_Bool Hexapod::preCheckSafePos(Position pos) {
+_Bool Hexapod::_preCheckSafePos(Position pos) {
 	// this function might be unnecessary but keeping as a placeholder
 	return true;
 }
 
-_Bool Hexapod::postCheckSafeCoords(double x, double y, double z) {
+_Bool Hexapod::_postCheckSafeCoords(double x, double y, double z) {
 	// this function should check if legs will be in impossible positions or within the bot
 	return true;
 }
@@ -493,4 +495,28 @@ double Hexapod::getDistance(Position target_pos) {
   double dy = current_pos.Y - target_pos.Y;
   distance = sqrt(dx * dx + dy * dy); // + dz * dz);
   return distance;
+}
+
+void Hexapod::legEnqueue(uint8_t leg, ThreeByOne op_end_pos, 
+						 double op_speed, _Bool op_relative, uint32_t op_wait_time_ms) {
+	_leg_queues[leg].enqueue(op_end_pos, op_speed, op_relative);
+}
+
+void Hexapod::legEnqueue(uint8_t leg, ThreeByOne op_end_pos, 
+						 uint32_t op_time, _Bool op_relative, uint32_t op_wait_time_ms) {
+	double op_speed;
+	if (op_end_pos.magnitude() > 0.001) {
+		if (!op_relative) {
+			ThreeByOne current_queue_end_pos = _leg_queues[leg].getCurrentQueueEndPos();
+			ThreeByOne distance_to_go = current_queue_end_pos - op_end_pos;
+			op_speed = distance_to_go.magnitude() / (double(op_time) / 1000.00);
+		}
+		else {
+			op_speed = op_end_pos.magnitude() / (double(op_time) / 1000.00);
+		}
+	}
+	else {
+		op_speed = 100.00;
+	}
+	legEnqueue(leg, op_end_pos, op_speed, op_relative, op_wait_time_ms);
 }

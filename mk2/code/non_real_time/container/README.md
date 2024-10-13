@@ -10,6 +10,7 @@
 3. When shutting down use ```./stop_dev.sh```
 
 ### Important Notes:
+- when inside a shell in order to create hexapod publisher or listener nodes you must first run ```. ./init.sh```. Then you can create new nodes using the bash scripts ```./create_sub.sh``` or ```./create_pub.sh```
 - When started with ```./init_dev.sh``` the container will be running in idle mode until stopped with ```./stop_dev.sh```
 - For changes to go into effect in development the container does not need to be rebuilt after the initial build, but to move to production, it will be
 - Make sure all code that is intended to run during container operation resides in the src directory
