@@ -107,6 +107,7 @@ void loop() {
   }
   //call move every iteration of loop
   hexapod.comboMovePerform();
+  hexapod.runSpeed();
 }
 
 //function to split string on specified substring
@@ -185,8 +186,8 @@ void executeCommand(String command) {
   //G-code commands
   if (split_command[0].startsWith('g')) {
     splitString(split_command[0], 'G', buffer, num_words);
-    if (!buffer[1].equals("0") and !buffer[1].equals("1") and !buffer[1].equals("9") and !buffer[1].equals("8")) {
-      SERIAL_OUTPUT.printf("Error: only G0, G1 and G9 implemented.\n");
+    if (!buffer[1].equals("0") and !buffer[1].equals("1") and !buffer[1].equals("2") and !buffer[1].equals("8") and !buffer[1].equals("9")) {
+      SERIAL_OUTPUT.printf("Error: only G0, G1, G2, G8 and G9 implemented.\n");
     } else {
       String current_command_substring;
       if (buffer[1].equals("0")) {
@@ -206,6 +207,16 @@ void executeCommand(String command) {
         }
         SERIAL_OUTPUT.printf("walk setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);
         hexapod.walkSetup(position, speed);
+      }
+      else if (buffer[1].equals("2")) {
+        //for position debug -- can change G2 later
+        for (uint8_t i = 0; i < cmd_line_word_count; i++) {
+          current_command_substring = split_command[i];
+          updateVariables(current_command_substring);
+        }
+        SERIAL_OUTPUT.printf("parsing success; moving leg %f motor %f to pos %f at speed\n", x, y, z, roll);
+        //hexapod.moveLegAxisToPos(x, y, z);
+        hexapod.legs[int(x)].axes[int(y)].moveToPosAtSpeed(z, roll);
       }
       else if (buffer[1].equals("9")) {
         for (uint8_t i = 0; i < cmd_line_word_count; i++) {
@@ -254,6 +265,16 @@ void executeCommand(String command) {
     if (buffer[1].equals("0")) {
       SERIAL_OUTPUT.printf("parsing success; starfish preset selected (move all motors to zero).\n");
       hexapod.moveToZeros();
+      return;
+    }
+    else if (buffer[1].equals("1")) {
+      SERIAL_OUTPUT.printf("parsing success; sit preset selected.\n");
+      hexapod.sit();
+      return;
+    }
+    else if (buffer[1].equals("2")) {
+      SERIAL_OUTPUT.printf("parsing success; stand preset selected.\n");
+      hexapod.stand();
       return;
     }
     else {

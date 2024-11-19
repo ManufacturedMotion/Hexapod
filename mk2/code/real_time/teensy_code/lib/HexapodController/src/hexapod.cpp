@@ -36,7 +36,12 @@ void Hexapod::moveToZeros() {
 } 
 
 void Hexapod::sit() {
-
+	for (uint8_t i = 0; i < NUM_LEGS; i++) {
+		//slow speed to not slam into the ground
+		legs[i].axes[0].moveToPosAtSpeed(0, 2);
+		legs[i].axes[1].moveToPosAtSpeed(-2, 2);
+		legs[i].axes[2].moveToPosAtSpeed(3, 2);
+	}
 }
             
 void Hexapod::stand() {
@@ -465,6 +470,7 @@ uint8_t Hexapod::_inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]) {
 
 _Bool Hexapod::_preCheckSafePos(Position pos) {
 	// this function might be unnecessary but keeping as a placeholder
+	//maybe dynamically set motor limits? check them here based on pos before moving. after movement complete calc new limits?
 	return true;
 }
 
