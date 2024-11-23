@@ -1,4 +1,5 @@
 mkdir -p /scripts/
+mkdir -p /cron-out/
 
 for cronjob_dir in *; 
     do 
@@ -24,4 +25,3 @@ for cronjob_dir in *;
                 fi
             done;
     done;
-
