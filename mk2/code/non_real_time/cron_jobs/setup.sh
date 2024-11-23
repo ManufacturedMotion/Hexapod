@@ -14,6 +14,7 @@ for cronjob_dir in *;
                     crontask=$(cat $cronjob_dir/$file)
                     escaped_crontask=$(printf '%s' "$crontask" | sed 's/[][\.*^$()|+?{}\\]/\\&/g')
                     if grep -qF -- "$escaped_crontask" temp_cron; then
+                        rm temp_cron
                         continue
                     else    
                         echo "${crontask}" >> temp_cron
