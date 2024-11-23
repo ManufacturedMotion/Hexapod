@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python3 /scripts/pushbutton_shutdown.py >> /cron-out/shutdown_daemon.log
