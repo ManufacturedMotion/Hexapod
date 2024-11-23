@@ -1,3 +1,5 @@
+apt install python3-gpiozero -y
+
 mkdir -p /scripts/
 mkdir -p /cron-out/
 
