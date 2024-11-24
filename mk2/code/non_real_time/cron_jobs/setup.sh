@@ -1,4 +1,7 @@
 apt install python3-gpiozero -y
+sudo apt-get -y install python3-rpi.gpio
+sudo apt update
+sudo apt full-upgrade
 
 mkdir -p /scripts/
 mkdir -p /cron-out/
