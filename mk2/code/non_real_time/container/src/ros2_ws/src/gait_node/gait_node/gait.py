@@ -27,15 +27,16 @@ class GaitNode(Node):
         self.current_leg_positions = json.load(msg.data)
 
     def send_new_motion(self):
-        next_leg_positions = {0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}}
-        teensy_command = ""
+        teensy_command = "G9"
         for leg in self.current_leg_positions.keys():
-            teensy_command += "G9 "
-            teensy_command += f'{self.current_leg_positions[leg]['x'] + self.current_command.linear.x * gait_run_period}
-            next_leg_positions[leg]['y'] = self.current_leg_positions[leg]['y'] + self.current_command.linear.y * gait_run_period}
-            next_leg_positions[leg]['z'] = self.current_leg_positions[leg]['z'] + self.current_command.linear.z
-
-        
+            teensy_command += f"L{leg} "
+            teensy_command += f'X{self.current_leg_positions[leg]['x'] + self.current_command.linear.x * gait_run_period} '
+            teensy_command += f'Y{self.current_leg_positions[leg]['y'] + self.current_command.linear.y * gait_run_period} '
+            teensy_command += f'Z{self.current_leg_positions[leg]['z'] + self.current_command.linear.z * gait_run_period} '
+            # Remove the below once active feedback from the teensy is available
+            self.current_leg_positions['x'] += self.current_command.linear.x * gait_run_period
+            self.current_leg_positions['y'] += self.current_command.linear.y * gait_run_period
+            self.current_leg_positions['z'] += self.current_command.linear.z * gait_run_period
 
 def main(args=None):
     rclpy.init(args=args)
