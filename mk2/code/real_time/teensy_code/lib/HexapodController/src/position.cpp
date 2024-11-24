@@ -4,7 +4,6 @@
 #include <math.h>
 #include "three_by_matrices.hpp"
 
-
 void Position::set(double new_X, double new_Y, double new_Z, double new_roll, double new_pitch, double new_yaw) {
     X = new_X;
     Y = new_Y;
@@ -96,17 +95,17 @@ double Position::magnitude() {
 }
 
 _Bool Position::equals(const Position& pos) {
-    if (fabs(X - pos.X) > .003)
+    if (fabs(X - pos.X) > 0.003)
         return false;
-    if (fabs(Y - pos.Y) > .003)
+    if (fabs(Y - pos.Y) > 0.003)
         return false;
-    if (fabs(Z - pos.Z) > .003)
+    if (fabs(Z - pos.Z) > 0.003)
         return false;
-    if (fabs(roll - pos.roll) > .003)
+    if (fabs(roll - pos.roll) > 0.003)
         return false;
-    if (fabs(pitch - pos.pitch) > .003)
+    if (fabs(pitch - pos.pitch) > 0.003)
         return false;
-    if (fabs(yaw - pos.yaw) > .003)
+    if (fabs(yaw - pos.yaw) > 0.003)
         return false;
     return true;
 }

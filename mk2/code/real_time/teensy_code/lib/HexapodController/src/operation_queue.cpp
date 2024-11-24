@@ -31,7 +31,30 @@ Operation::Operation(ThreeByOne op_end_pos, double op_speed, _Bool op_relative, 
     relative = op_relative;
 }
 
-_Bool OperationQueue::isEmpty(){
+_Bool OperationQueue::isEmpty() {
 	return head == NULL;
 }
 
+void OperationQueue::setLeg(Leg * leg) {
+    this->leg = leg;
+}
+
+ThreeByOne OperationQueue::getCurrentQueueEndPos() {
+    ThreeByOne end_pos;
+    if (leg->isMoving()) {
+        end_pos = leg->getEndPosition();
+    }
+    else {
+        end_pos = leg->getCurrentPosition();
+    }
+    Operation * current = head;
+    while (current) {
+        if (current->relative) {
+            end_pos += current->end_pos;
+        }
+        else {
+            end_pos = current->end_pos;
+        }
+    }
+    return end_pos;
+}

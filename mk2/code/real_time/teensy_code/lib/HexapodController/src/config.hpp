@@ -9,10 +9,10 @@
   #define FIFO_IDLE_THRESHOLD 100
 	
 	#ifdef DANNY	
-		#define PWM_PINS {{5, 6, 7}, {2, 3, 4}, {8, 9, 10},  {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}
+		#define PWM_PINS {{2, 3, 4}, {5, 6, 7}, {8, 9, 10},  {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}
 		#define ZERO_POINTS {{2.05, 2.3, 2.68}, {1.87, 2.30, 2.8}, {1.8, 2.2, 2.65}, {2.2, 2.15, 2.5}, {2.2, 2.4, 2.8}, {2.15, 2.35, 2.53}}
-		#define MAX_POS {{PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}}
-		#define MIN_POS {{-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}}
+		#define MAX_POS {{PI/8.00, PI, PI}, {PI/8.00, PI, PI}, {PI/8.00, PI, PI}, {PI/8.00, PI, PI}, {PI/8.00, PI, PI}, {PI/8.00, PI, PI}}
+		#define MIN_POS {{-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}}
 		#define SCALE_FACT {{0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}}
 		#define REVERSE_AXIS {{false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}}
 
@@ -31,9 +31,9 @@
 
 	#ifdef DILLON
 		#define PWM_PINS {{5, 6, 7}, {2, 3, 4}, {8, 9, 10},  {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}
-		#define ZERO_POINTS {{1.9, 2.45, 2.7}, {2.35, 2.7, 2.6}, {2.05, 2.4, 2.7}, {2.3, 2.4, 2.65}, {2.1, 2.45, 2.65}, {2.35, 2.45, 2.7}}
-		#define MAX_POS {{PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}}
-		#define MIN_POS {{-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}}
+		#define ZERO_POINTS {{2.4, 2.65, 2.3}, {2.45, 2.65, 2.1}, {2.4, 2.6, 2.05}, {2.7, 2.6, 2.35}, {2.45, 2.7, 1.9}, {2.4, 2.65, 2.3}}
+		#define MAX_POS {{1.2, PI, PI}, {1.2, PI, PI}, {1.2, PI, PI}, {1.2, PI, PI}, {1.2, PI, PI}, {1.2, PI, PI}}
+		#define MIN_POS {{-1.2, -PI, -PI}, {-1.2, -PI, -PI}, {-1.2, -PI, -PI}, {-1.2, -PI, -PI}, {-1.2, -PI, -PI}, {-1.2, -PI, -PI}}
 		#define SCALE_FACT {{0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}}
 		#define REVERSE_AXIS {{false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}}
 	#endif

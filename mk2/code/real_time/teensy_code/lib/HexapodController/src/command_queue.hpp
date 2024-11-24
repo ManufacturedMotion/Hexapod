@@ -2,8 +2,8 @@
 #include <Arduino.h>
 #include <stdint.h>
 
-#ifndef fifo_command
-#define fifo_command
+#ifndef FIFO_COMMAND
+#define FIFO_COMMAND
 
 class Command {
     public:

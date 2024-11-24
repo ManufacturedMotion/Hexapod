@@ -1,6 +1,6 @@
 # Hexapod
 
-![Manufactured Motion Logo](./Images/hexapod_logo.png)
+![Manufactured Motion Logo](Images/banner_w_hexapod.png)
 
 ## Introduction
 
