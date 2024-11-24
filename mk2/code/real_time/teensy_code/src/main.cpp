@@ -25,6 +25,9 @@ String split_command[bufferSize];
 uint32_t num_words = 0;
 double x = 0, y = 0, z = 200, roll = 0, pitch = 0, yaw = 0, speed = 100;
 _Bool wait = false;
+uint32_t last_comm_time = 0;
+uint16_t vsense_raw = 0;
+float vsense = 0;
 
 Position position;
 commandQueue command_queue;
@@ -32,6 +35,7 @@ commandQueue command_queue;
 void setup() {
   Serial.begin(115200);
   Serial4.begin(115200);
+  pinMode(VSENSE_PIN, INPUT); 
 }
 
 void loop() {
@@ -41,7 +45,14 @@ void loop() {
   _Bool need_optimize = false;
   static _Bool expand_queue_flag = false;
   static _Bool started_idle_timer = false;
-  
+
+  if (millis() - last_comm_time > 100) {
+    vsense_raw = analogRead(VSENSE_PIN);
+    vsense = float(vsense_raw) * VSENSE_FACTOR;
+    last_comm_time = millis();
+    SERIAL_OUTPUT.printf("VOLTAGE READING: %f\n", vsense);
+  }
+
   if (Serial.available() > 0 || Serial4.available() > 0) {
     if (Serial4.available() > 0) {
       command = Serial4.readStringUntil('\n');
