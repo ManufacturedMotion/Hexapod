@@ -27,7 +27,7 @@ class GaitNode(Node):
         self.current_leg_positions = json.load(msg.data)
 
     def send_new_motion(self):
-        teensy_command = "G9"
+        teensy_command = "G8"
         for leg in self.current_leg_positions.keys():
             teensy_command += f"L{leg} "
             teensy_command += f'X{self.current_leg_positions[leg]['x'] + self.current_command.linear.x * gait_run_period} '
