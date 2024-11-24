@@ -3,7 +3,7 @@
 apt install python3-gpiozero -y
 sudo apt-get -y install python3-rpi.gpio
 sudo apt update
-sudo apt full-upgrade
+sudo apt full-upgrade -y
 #pip install board --break-system-packages
 #sudo pip3 install adafruit-circuitpython-neopixel-spi --break-system-packages
 
