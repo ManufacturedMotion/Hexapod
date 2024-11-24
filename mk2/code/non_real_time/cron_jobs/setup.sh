@@ -1,7 +1,11 @@
+#TODO - separate package installation into main setup script
+
 apt install python3-gpiozero -y
 sudo apt-get -y install python3-rpi.gpio
 sudo apt update
 sudo apt full-upgrade
+#pip install board --break-system-packages
+#sudo pip3 install adafruit-circuitpython-neopixel-spi --break-system-packages
 
 mkdir -p /scripts/
 mkdir -p /cron-out/
