@@ -9449,9 +9449,16 @@ Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 </sheet>
 </sheets>
 <errors>
+<approved hash="104,1,-172.72,88.9,BATTERY,+,2S_BAT,,,"/>
 <approved hash="104,1,-172.72,83.82,BATTERY,-,GND,,,"/>
+<approved hash="104,1,-147.32,88.9,E_STOP,+,2S_ESTOP,,,"/>
+<approved hash="104,1,-147.32,83.82,E_STOP,-,2S_BAT,,,"/>
+<approved hash="104,1,-2.54,-25.4,U2,VCCA,5V,,,"/>
+<approved hash="104,1,-2.54,-27.94,U2,VCCB,3.3V,,,"/>
 <approved hash="113,1,-154.618,62.23,5V,,,,,"/>
 <approved hash="113,1,-156.03,48.26,200Ω,,,,,"/>
+<approved hash="113,1,-145.87,48.26,680Ω,,,,,"/>
+<approved hash="113,1,-144.458,62.23,2S,,,,,"/>
 </errors>
 </schematic>
 </drawing>
