@@ -8348,70 +8348,6 @@ Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 </deviceset>
 </devicesets>
 </library>
-<library name="3555-2">
-<packages>
-<package name="FUSE_3555-2">
-<text x="-17.985" y="3.3" size="1.27" layer="25">&gt;NAME</text>
-<text x="-17.985" y="-4.2" size="1.27" layer="27" align="top-left">&gt;VALUE</text>
-<wire x1="-17.905" y1="-3.59" x2="-17.905" y2="2.25" width="0.127" layer="51"/>
-<wire x1="-17.905" y1="2.25" x2="17.905" y2="2.25" width="0.127" layer="51"/>
-<wire x1="17.905" y1="2.25" x2="17.905" y2="-3.59" width="0.127" layer="51"/>
-<wire x1="17.905" y1="-3.59" x2="-17.905" y2="-3.59" width="0.127" layer="51"/>
-<wire x1="-17.285" y1="2.25" x2="-17.905" y2="2.25" width="0.127" layer="21"/>
-<wire x1="-17.905" y1="2.25" x2="-17.905" y2="-3.59" width="0.127" layer="21"/>
-<wire x1="-17.905" y1="-3.59" x2="17.905" y2="-3.59" width="0.127" layer="21"/>
-<wire x1="17.905" y1="-3.59" x2="17.905" y2="2.25" width="0.127" layer="21"/>
-<wire x1="17.905" y1="2.25" x2="17.315" y2="2.25" width="0.127" layer="21"/>
-<wire x1="-3.5" y1="2.25" x2="3.5" y2="2.25" width="0.127" layer="21"/>
-<wire x1="-11.6" y1="2.25" x2="-9.4" y2="2.25" width="0.127" layer="21"/>
-<wire x1="9.4" y1="2.25" x2="11.6" y2="2.25" width="0.127" layer="21"/>
-<wire x1="-18.155" y1="-3.84" x2="-18.155" y2="3.05" width="0.05" layer="39"/>
-<wire x1="-18.155" y1="3.05" x2="18.155" y2="3.05" width="0.05" layer="39"/>
-<wire x1="18.155" y1="3.05" x2="18.155" y2="-3.84" width="0.05" layer="39"/>
-<wire x1="18.155" y1="-3.84" x2="-18.155" y2="-3.84" width="0.05" layer="39"/>
-<pad name="1_1" x="-14.685" y="0" drill="4.09" diameter="5.59" first="yes"/>
-<pad name="1_2" x="-6.355" y="0" drill="4.09" diameter="5.59" first="yes"/>
-<pad name="2_1" x="6.345" y="0" drill="4.09" diameter="5.59" first="yes"/>
-<pad name="2_2" x="14.675" y="0" drill="4.09" diameter="5.59" first="yes"/>
-</package>
-</packages>
-<symbols>
-<symbol name="3555-2">
-<text x="-7.62" y="3.81" size="1.778" layer="95">&gt;NAME</text>
-<text x="-7.62" y="-3.81" size="1.778" layer="96" align="top-left">&gt;VALUE</text>
-<wire x1="-3.81" y1="0" x2="0" y2="0" width="0.1524" layer="94" curve="-180"/>
-<wire x1="0" y1="0" x2="3.81" y2="0" width="0.1524" layer="94" curve="180"/>
-<wire x1="5.08" y1="0" x2="3.81" y2="0" width="0.1524" layer="94"/>
-<wire x1="-5.08" y1="0" x2="-3.81" y2="0" width="0.1524" layer="94"/>
-<pin name="1" x="-10.16" y="0" visible="pad" length="middle" direction="pas"/>
-<pin name="2" x="10.16" y="0" visible="pad" length="middle" direction="pas" rot="R180"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="3555-2" prefix="F">
-<gates>
-<gate name="G$1" symbol="3555-2" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="FUSE_3555-2">
-<connects>
-<connect gate="G$1" pin="1" pad="1_1 1_2"/>
-<connect gate="G$1" pin="2" pad="2_1 2_2"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="MANUFACTURER" value="Keystone"/>
-<attribute name="MAXIMUM_PACKAGE_HEIGHT" value="11.6mm"/>
-<attribute name="PARTREV" value="A"/>
-<attribute name="SNAPEDA_PN" value="3555-2"/>
-<attribute name="STANDARD" value="Manufacturer Recommendations"/>
-</technology>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
 <library name="DFR0753">
 <packages>
 <package name="DFR0753">
@@ -8527,6 +8463,66 @@ Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 </deviceset>
 </devicesets>
 </library>
+<library name="3557-2">
+<packages>
+<package name="FUSE_3557-2">
+<wire x1="-9.905" y1="3.365" x2="-9.905" y2="-3.365" width="0.127" layer="21"/>
+<wire x1="-9.905" y1="-3.365" x2="9.905" y2="-3.365" width="0.127" layer="21"/>
+<wire x1="9.905" y1="-3.365" x2="9.905" y2="3.365" width="0.127" layer="21"/>
+<wire x1="9.905" y1="3.365" x2="-9.905" y2="3.365" width="0.127" layer="21"/>
+<wire x1="-10.155" y1="3.615" x2="10.155" y2="3.615" width="0.05" layer="39"/>
+<wire x1="10.155" y1="3.615" x2="10.155" y2="-3.615" width="0.05" layer="39"/>
+<wire x1="10.155" y1="-3.615" x2="-10.155" y2="-3.615" width="0.05" layer="39"/>
+<wire x1="-10.155" y1="-3.615" x2="-10.155" y2="3.615" width="0.05" layer="39"/>
+<wire x1="-9.905" y1="3.365" x2="-9.905" y2="-3.365" width="0.127" layer="51"/>
+<wire x1="-9.905" y1="-3.365" x2="9.905" y2="-3.365" width="0.127" layer="51"/>
+<wire x1="9.905" y1="-3.365" x2="9.905" y2="3.365" width="0.127" layer="51"/>
+<wire x1="9.905" y1="3.365" x2="-9.905" y2="3.365" width="0.127" layer="51"/>
+<text x="-10.16" y="3.81" size="1.27" layer="25">&gt;NAME</text>
+<text x="-10.16" y="-5.08" size="1.27" layer="27">&gt;VALUE</text>
+<pad name="1_1" x="-6.735" y="1.7" drill="1.6"/>
+<pad name="1_2" x="-6.735" y="-1.7" drill="1.6"/>
+<pad name="2_1" x="6.735" y="1.7" drill="1.6"/>
+<pad name="2_2" x="6.735" y="-1.7" drill="1.6"/>
+</package>
+</packages>
+<symbols>
+<symbol name="3557-2">
+<text x="-2.54" y="5.08" size="1.27" layer="95">&gt;NAME</text>
+<text x="-2.54" y="-5.08" size="1.27" layer="96">&gt;VALUE</text>
+<wire x1="-3.81" y1="0" x2="0" y2="0" width="0.1524" layer="94" curve="-180"/>
+<wire x1="0" y1="0" x2="3.81" y2="0" width="0.1524" layer="94" curve="180"/>
+<wire x1="5.08" y1="0" x2="3.81" y2="0" width="0.1524" layer="94"/>
+<wire x1="-5.08" y1="0" x2="-3.81" y2="0" width="0.1524" layer="94"/>
+<pin name="1" x="-7.62" y="0" visible="off" length="short" direction="pas"/>
+<pin name="2" x="7.62" y="0" visible="off" length="short" direction="pas" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="3557-2" prefix="F">
+<gates>
+<gate name="G$1" symbol="3557-2" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="FUSE_3557-2">
+<connects>
+<connect gate="G$1" pin="1" pad="1_1 1_2"/>
+<connect gate="G$1" pin="2" pad="2_1 2_2"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="MANUFACTURER" value="Keystone"/>
+<attribute name="MAXIMUM_PACKAGE_HEIGHT" value="7.37mm"/>
+<attribute name="PARTREV" value="D"/>
+<attribute name="SNAPEDA_PN" value="3557-2"/>
+<attribute name="STANDARD" value="Manufacturer Recommendation"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -8578,9 +8574,9 @@ Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 <part name="FAN" library="Rembrandt Electronics - JST XH Connectors v1-0" deviceset="JST-XH-04-PIN" device="-LONG-PAD"/>
 <part name="2S" library="led" library_urn="urn:adsk.eagle:library:259" deviceset="LED" device="CHIPLED_0805" package3d_urn="urn:adsk.eagle:package:15821/2"/>
 <part name="E_STOP" library="amass" deviceset="XT60" device="PW-M"/>
-<part name="FUSE_HOLDER" library="3555-2" deviceset="3555-2" device=""/>
 <part name="DFR0753" library="DFR0753" deviceset="DFR0753" device=""/>
 <part name="U2" library="SN74LVC1T45DBVR" deviceset="SN74LVC1T45DBVR" device=""/>
+<part name="F1" library="3557-2" deviceset="3557-2" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -8763,14 +8759,14 @@ Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 <attribute name="VALUE" x="-156.21" y="77.47" size="1.778" layer="96"/>
 <attribute name="NAME" x="-156.21" y="93.472" size="1.778" layer="95"/>
 </instance>
-<instance part="FUSE_HOLDER" gate="G$1" x="-109.22" y="86.36" smashed="yes">
-<attribute name="NAME" x="-116.84" y="90.17" size="1.778" layer="95"/>
-<attribute name="VALUE" x="-116.84" y="82.55" size="1.778" layer="96" align="top-left"/>
-</instance>
 <instance part="DFR0753" gate="G$1" x="-60.96" y="91.44" smashed="yes"/>
 <instance part="U2" gate="A" x="-20.32" y="-35.56" smashed="yes">
 <attribute name="NAME" x="-33.02" y="-21.86" size="2.0828" layer="95" ratio="10" rot="SR0"/>
 <attribute name="VALUE" x="-33.02" y="-52.26" size="2.0828" layer="96" ratio="10" rot="SR0"/>
+</instance>
+<instance part="F1" gate="G$1" x="-109.22" y="86.36" smashed="yes">
+<attribute name="NAME" x="-111.76" y="91.44" size="1.27" layer="95"/>
+<attribute name="VALUE" x="-111.76" y="81.28" size="1.27" layer="96"/>
 </instance>
 </instances>
 <busses>
@@ -9376,16 +9372,16 @@ Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 <label x="-170.18" y="88.9" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="E_STOP" gate="G$1" pin="-"/>
-<wire x1="-147.32" y1="83.82" x2="-144.78" y2="83.82" width="0.1524" layer="91"/>
-<label x="-144.78" y="83.82" size="1.778" layer="95"/>
+<pinref part="E_STOP" gate="G$1" pin="+"/>
+<wire x1="-147.32" y1="88.9" x2="-144.78" y2="88.9" width="0.1524" layer="91"/>
+<label x="-144.78" y="88.9" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="2S_PROT" class="0">
 <segment>
-<pinref part="FUSE_HOLDER" gate="G$1" pin="2"/>
-<wire x1="-99.06" y1="86.36" x2="-93.98" y2="86.36" width="0.1524" layer="91"/>
+<wire x1="-101.6" y1="86.36" x2="-93.98" y2="86.36" width="0.1524" layer="91"/>
 <label x="-93.98" y="86.36" size="1.778" layer="95"/>
+<pinref part="F1" gate="G$1" pin="2"/>
 </segment>
 <segment>
 <wire x1="-144.78" y1="66.04" x2="-144.78" y2="68.58" width="0.1524" layer="91"/>
@@ -9435,14 +9431,14 @@ Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 </net>
 <net name="2S_ESTOP" class="0">
 <segment>
-<pinref part="E_STOP" gate="G$1" pin="+"/>
-<wire x1="-147.32" y1="88.9" x2="-144.78" y2="88.9" width="0.1524" layer="91"/>
-<label x="-144.78" y="88.9" size="1.778" layer="95"/>
+<wire x1="-116.84" y1="86.36" x2="-127" y2="86.36" width="0.1524" layer="91"/>
+<label x="-127" y="83.82" size="1.778" layer="95"/>
+<pinref part="F1" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<pinref part="FUSE_HOLDER" gate="G$1" pin="1"/>
-<wire x1="-119.38" y1="86.36" x2="-127" y2="86.36" width="0.1524" layer="91"/>
-<label x="-127" y="83.82" size="1.778" layer="95"/>
+<pinref part="E_STOP" gate="G$1" pin="-"/>
+<wire x1="-147.32" y1="83.82" x2="-144.78" y2="83.82" width="0.1524" layer="91"/>
+<label x="-144.78" y="83.82" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
@@ -9451,8 +9447,6 @@ Number of pins: &lt;b&gt;4&lt;/b&gt;&lt;b&gt;&lt;P&gt;
 <errors>
 <approved hash="104,1,-172.72,88.9,BATTERY,+,2S_BAT,,,"/>
 <approved hash="104,1,-172.72,83.82,BATTERY,-,GND,,,"/>
-<approved hash="104,1,-147.32,88.9,E_STOP,+,2S_ESTOP,,,"/>
-<approved hash="104,1,-147.32,83.82,E_STOP,-,2S_BAT,,,"/>
 <approved hash="104,1,-2.54,-25.4,U2,VCCA,5V,,,"/>
 <approved hash="104,1,-2.54,-27.94,U2,VCCB,3.3V,,,"/>
 <approved hash="113,1,-154.618,62.23,5V,,,,,"/>
