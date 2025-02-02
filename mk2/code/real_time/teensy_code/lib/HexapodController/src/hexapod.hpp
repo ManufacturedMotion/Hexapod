@@ -42,7 +42,6 @@
 			uint8_t stepSetup(double x, double y, double z, double speed);
 			uint8_t stepSetup(ThreeByOne relative_end_coord, double speed);
 			uint8_t stepToNeutral(double speed);
-			uint8_t firstStepSetup(ThreeByOne relative_end_coord, double speed);
 			uint8_t walkSetup(ThreeByOne relative_end_coord, double speed, _Bool return_to_neutral = false);
 			uint8_t walkSetup(Position relative_end_pos, double speed, _Bool return_to_neutral = false);
 			uint8_t walkSetup(double x, double y, double speed, _Bool return_to_neutral = false);

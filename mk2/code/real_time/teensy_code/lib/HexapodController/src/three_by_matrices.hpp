@@ -26,7 +26,6 @@ class ThreeByOne {
         void rotatePitch(double pitch);
         void rotateRoll(double roll);
         double magnitude();
-        ThreeByOne add(const ThreeByOne& addend);
         void operator+=(const ThreeByOne& addend);
         ThreeByOne operator+(const ThreeByOne& addend);
         void operator/=(double divisor);
