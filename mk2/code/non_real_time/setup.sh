@@ -5,7 +5,7 @@ sudo apt update
 sudo apt full-upgrade -y
 
 #TODO - verify these are correct packages for LED ring on a freshly flashed SD card. Ensure setup script does everything else needed
-#pip install board --break-system-packages
+pip install board --break-system-packages
 sudo pip3 install adafruit-circuitpython-neopixel-spi --break-system-packages
 
 ### CRONJOB SETUP ###
