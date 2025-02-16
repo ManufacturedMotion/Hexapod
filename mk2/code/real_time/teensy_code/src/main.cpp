@@ -36,6 +36,7 @@ void setup() {
   Serial.begin(115200);
   Serial4.begin(115200);
   pinMode(VSENSE_PIN, INPUT); 
+  hexapod.startUp();
 }
 
 void loop() {
