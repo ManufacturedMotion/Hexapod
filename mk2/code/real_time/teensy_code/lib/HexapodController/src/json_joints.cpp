@@ -6,9 +6,9 @@ JsonDocument getJsonJoints() {
     
     JsonDocument json_joints;
 
-    JsonObject l0s1 = json_joints["l0s1"].to<JsonObject>();
-    l0s1["leg"] = 0;
-    l0s1["axis"] = 0;
+    JsonObject l0s1 = json_joints["L0S1"].to<JsonObject>();
+    L0S1["leg"] = 0;
+    L0S1["axis"] = 0;
     JsonObject L0S2 = json_joints["L0S2"].to<JsonObject>();
     L0S2["leg"] = 0;
     L0S2["axis"] = 1;
