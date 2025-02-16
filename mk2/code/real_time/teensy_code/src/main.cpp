@@ -226,6 +226,7 @@ void executeCommand(String command) {
       else if (buffer[1].equals("2")) {
 
         //TODO - when refactoring we can remove the need to rejoin or split the strings if we use json
+        //TODO - do we want this to error if < 18 positions provided? Current implementation allows for any number of key value pairs
         String joined_command;
         for (uint8_t i = 1; i < cmd_line_word_count; i++) {
           current_command_substring = split_command[i];
