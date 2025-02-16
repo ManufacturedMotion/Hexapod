@@ -16,6 +16,11 @@ Hexapod::Hexapod() {
 }
 
 void Hexapod::startUp() {
+
+	#if DEBUG
+	return; 
+	#endif
+
 	uint32_t start_time = millis();
 	while(1) {
 		if (millis() >= (start_time + 5000)) {
