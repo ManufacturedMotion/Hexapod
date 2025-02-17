@@ -1,12 +1,9 @@
 ### Package installations ###
-apt install python3-gpiozero -y
-sudo apt-get -y install python3-rpi.gpio
-sudo apt update
-sudo apt full-upgrade -y
-
-#TODO - verify these are correct packages for LED ring on a freshly flashed SD card. Ensure setup script does everything else needed
-pip install board --break-system-packages
-sudo pip3 install adafruit-circuitpython-neopixel-spi --break-system-packages
+sudo apt update  
+sudo apt install -y python3-gpiozero python3-rpi.gpio i2c-tools libgpiod-dev python3-libgpiod python3-pip  
+sudo apt full-upgrade -y  
+sudo pip3 install --upgrade adafruit-circuitpython-neopixel-spi --break-system-packages  
+sudo pip3 install --upgrade adafruit-blinka --break-system-packages  
 
 ### CRONJOB SETUP ###
 echo "Beginning cronjob setup"
