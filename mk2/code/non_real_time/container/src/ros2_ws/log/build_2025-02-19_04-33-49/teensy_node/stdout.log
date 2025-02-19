@@ -1,0 +1,16 @@
+running develop
+running egg_info
+writing teensy_node.egg-info/PKG-INFO
+writing dependency_links to teensy_node.egg-info/dependency_links.txt
+writing entry points to teensy_node.egg-info/entry_points.txt
+writing requirements to teensy_node.egg-info/requires.txt
+writing top-level names to teensy_node.egg-info/top_level.txt
+reading manifest file 'teensy_node.egg-info/SOURCES.txt'
+writing manifest file 'teensy_node.egg-info/SOURCES.txt'
+running build_ext
+Creating /app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages/teensy-node.egg-link (link to .)
+Installing teensy_node script to /app/src/ros2_ws/install/teensy_node/lib/teensy_node
+
+Installed /app/src/ros2_ws/build/teensy_node
+running symlink_data
+symbolically linking /app/src/ros2_ws/build/teensy_node/launch/joy.yml -> /app/src/ros2_ws/install/teensy_node/share/teensy_node

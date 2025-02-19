@@ -1,0 +1,37 @@
+[1.646s] Invoking command in '/app/src/ros2_ws/src/gait_node': PYTHONPATH=/app/src/ros2_ws/build/gait_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/gait_node build --build-base /app/src/ros2_ws/build/gait_node/build install --record /app/src/ros2_ws/build/gait_node/install.log --single-version-externally-managed install_data
+[1.954s] running egg_info
+[1.954s] creating ../../build/gait_node/gait_node.egg-info
+[1.954s] writing ../../build/gait_node/gait_node.egg-info/PKG-INFO
+[1.954s] writing dependency_links to ../../build/gait_node/gait_node.egg-info/dependency_links.txt
+[1.954s] writing entry points to ../../build/gait_node/gait_node.egg-info/entry_points.txt
+[1.954s] writing requirements to ../../build/gait_node/gait_node.egg-info/requires.txt
+[1.955s] writing top-level names to ../../build/gait_node/gait_node.egg-info/top_level.txt
+[1.955s] writing manifest file '../../build/gait_node/gait_node.egg-info/SOURCES.txt'
+[1.958s] reading manifest file '../../build/gait_node/gait_node.egg-info/SOURCES.txt'
+[1.959s] writing manifest file '../../build/gait_node/gait_node.egg-info/SOURCES.txt'
+[1.959s] running build
+[1.959s] running build_py
+[1.960s] creating /app/src/ros2_ws/build/gait_node/build
+[1.960s] creating /app/src/ros2_ws/build/gait_node/build/lib
+[1.960s] creating /app/src/ros2_ws/build/gait_node/build/lib/gait_node
+[1.960s] copying gait_node/__init__.py -> /app/src/ros2_ws/build/gait_node/build/lib/gait_node
+[1.960s] copying gait_node/gait.py -> /app/src/ros2_ws/build/gait_node/build/lib/gait_node
+[1.962s] running install
+[1.963s] running install_lib
+[1.965s] creating /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node
+[1.966s] copying /app/src/ros2_ws/build/gait_node/build/lib/gait_node/__init__.py -> /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node
+[1.967s] copying /app/src/ros2_ws/build/gait_node/build/lib/gait_node/gait.py -> /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node
+[1.968s] byte-compiling /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node/__init__.py to __init__.cpython-310.pyc
+[1.969s] byte-compiling /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node/gait.py to gait.cpython-310.pyc
+[1.971s] running install_data
+[1.973s] creating /app/src/ros2_ws/install/gait_node/share/ament_index
+[1.973s] creating /app/src/ros2_ws/install/gait_node/share/ament_index/resource_index
+[1.973s] creating /app/src/ros2_ws/install/gait_node/share/ament_index/resource_index/packages
+[1.974s] copying resource/gait_node -> /app/src/ros2_ws/install/gait_node/share/ament_index/resource_index/packages
+[1.974s] copying package.xml -> /app/src/ros2_ws/install/gait_node/share/gait_node
+[1.974s] running install_egg_info
+[1.978s] Copying ../../build/gait_node/gait_node.egg-info to /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node-0.0.0-py3.10.egg-info
+[1.980s] running install_scripts
+[2.023s] Installing gait_node script to /app/src/ros2_ws/install/gait_node/lib/gait_node
+[2.026s] writing list of installed files to '/app/src/ros2_ws/build/gait_node/install.log'
+[2.156s] Invoked command in '/app/src/ros2_ws/src/gait_node' returned '0': PYTHONPATH=/app/src/ros2_ws/build/gait_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../../build/gait_node build --build-base /app/src/ros2_ws/build/gait_node/build install --record /app/src/ros2_ws/build/gait_node/install.log --single-version-externally-managed install_data

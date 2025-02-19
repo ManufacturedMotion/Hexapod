@@ -1,0 +1,85 @@
+[0.000000] (-) TimerEvent: {}
+[0.000905] (gait_node) JobQueued: {'identifier': 'gait_node', 'dependencies': OrderedDict()}
+[0.001189] (hexapod) JobQueued: {'identifier': 'hexapod', 'dependencies': OrderedDict()}
+[0.001266] (teensy_node) JobQueued: {'identifier': 'teensy_node', 'dependencies': OrderedDict()}
+[0.001314] (gait_node) JobStarted: {'identifier': 'gait_node'}
+[0.014119] (hexapod) JobStarted: {'identifier': 'hexapod'}
+[0.022639] (teensy_node) JobStarted: {'identifier': 'teensy_node'}
+[0.099584] (-) TimerEvent: {}
+[0.200022] (-) TimerEvent: {}
+[0.300456] (-) TimerEvent: {}
+[0.400864] (-) TimerEvent: {}
+[0.501288] (-) TimerEvent: {}
+[0.601747] (-) TimerEvent: {}
+[0.702154] (-) TimerEvent: {}
+[0.802671] (-) TimerEvent: {}
+[0.903065] (-) TimerEvent: {}
+[1.003467] (-) TimerEvent: {}
+[1.104740] (-) TimerEvent: {}
+[1.205240] (-) TimerEvent: {}
+[1.305971] (-) TimerEvent: {}
+[1.406375] (-) TimerEvent: {}
+[1.508819] (-) TimerEvent: {}
+[1.613221] (-) TimerEvent: {}
+[1.646437] (gait_node) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/app/src/ros2_ws/build/gait_node/build', '--no-deps', 'symlink_data'], 'cwd': '/app/src/ros2_ws/build/gait_node', 'env': {'HOSTNAME': '011007582f93', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/iron/lib/aarch64-linux-gnu:/opt/ros/iron/lib', 'HOME': '/root', 'ROS_PYTHON_VERSION': '3', 'COLCON_PREFIX_PATH': '/app/src/ros2_ws/install', 'ROS_DISTRO': 'iron', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm', 'PATH': '/opt/ros/iron/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'XDG_RUNTIME_DIR': '/app/temp', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'AMENT_PREFIX_PATH': '/app/src/ros2_ws/install/teensy_node:/app/src/ros2_ws/install/hexapod:/app/src/ros2_ws/install/gait_node:/opt/ros/iron', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/app/src/ros2_ws/build/gait_node', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/app/src/ros2_ws/build/gait_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:/app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages:/app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:/opt/ros/iron/lib/python3.10/site-packages', 'COLCON': '1'}, 'shell': False}
+[1.654859] (hexapod) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/app/src/ros2_ws/build/hexapod/build', '--no-deps', 'symlink_data'], 'cwd': '/app/src/ros2_ws/build/hexapod', 'env': {'HOSTNAME': '011007582f93', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/iron/lib/aarch64-linux-gnu:/opt/ros/iron/lib', 'HOME': '/root', 'ROS_PYTHON_VERSION': '3', 'COLCON_PREFIX_PATH': '/app/src/ros2_ws/install', 'ROS_DISTRO': 'iron', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm', 'PATH': '/opt/ros/iron/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'XDG_RUNTIME_DIR': '/app/temp', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'AMENT_PREFIX_PATH': '/app/src/ros2_ws/install/teensy_node:/app/src/ros2_ws/install/hexapod:/app/src/ros2_ws/install/gait_node:/opt/ros/iron', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/app/src/ros2_ws/build/hexapod', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/app/src/ros2_ws/build/hexapod/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages:/app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages:/app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:/opt/ros/iron/lib/python3.10/site-packages', 'COLCON': '1'}, 'shell': False}
+[1.660965] (teensy_node) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/app/src/ros2_ws/build/teensy_node/build', '--no-deps', 'symlink_data'], 'cwd': '/app/src/ros2_ws/build/teensy_node', 'env': {'HOSTNAME': '011007582f93', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/iron/lib/aarch64-linux-gnu:/opt/ros/iron/lib', 'HOME': '/root', 'ROS_PYTHON_VERSION': '3', 'COLCON_PREFIX_PATH': '/app/src/ros2_ws/install', 'ROS_DISTRO': 'iron', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'TERM': 'xterm', 'PATH': '/opt/ros/iron/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', 'XDG_RUNTIME_DIR': '/app/temp', 'LANG': 'C.UTF-8', 'LS_COLORS': 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:', 'AMENT_PREFIX_PATH': '/app/src/ros2_ws/install/teensy_node:/app/src/ros2_ws/install/hexapod:/app/src/ros2_ws/install/gait_node:/opt/ros/iron', 'ROS_AUTOMATIC_DISCOVERY_RANGE': 'SUBNET', 'PWD': '/app/src/ros2_ws/build/teensy_node', 'LC_ALL': 'C.UTF-8', 'PYTHONPATH': '/app/src/ros2_ws/build/teensy_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages:/app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages:/app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:/opt/ros/iron/lib/python3.10/site-packages', 'COLCON': '1'}, 'shell': False}
+[1.713336] (-) TimerEvent: {}
+[1.814159] (-) TimerEvent: {}
+[1.915674] (-) TimerEvent: {}
+[2.018860] (-) TimerEvent: {}
+[2.023295] (gait_node) StdoutLine: {'line': b'running develop\n'}
+[2.033100] (teensy_node) StdoutLine: {'line': b'running develop\n'}
+[2.069012] (hexapod) StdoutLine: {'line': b'running develop\n'}
+[2.118967] (-) TimerEvent: {}
+[2.193264] (gait_node) StdoutLine: {'line': b'running egg_info\n'}
+[2.194698] (gait_node) StdoutLine: {'line': b'writing gait_node.egg-info/PKG-INFO\n'}
+[2.194842] (gait_node) StdoutLine: {'line': b'writing dependency_links to gait_node.egg-info/dependency_links.txt\n'}
+[2.196354] (teensy_node) StdoutLine: {'line': b'running egg_info\n'}
+[2.197832] (teensy_node) StdoutLine: {'line': b'writing teensy_node.egg-info/PKG-INFO\n'}
+[2.198075] (teensy_node) StdoutLine: {'line': b'writing dependency_links to teensy_node.egg-info/dependency_links.txt\n'}
+[2.198184] (teensy_node) StdoutLine: {'line': b'writing entry points to teensy_node.egg-info/entry_points.txt\n'}
+[2.198284] (teensy_node) StdoutLine: {'line': b'writing requirements to teensy_node.egg-info/requires.txt\n'}
+[2.199848] (teensy_node) StdoutLine: {'line': b'writing top-level names to teensy_node.egg-info/top_level.txt\n'}
+[2.201358] (teensy_node) StdoutLine: {'line': b"reading manifest file 'teensy_node.egg-info/SOURCES.txt'\n"}
+[2.219082] (-) TimerEvent: {}
+[2.226640] (gait_node) StdoutLine: {'line': b'writing entry points to gait_node.egg-info/entry_points.txt\n'}
+[2.228705] (gait_node) StdoutLine: {'line': b'writing requirements to gait_node.egg-info/requires.txt\n'}
+[2.229034] (gait_node) StdoutLine: {'line': b'writing top-level names to gait_node.egg-info/top_level.txt\n'}
+[2.230965] (teensy_node) StdoutLine: {'line': b"writing manifest file 'teensy_node.egg-info/SOURCES.txt'\n"}
+[2.232633] (gait_node) StdoutLine: {'line': b"reading manifest file 'gait_node.egg-info/SOURCES.txt'\n"}
+[2.233061] (teensy_node) StdoutLine: {'line': b'running build_ext\n'}
+[2.233629] (teensy_node) StdoutLine: {'line': b'Creating /app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages/teensy-node.egg-link (link to .)\n'}
+[2.234781] (teensy_node) StdoutLine: {'line': b'Installing teensy_node script to /app/src/ros2_ws/install/teensy_node/lib/teensy_node\n'}
+[2.235250] (teensy_node) StdoutLine: {'line': b'\n'}
+[2.235424] (teensy_node) StdoutLine: {'line': b'Installed /app/src/ros2_ws/build/teensy_node\n'}
+[2.235623] (teensy_node) StderrLine: {'line': b"error: can't copy '/app/src/ros2_ws/build/teensy_node/launch': doesn't exist or not a regular file\n"}
+[2.236011] (teensy_node) StdoutLine: {'line': b'running symlink_data\n'}
+[2.239775] (hexapod) StdoutLine: {'line': b'running egg_info\n'}
+[2.240349] (hexapod) StdoutLine: {'line': b'writing hexapod.egg-info/PKG-INFO\n'}
+[2.240759] (hexapod) StdoutLine: {'line': b'writing dependency_links to hexapod.egg-info/dependency_links.txt\n'}
+[2.241244] (hexapod) StdoutLine: {'line': b'writing entry points to hexapod.egg-info/entry_points.txt\n'}
+[2.241620] (hexapod) StdoutLine: {'line': b'writing requirements to hexapod.egg-info/requires.txt\n'}
+[2.241956] (hexapod) StdoutLine: {'line': b'writing top-level names to hexapod.egg-info/top_level.txt\n'}
+[2.246585] (hexapod) StdoutLine: {'line': b"reading manifest file 'hexapod.egg-info/SOURCES.txt'\n"}
+[2.247068] (gait_node) StdoutLine: {'line': b"writing manifest file 'gait_node.egg-info/SOURCES.txt'\n"}
+[2.250370] (gait_node) StdoutLine: {'line': b'running build_ext\n'}
+[2.250852] (gait_node) StdoutLine: {'line': b'Creating /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait-node.egg-link (link to .)\n'}
+[2.253985] (gait_node) StdoutLine: {'line': b'Installing gait_node script to /app/src/ros2_ws/install/gait_node/lib/gait_node\n'}
+[2.254314] (hexapod) StdoutLine: {'line': b"writing manifest file 'hexapod.egg-info/SOURCES.txt'\n"}
+[2.255773] (gait_node) StdoutLine: {'line': b'\n'}
+[2.256206] (gait_node) StdoutLine: {'line': b'Installed /app/src/ros2_ws/build/gait_node\n'}
+[2.256450] (gait_node) StdoutLine: {'line': b'running symlink_data\n'}
+[2.259092] (hexapod) StdoutLine: {'line': b'running build_ext\n'}
+[2.265992] (hexapod) StdoutLine: {'line': b'Creating /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod.egg-link (link to .)\n'}
+[2.268904] (hexapod) StdoutLine: {'line': b'Installing listener script to /app/src/ros2_ws/install/hexapod/lib/hexapod\n'}
+[2.270766] (hexapod) StdoutLine: {'line': b'Installing talker script to /app/src/ros2_ws/install/hexapod/lib/hexapod\n'}
+[2.313532] (hexapod) StdoutLine: {'line': b'\n'}
+[2.314818] (hexapod) StdoutLine: {'line': b'Installed /app/src/ros2_ws/build/hexapod\n'}
+[2.316273] (hexapod) StdoutLine: {'line': b'running symlink_data\n'}
+[2.319265] (-) TimerEvent: {}
+[2.332805] (teensy_node) CommandEnded: {'returncode': 1}
+[2.333665] (teensy_node) JobEnded: {'identifier': 'teensy_node', 'rc': 1}
+[2.359234] (gait_node) JobEnded: {'identifier': 'gait_node', 'rc': 'SIGINT'}
+[2.397302] (hexapod) JobEnded: {'identifier': 'hexapod', 'rc': 'SIGINT'}
+[2.408152] (-) EventReactorShutdown: {}

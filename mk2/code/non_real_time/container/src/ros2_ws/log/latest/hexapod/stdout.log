@@ -1,0 +1,16 @@
+running develop
+running egg_info
+writing hexapod.egg-info/PKG-INFO
+writing dependency_links to hexapod.egg-info/dependency_links.txt
+writing entry points to hexapod.egg-info/entry_points.txt
+writing requirements to hexapod.egg-info/requires.txt
+writing top-level names to hexapod.egg-info/top_level.txt
+reading manifest file 'hexapod.egg-info/SOURCES.txt'
+writing manifest file 'hexapod.egg-info/SOURCES.txt'
+running build_ext
+Creating /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod.egg-link (link to .)
+Installing listener script to /app/src/ros2_ws/install/hexapod/lib/hexapod
+Installing talker script to /app/src/ros2_ws/install/hexapod/lib/hexapod
+
+Installed /app/src/ros2_ws/build/hexapod
+running symlink_data

@@ -11,6 +11,12 @@ ADD setup /app/setup
 RUN cat /app/setup/system-requirements.txt | xargs apt-get install -y
 RUN pip install -r /app/setup/python-requirements.txt
 
+RUN sudo apt install -y \
+    ros-iron-teleop-twist-keyboard \
+    ros-iron-teleop-twist-joy \
+    ros-iron-joy-linux \
+    ros-iron-rqt*
+
 # Put ros commands on path
 RUN echo "source \"/opt/ros/$ROS_DISTRO/setup.bash\"" >> ~/.bashrc && \
     echo "source \"/app/src/ros2_ws/install/local_setup.bash\"" >> ~/.bashrc

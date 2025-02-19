@@ -1,0 +1,238 @@
+[0.155s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--symlink-install']
+[0.156s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=4, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, mixin_files=None, mixin=None, verb_parser=<colcon_mixin.mixin.mixin_argument.MixinArgumentDecorator object at 0xffffa2a1eb60>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0xffffa2a1e5f0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0xffffa2a1e5f0>>, mixin_verb=('build',))
+[0.338s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.339s] INFO:colcon.colcon_metadata.package_discovery.colcon_meta:Using configuration from '/root/.colcon/metadata/default/Gazebo.meta'
+[0.340s] INFO:colcon.colcon_metadata.package_discovery.colcon_meta:Using configuration from '/root/.colcon/metadata/default/fastrtps.meta'
+[0.340s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.340s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.340s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.340s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.341s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.341s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/app/src/ros2_ws'
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.341s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.359s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.359s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.359s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.359s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.359s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.359s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extensions ['ignore', 'ignore_ament_install']
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extension 'ignore'
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extension 'ignore_ament_install'
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extensions ['colcon_pkg']
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extension 'colcon_pkg'
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extensions ['colcon_meta']
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extension 'colcon_meta'
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extensions ['ros']
+[0.360s] Level 1:colcon.colcon_core.package_identification:_identify(hexapod) by extension 'ros'
+[0.363s] DEBUG:colcon.colcon_core.package_identification:Package 'hexapod' with type 'ros.ament_python' and name 'hexapod'
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.364s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extensions ['ignore', 'ignore_ament_install']
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extension 'ignore'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extension 'ignore_ament_install'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extensions ['colcon_pkg']
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extension 'colcon_pkg'
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extensions ['colcon_meta']
+[0.365s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extension 'colcon_meta'
+[0.366s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extensions ['ros']
+[0.366s] Level 1:colcon.colcon_core.package_identification:_identify(src/gait_node) by extension 'ros'
+[0.366s] DEBUG:colcon.colcon_core.package_identification:Package 'src/gait_node' with type 'ros.ament_python' and name 'gait_node'
+[0.366s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extensions ['ignore', 'ignore_ament_install']
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extension 'ignore'
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extension 'ignore_ament_install'
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extensions ['colcon_pkg']
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extension 'colcon_pkg'
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extensions ['colcon_meta']
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extension 'colcon_meta'
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extensions ['ros']
+[0.367s] Level 1:colcon.colcon_core.package_identification:_identify(src/teensy_node) by extension 'ros'
+[0.367s] DEBUG:colcon.colcon_core.package_identification:Package 'src/teensy_node' with type 'ros.ament_python' and name 'teensy_node'
+[0.367s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.368s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.368s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.368s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.368s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'cmake_args' from command line to 'None'
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'cmake_target' from command line to 'None'
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'cmake_clean_cache' from command line to 'False'
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'cmake_clean_first' from command line to 'False'
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'cmake_force_configure' from command line to 'False'
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'ament_cmake_args' from command line to 'None'
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'catkin_cmake_args' from command line to 'None'
+[0.394s] Level 5:colcon.colcon_core.verb:set package 'gait_node' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.394s] DEBUG:colcon.colcon_core.verb:Building package 'gait_node' with the following arguments: {'ament_cmake_args': None, 'build_base': '/app/src/ros2_ws/build/gait_node', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/app/src/ros2_ws/install/gait_node', 'merge_install': False, 'path': '/app/src/ros2_ws/src/gait_node', 'symlink_install': True, 'test_result_base': None}
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'cmake_args' from command line to 'None'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'cmake_target' from command line to 'None'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'cmake_clean_cache' from command line to 'False'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'cmake_clean_first' from command line to 'False'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'cmake_force_configure' from command line to 'False'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'ament_cmake_args' from command line to 'None'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'catkin_cmake_args' from command line to 'None'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'hexapod' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.395s] DEBUG:colcon.colcon_core.verb:Building package 'hexapod' with the following arguments: {'ament_cmake_args': None, 'build_base': '/app/src/ros2_ws/build/hexapod', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/app/src/ros2_ws/install/hexapod', 'merge_install': False, 'path': '/app/src/ros2_ws/hexapod', 'symlink_install': True, 'test_result_base': None}
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'cmake_args' from command line to 'None'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'cmake_target' from command line to 'None'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'cmake_clean_cache' from command line to 'False'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'cmake_clean_first' from command line to 'False'
+[0.395s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'cmake_force_configure' from command line to 'False'
+[0.396s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'ament_cmake_args' from command line to 'None'
+[0.396s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'catkin_cmake_args' from command line to 'None'
+[0.396s] Level 5:colcon.colcon_core.verb:set package 'teensy_node' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.396s] DEBUG:colcon.colcon_core.verb:Building package 'teensy_node' with the following arguments: {'ament_cmake_args': None, 'build_base': '/app/src/ros2_ws/build/teensy_node', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/app/src/ros2_ws/install/teensy_node', 'merge_install': False, 'path': '/app/src/ros2_ws/src/teensy_node', 'symlink_install': True, 'test_result_base': None}
+[0.396s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.397s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.398s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/app/src/ros2_ws/src/gait_node' with build type 'ament_python'
+[0.398s] Level 1:colcon.colcon_core.shell:create_environment_hook('gait_node', 'ament_prefix_path')
+[0.401s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.401s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/gait_node/share/gait_node/hook/ament_prefix_path.ps1'
+[0.402s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/install/gait_node/share/gait_node/hook/ament_prefix_path.dsv'
+[0.403s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/gait_node/share/gait_node/hook/ament_prefix_path.sh'
+[0.405s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.405s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.411s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/app/src/ros2_ws/hexapod' with build type 'ament_python'
+[0.412s] Level 1:colcon.colcon_core.shell:create_environment_hook('hexapod', 'ament_prefix_path')
+[0.412s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/hexapod/share/hexapod/hook/ament_prefix_path.ps1'
+[0.414s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/install/hexapod/share/hexapod/hook/ament_prefix_path.dsv'
+[0.414s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/hexapod/share/hexapod/hook/ament_prefix_path.sh'
+[0.416s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.416s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.420s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/app/src/ros2_ws/src/teensy_node' with build type 'ament_python'
+[0.421s] Level 1:colcon.colcon_core.shell:create_environment_hook('teensy_node', 'ament_prefix_path')
+[0.421s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/teensy_node/share/teensy_node/hook/ament_prefix_path.ps1'
+[0.423s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/install/teensy_node/share/teensy_node/hook/ament_prefix_path.dsv'
+[0.424s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/teensy_node/share/teensy_node/hook/ament_prefix_path.sh'
+[0.427s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.427s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.765s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/app/src/ros2_ws/src/gait_node'
+[0.765s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.766s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.100s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/app/src/ros2_ws/hexapod'
+[1.101s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.101s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.443s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/app/src/ros2_ws/src/teensy_node'
+[1.443s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.443s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.085s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/app/src/ros2_ws/build/teensy_node': PYTHONPATH=/app/src/ros2_ws/build/teensy_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /app/src/ros2_ws/build/teensy_node/build --no-deps symlink_data
+[2.101s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/app/src/ros2_ws/build/gait_node': PYTHONPATH=/app/src/ros2_ws/build/gait_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /app/src/ros2_ws/build/gait_node/build --no-deps symlink_data
+[2.103s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/app/src/ros2_ws/build/hexapod': PYTHONPATH=/app/src/ros2_ws/build/hexapod/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /app/src/ros2_ws/build/hexapod/build --no-deps symlink_data
+[2.771s] Level 1:colcon.colcon_core.shell:create_environment_hook('gait_node', 'pythonpath_develop')
+[2.774s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/build/gait_node/share/gait_node/hook/pythonpath_develop.ps1'
+[2.773s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/app/src/ros2_ws/build/gait_node' returned '0': PYTHONPATH=/app/src/ros2_ws/build/gait_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /app/src/ros2_ws/build/gait_node/build --no-deps symlink_data
+[2.777s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/build/gait_node/share/gait_node/hook/pythonpath_develop.dsv'
+[2.778s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/build/gait_node/share/gait_node/hook/pythonpath_develop.sh'
+[2.787s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/gait_node' for CMake module files
+[2.788s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/gait_node' for CMake config files
+[2.789s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/gait_node/lib'
+[2.790s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/gait_node/bin'
+[2.791s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/gait_node/lib/pkgconfig/gait_node.pc'
+[2.791s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages'
+[2.791s] Level 1:colcon.colcon_core.shell:create_environment_hook('gait_node', 'pythonpath')
+[2.792s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/gait_node/share/gait_node/hook/pythonpath.ps1'
+[2.794s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/install/gait_node/share/gait_node/hook/pythonpath.dsv'
+[2.795s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/gait_node/share/gait_node/hook/pythonpath.sh'
+[2.797s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/gait_node/bin'
+[2.797s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(gait_node)
+[2.798s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/gait_node/share/gait_node/package.ps1'
+[2.800s] INFO:colcon.colcon_core.shell:Creating package descriptor '/app/src/ros2_ws/install/gait_node/share/gait_node/package.dsv'
+[2.802s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/gait_node/share/gait_node/package.sh'
+[2.835s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/gait_node/share/gait_node/package.bash'
+[2.841s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/gait_node/share/gait_node/package.zsh'
+[2.842s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/app/src/ros2_ws/install/gait_node/share/colcon-core/packages/gait_node)
+[2.844s] Level 1:colcon.colcon_core.shell:create_environment_hook('teensy_node', 'pythonpath_develop')
+[2.845s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/build/teensy_node/share/teensy_node/hook/pythonpath_develop.ps1'
+[2.846s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/build/teensy_node/share/teensy_node/hook/pythonpath_develop.dsv'
+[2.846s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/app/src/ros2_ws/build/teensy_node' returned '0': PYTHONPATH=/app/src/ros2_ws/build/teensy_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /app/src/ros2_ws/build/teensy_node/build --no-deps symlink_data
+[2.847s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/build/teensy_node/share/teensy_node/hook/pythonpath_develop.sh'
+[2.848s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/teensy_node' for CMake module files
+[2.849s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/teensy_node' for CMake config files
+[2.850s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/teensy_node/lib'
+[2.850s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/teensy_node/bin'
+[2.850s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/teensy_node/lib/pkgconfig/teensy_node.pc'
+[2.850s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/teensy_node/lib/python3.10/site-packages'
+[2.851s] Level 1:colcon.colcon_core.shell:create_environment_hook('teensy_node', 'pythonpath')
+[2.851s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/teensy_node/share/teensy_node/hook/pythonpath.ps1'
+[2.852s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/install/teensy_node/share/teensy_node/hook/pythonpath.dsv'
+[2.853s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/teensy_node/share/teensy_node/hook/pythonpath.sh'
+[2.854s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/teensy_node/bin'
+[2.854s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(teensy_node)
+[2.854s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/teensy_node/share/teensy_node/package.ps1'
+[2.855s] INFO:colcon.colcon_core.shell:Creating package descriptor '/app/src/ros2_ws/install/teensy_node/share/teensy_node/package.dsv'
+[2.856s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/teensy_node/share/teensy_node/package.sh'
+[2.857s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/teensy_node/share/teensy_node/package.bash'
+[2.857s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/teensy_node/share/teensy_node/package.zsh'
+[2.858s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/app/src/ros2_ws/install/teensy_node/share/colcon-core/packages/teensy_node)
+[2.858s] Level 1:colcon.colcon_core.shell:create_environment_hook('hexapod', 'pythonpath_develop')
+[2.859s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/build/hexapod/share/hexapod/hook/pythonpath_develop.ps1'
+[2.861s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/app/src/ros2_ws/build/hexapod' returned '0': PYTHONPATH=/app/src/ros2_ws/build/hexapod/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /app/src/ros2_ws/build/hexapod/build --no-deps symlink_data
+[2.861s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/build/hexapod/share/hexapod/hook/pythonpath_develop.dsv'
+[2.861s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/build/hexapod/share/hexapod/hook/pythonpath_develop.sh'
+[2.862s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/hexapod' for CMake module files
+[2.863s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/hexapod' for CMake config files
+[2.864s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/hexapod/lib'
+[2.864s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/hexapod/bin'
+[2.864s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/hexapod/lib/pkgconfig/hexapod.pc'
+[2.864s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages'
+[2.864s] Level 1:colcon.colcon_core.shell:create_environment_hook('hexapod', 'pythonpath')
+[2.865s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/hexapod/share/hexapod/hook/pythonpath.ps1'
+[2.865s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/app/src/ros2_ws/install/hexapod/share/hexapod/hook/pythonpath.dsv'
+[2.866s] INFO:colcon.colcon_core.shell:Creating environment hook '/app/src/ros2_ws/install/hexapod/share/hexapod/hook/pythonpath.sh'
+[2.867s] Level 1:colcon.colcon_core.environment:checking '/app/src/ros2_ws/install/hexapod/bin'
+[2.867s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(hexapod)
+[2.867s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/hexapod/share/hexapod/package.ps1'
+[2.868s] INFO:colcon.colcon_core.shell:Creating package descriptor '/app/src/ros2_ws/install/hexapod/share/hexapod/package.dsv'
+[2.869s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/hexapod/share/hexapod/package.sh'
+[2.870s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/hexapod/share/hexapod/package.bash'
+[2.870s] INFO:colcon.colcon_core.shell:Creating package script '/app/src/ros2_ws/install/hexapod/share/hexapod/package.zsh'
+[2.871s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/app/src/ros2_ws/install/hexapod/share/colcon-core/packages/hexapod)
+[2.871s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[2.872s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[2.872s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[2.872s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[2.880s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[2.881s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[2.881s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[2.881s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[2.881s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.NotSupported: Unable to autolaunch a dbus-daemon without a $DISPLAY for X11
+[2.881s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[2.882s] INFO:colcon.colcon_core.shell:Creating prefix script '/app/src/ros2_ws/install/local_setup.ps1'
+[2.883s] INFO:colcon.colcon_core.shell:Creating prefix util module '/app/src/ros2_ws/install/_local_setup_util_ps1.py'
+[2.885s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/app/src/ros2_ws/install/setup.ps1'
+[2.887s] INFO:colcon.colcon_core.shell:Creating prefix script '/app/src/ros2_ws/install/local_setup.sh'
+[2.888s] INFO:colcon.colcon_core.shell:Creating prefix util module '/app/src/ros2_ws/install/_local_setup_util_sh.py'
+[2.889s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/app/src/ros2_ws/install/setup.sh'
+[2.890s] INFO:colcon.colcon_core.shell:Creating prefix script '/app/src/ros2_ws/install/local_setup.bash'
+[2.891s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/app/src/ros2_ws/install/setup.bash'
+[2.893s] INFO:colcon.colcon_core.shell:Creating prefix script '/app/src/ros2_ws/install/local_setup.zsh'
+[2.893s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/app/src/ros2_ws/install/setup.zsh'

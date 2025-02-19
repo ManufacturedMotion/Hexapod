@@ -1,0 +1,39 @@
+running egg_info
+creating ../build/hexapod/hexapod.egg-info
+writing ../build/hexapod/hexapod.egg-info/PKG-INFO
+writing dependency_links to ../build/hexapod/hexapod.egg-info/dependency_links.txt
+writing entry points to ../build/hexapod/hexapod.egg-info/entry_points.txt
+writing requirements to ../build/hexapod/hexapod.egg-info/requires.txt
+writing top-level names to ../build/hexapod/hexapod.egg-info/top_level.txt
+writing manifest file '../build/hexapod/hexapod.egg-info/SOURCES.txt'
+reading manifest file '../build/hexapod/hexapod.egg-info/SOURCES.txt'
+writing manifest file '../build/hexapod/hexapod.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /app/src/ros2_ws/build/hexapod/build
+creating /app/src/ros2_ws/build/hexapod/build/lib
+creating /app/src/ros2_ws/build/hexapod/build/lib/hexapod
+copying hexapod/__init__.py -> /app/src/ros2_ws/build/hexapod/build/lib/hexapod
+copying hexapod/publisher_member_function.py -> /app/src/ros2_ws/build/hexapod/build/lib/hexapod
+copying hexapod/subscriber_member_function.py -> /app/src/ros2_ws/build/hexapod/build/lib/hexapod
+running install
+running install_lib
+creating /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod
+copying /app/src/ros2_ws/build/hexapod/build/lib/hexapod/__init__.py -> /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod
+copying /app/src/ros2_ws/build/hexapod/build/lib/hexapod/publisher_member_function.py -> /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod
+copying /app/src/ros2_ws/build/hexapod/build/lib/hexapod/subscriber_member_function.py -> /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod
+byte-compiling /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod/__init__.py to __init__.cpython-310.pyc
+byte-compiling /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod/publisher_member_function.py to publisher_member_function.cpython-310.pyc
+byte-compiling /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod/subscriber_member_function.py to subscriber_member_function.cpython-310.pyc
+running install_data
+creating /app/src/ros2_ws/install/hexapod/share/ament_index
+creating /app/src/ros2_ws/install/hexapod/share/ament_index/resource_index
+creating /app/src/ros2_ws/install/hexapod/share/ament_index/resource_index/packages
+copying resource/hexapod -> /app/src/ros2_ws/install/hexapod/share/ament_index/resource_index/packages
+copying package.xml -> /app/src/ros2_ws/install/hexapod/share/hexapod
+running install_egg_info
+Copying ../build/hexapod/hexapod.egg-info to /app/src/ros2_ws/install/hexapod/lib/python3.10/site-packages/hexapod-0.0.0-py3.10.egg-info
+running install_scripts
+Installing listener script to /app/src/ros2_ws/install/hexapod/lib/hexapod
+Installing talker script to /app/src/ros2_ws/install/hexapod/lib/hexapod
+writing list of installed files to '/app/src/ros2_ws/build/hexapod/install.log'

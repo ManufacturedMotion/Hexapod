@@ -1,0 +1,19 @@
+[1.699s] Invoking command in '/app/src/ros2_ws/build/gait_node': PYTHONPATH=/app/src/ros2_ws/build/gait_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /app/src/ros2_ws/build/gait_node/build --no-deps symlink_data --force
+[2.093s] running develop
+[2.262s] running egg_info
+[2.262s] writing gait_node.egg-info/PKG-INFO
+[2.262s] writing dependency_links to gait_node.egg-info/dependency_links.txt
+[2.265s] writing entry points to gait_node.egg-info/entry_points.txt
+[2.266s] writing requirements to gait_node.egg-info/requires.txt
+[2.267s] writing top-level names to gait_node.egg-info/top_level.txt
+[2.271s] reading manifest file 'gait_node.egg-info/SOURCES.txt'
+[2.273s] writing manifest file 'gait_node.egg-info/SOURCES.txt'
+[2.276s] running build_ext
+[2.277s] Creating /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait-node.egg-link (link to .)
+[2.278s] Installing gait_node script to /app/src/ros2_ws/install/gait_node/lib/gait_node
+[2.279s] 
+[2.279s] Installed /app/src/ros2_ws/build/gait_node
+[2.281s] running symlink_data
+[2.282s] symbolically linking /app/src/ros2_ws/build/gait_node/resource/gait_node -> /app/src/ros2_ws/install/gait_node/share/ament_index/resource_index/packages
+[2.282s] symbolically linking /app/src/ros2_ws/build/gait_node/package.xml -> /app/src/ros2_ws/install/gait_node/share/gait_node
+[2.411s] Invoked command in '/app/src/ros2_ws/build/gait_node' returned '0': PYTHONPATH=/app/src/ros2_ws/build/gait_node/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /app/src/ros2_ws/build/gait_node/build --no-deps symlink_data --force

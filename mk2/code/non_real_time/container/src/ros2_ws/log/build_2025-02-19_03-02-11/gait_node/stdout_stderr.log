@@ -1,0 +1,35 @@
+running egg_info
+creating ../../build/gait_node/gait_node.egg-info
+writing ../../build/gait_node/gait_node.egg-info/PKG-INFO
+writing dependency_links to ../../build/gait_node/gait_node.egg-info/dependency_links.txt
+writing entry points to ../../build/gait_node/gait_node.egg-info/entry_points.txt
+writing requirements to ../../build/gait_node/gait_node.egg-info/requires.txt
+writing top-level names to ../../build/gait_node/gait_node.egg-info/top_level.txt
+writing manifest file '../../build/gait_node/gait_node.egg-info/SOURCES.txt'
+reading manifest file '../../build/gait_node/gait_node.egg-info/SOURCES.txt'
+writing manifest file '../../build/gait_node/gait_node.egg-info/SOURCES.txt'
+running build
+running build_py
+creating /app/src/ros2_ws/build/gait_node/build
+creating /app/src/ros2_ws/build/gait_node/build/lib
+creating /app/src/ros2_ws/build/gait_node/build/lib/gait_node
+copying gait_node/__init__.py -> /app/src/ros2_ws/build/gait_node/build/lib/gait_node
+copying gait_node/gait.py -> /app/src/ros2_ws/build/gait_node/build/lib/gait_node
+running install
+running install_lib
+creating /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node
+copying /app/src/ros2_ws/build/gait_node/build/lib/gait_node/__init__.py -> /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node
+copying /app/src/ros2_ws/build/gait_node/build/lib/gait_node/gait.py -> /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node
+byte-compiling /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node/__init__.py to __init__.cpython-310.pyc
+byte-compiling /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node/gait.py to gait.cpython-310.pyc
+running install_data
+creating /app/src/ros2_ws/install/gait_node/share/ament_index
+creating /app/src/ros2_ws/install/gait_node/share/ament_index/resource_index
+creating /app/src/ros2_ws/install/gait_node/share/ament_index/resource_index/packages
+copying resource/gait_node -> /app/src/ros2_ws/install/gait_node/share/ament_index/resource_index/packages
+copying package.xml -> /app/src/ros2_ws/install/gait_node/share/gait_node
+running install_egg_info
+Copying ../../build/gait_node/gait_node.egg-info to /app/src/ros2_ws/install/gait_node/lib/python3.10/site-packages/gait_node-0.0.0-py3.10.egg-info
+running install_scripts
+Installing gait_node script to /app/src/ros2_ws/install/gait_node/lib/gait_node
+writing list of installed files to '/app/src/ros2_ws/build/gait_node/install.log'
