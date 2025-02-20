@@ -2,6 +2,9 @@
 #include <math.h>
 #include <stdbool.h>
 #include <Arduino.h>
+#include <ArduinoJson.h>
+#include "json_joints.hpp"
+
 Hexapod hexapod;
 
 _Bool commandQueueNeedsExpansion();
@@ -221,14 +224,42 @@ void executeCommand(String command) {
         hexapod.walkSetup(position, speed);
       }
       else if (buffer[1].equals("2")) {
-        //for position debug -- can change G2 later
-        for (uint8_t i = 0; i < cmd_line_word_count; i++) {
+
+        //TODO - when refactoring we can remove the need to rejoin or split the strings if we use json
+        //TODO - do we want this to error if < 18 positions provided? Current implementation allows for any number of key value pairs
+        String joined_command;
+        for (uint8_t i = 1; i < cmd_line_word_count; i++) {
           current_command_substring = split_command[i];
-          updateVariables(current_command_substring);
+          joined_command += current_command_substring;
+          joined_command += " ";
         }
-        SERIAL_OUTPUT.printf("parsing success; moving leg %f motor %f to pos %f at speed\n", x, y, z, roll);
-        //hexapod.moveLegAxisToPos(x, y, z);
-        hexapod.legs[int(x)].axes[int(y)].moveToPosAtSpeed(z, roll);
+
+        JsonDocument json_joints = getJsonJoints();
+        JsonDocument joints; 
+        DeserializationError json_error = deserializeJson(joints, joined_command);
+
+        if (json_error) {
+          SERIAL_OUTPUT.printf("Error converting command to JSON object!");
+          SERIAL_OUTPUT.println(json_error.f_str());
+          return;
+        }
+
+        JsonObject json_command = joints.as<JsonObject>();
+        for (JsonPair kv : json_command) {
+          const char* key = kv.key().c_str();
+
+          //TODO - better way to capitalize key? Or should we use lowercase keys? i.e. l0s0, etc
+          //TODO - move this to a function in the string parsing files if we decide to use Capital keys
+          char key_upper[10];
+          strncpy(key_upper, key, sizeof(key_upper) - 1);
+          key_upper[sizeof(key_upper) - 1] = '\0'; 
+          String key_uppercase = String(key_upper).toUpperCase();
+          
+          uint8_t leg = json_joints[key_uppercase]["leg"];
+          uint8_t axis = json_joints[key_uppercase]["axis"];
+          double pos = kv.value().as<double>();
+          hexapod.legs[leg].axes[axis].moveToPosAtSpeed(pos, speed);
+        }
       }
       else if (buffer[1].equals("9")) {
         for (uint8_t i = 0; i < cmd_line_word_count; i++) {
