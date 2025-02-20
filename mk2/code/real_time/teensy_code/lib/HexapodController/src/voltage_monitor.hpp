@@ -3,10 +3,10 @@
 #include <stdbool.h>
 
 #define VSENSE_PIN 38 
-//#define VSENSE_FACTOR 0.016113
-#define VSENSE_FACTOR 0.016325 //still too low? sensor seems current based not vdd??
+//#define VSENSE_FACTOR 0.016113 
+#define VSENSE_FACTOR 0.0162 //0.0175 //still too low? sensor seems current based not vdd??
 
-#define VOLTAGE_DEBUG false
+#define VOLTAGE_DEBUG true
 
 #ifndef VOLT_SENSE
 #define VOLT_SENSE
@@ -22,7 +22,7 @@
             
         private:
             uint16_t _measure_interval = 0;
-            uint16_t _record_interval = 0;
+            uint16_t _report_interval = 0;
             uint8_t _num_measurements = 0;
             float _change_threshold = 0;
             uint32_t _last_measure_time = 0;

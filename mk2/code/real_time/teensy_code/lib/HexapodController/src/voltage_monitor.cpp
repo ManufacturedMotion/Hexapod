@@ -4,21 +4,20 @@
 #include <stdbool.h>
 #include <cmath>
 
-
-//TODO - check if this stuff is blocking or nonblocking (can we move motors while measuring?)
+//TODO -this stuff is blocking. It needs to be non blocking
 //after above fixed can work on polishing factor and change threshold
 
 VoltageSensor::VoltageSensor() {
-    _record_interval = 3000;
-    _measure_interval = 428;
-    _num_measurements = uint8_t(floor(_record_interval / _measure_interval));
+    _report_interval = 4500;
+    _measure_interval = 500;
+    _num_measurements = uint8_t(floor(_report_interval / _measure_interval));
     _change_threshold = 5;
-    pinMode(VSENSE_PIN, INPUT);
+    pinMode(VSENSE_PIN, INPUT); //INPUT_DISABLE
 }
 
 float VoltageSensor::checkVoltage() {
     if (canRead()) {
-        //TODO - two options; only report new vdd OR always report measured vdd every record interval
+        //TODO - two options; only report new vdd OR always report measured vdd every report interval
         float current_vdd = takeReading();
         //if (canSend(current_vdd)) {
         if (current_vdd != 0) {
@@ -34,7 +33,7 @@ float VoltageSensor::checkVoltage() {
 }
 
 _Bool VoltageSensor::canRead() {
-    if ((millis() - _last_measure_time) >= _record_interval) {
+    if ((millis() - _last_measure_time) >= _report_interval) {
         return true;
     }
     else {
