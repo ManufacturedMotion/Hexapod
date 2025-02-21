@@ -8,14 +8,8 @@ apt-get upgrade -y
 
 # Setup python and system dependencies
 ADD setup /app/setup
-RUN cat /app/setup/system-requirements.txt | xargs apt-get install -y
+RUN bash -c 'apt-get install -y $(cat /app/setup/system-requirements.txt)'
 RUN pip install -r /app/setup/python-requirements.txt
-
-RUN sudo apt install -y \
-    ros-iron-teleop-twist-keyboard \
-    ros-iron-teleop-twist-joy \
-    ros-iron-joy-linux \
-    ros-iron-rqt*
 
 # Put ros commands on path
 RUN echo "source \"/opt/ros/$ROS_DISTRO/setup.bash\"" >> ~/.bashrc && \
