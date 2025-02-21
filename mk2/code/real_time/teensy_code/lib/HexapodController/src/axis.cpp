@@ -57,7 +57,6 @@ uint8_t Axis::moveToPosAtSpeed(double pos, double target_speed) { //Must call ru
         _move_time = (fabs(getCurrentPos() - pos) / speed) * 1000;
     }
     _start_rads = getCurrentPos();
-    //Serial.printf("start pos is: %f, target pos is %f\n", _start_rads, pos);
     _end_rads = pos;
     _move_progress = 0;
     _move_start_time = millis();

@@ -23,7 +23,6 @@
             double pitch = 0;
             double yaw = 0;
             double speed = 100;
-            _Bool wait = false;
 
         private:
             Hexapod _Hexapod; 

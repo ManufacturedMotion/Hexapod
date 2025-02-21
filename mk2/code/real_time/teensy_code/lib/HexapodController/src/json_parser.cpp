@@ -9,7 +9,7 @@ JsonParser::JsonParser() {
     return;
 }
 
-JsonParser::JsonParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed, _Bool &wait) {
+JsonParser::JsonParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed) {
     _Hexapod = hexapod;
     _x = x;
     _y = y;
@@ -18,7 +18,6 @@ JsonParser::JsonParser(Hexapod &hexapod, double &x, double &y, double &z, double
     _pitch = pitch;
     _yaw = yaw;
     _speed = speed;
-    _wait = wait;
     json_joints = getJsonJoints();
 }
 
@@ -199,9 +198,6 @@ void JsonParser::updateVariables(const String &command_str) {
         }
         else if (key == "SPD") {
             _speed = kv.value().as<double>();
-        }
-        else if (key == "WAIT") {
-            _wait = kv.value().as<bool>();
         }
         else if (key == "TIME") {
             _movement_time = kv.value().as<uint16_t>(); 

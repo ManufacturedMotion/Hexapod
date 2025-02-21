@@ -11,9 +11,9 @@
 
 SerialParser::SerialParser(Hexapod &hexapod) {
     _Hexapod = hexapod;
-    _JsonParser = JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed, wait);
+    _JsonParser = JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed);
     #if DEBUG
-        _GcodeParser = GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed, wait);
+        _GcodeParser = GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed);
     #endif
 }
 

@@ -10,7 +10,7 @@ GcodeParser::GcodeParser() {
     return;
 }
 
-GcodeParser::GcodeParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed, _Bool &wait) {
+GcodeParser::GcodeParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed) {
     _Hexapod = hexapod;
     _x = x;
     _y = y;
@@ -19,7 +19,6 @@ GcodeParser::GcodeParser(Hexapod &hexapod, double &x, double &y, double &z, doub
     _pitch = pitch;
     _yaw = yaw;
     _speed = speed;
-    _wait = wait;
 }
 
 void GcodeParser::parseCommand(String command) {
@@ -139,9 +138,6 @@ void GcodeParser::updateVariables(const String &command) {
         else if (token[0] == 'V') {
             _speed = std::stod(token.substr(1)); 
         }
-        else if (token[0] == 'H') {
-            _wait = (std::stoi(token.substr(1)) != 0); 
-        }
         else if (token[0] == 'T') {
             _movement_time = (std::stoi(token.substr(1)) != 0); 
         }
@@ -176,5 +172,3 @@ _Bool GcodeParser::optimizableCommand(const String &command) {
     return ret_val;
 
 }
-
-//note speed char changed from S -> V
