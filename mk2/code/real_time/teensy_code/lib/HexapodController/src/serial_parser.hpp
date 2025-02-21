@@ -23,9 +23,10 @@
             double pitch = 0;
             double yaw = 0;
             double speed = 100;
+            void test(Hexapod hexapod);
 
         private:
-            Hexapod _Hexapod; 
+            Hexapod &_Hexapod; 
             JsonParser _JsonParser;
             #if DEBUG
                 GcodeParser _GcodeParser;

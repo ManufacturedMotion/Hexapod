@@ -5,12 +5,7 @@
 #include "position.hpp"
 #include "json_joints.hpp"
 
-JsonParser::JsonParser() {
-    return;
-}
-
-JsonParser::JsonParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed) {
-    _Hexapod = hexapod;
+JsonParser::JsonParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed) : _Hexapod(hexapod) {
     _x = x;
     _y = y;
     _z = z;

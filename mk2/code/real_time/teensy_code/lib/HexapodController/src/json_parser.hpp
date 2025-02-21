@@ -9,7 +9,6 @@
 
     class JsonParser {
         public:
-            JsonParser();
             JsonParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed);
             void parseCommand(String command_str);
             _Bool optimizableCommand(String command);
@@ -21,7 +20,7 @@
             JsonDocument json_joints;
 
         private:
-            Hexapod _Hexapod;
+            Hexapod &_Hexapod;
             double _x;
             double _y;
             double _z;

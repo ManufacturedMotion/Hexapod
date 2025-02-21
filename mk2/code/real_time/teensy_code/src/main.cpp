@@ -2,8 +2,6 @@
 #include <math.h>
 #include <stdbool.h>
 #include <Arduino.h>
-#include <ArduinoJson.h>
-#include "json_joints.hpp"
 
 Hexapod hexapod;
 SerialParser parser(hexapod);
@@ -48,7 +46,8 @@ void loop() {
   if (!command_queue.isEmpty()) {
 
     //TODO - need to find fix for hexapod.isBusy() - seems to get stuck at 1
-  
+    parser.parseCommand(command_queue.dequeue());
+
     if (hexapod.isBusy()) {
 
     } else {

@@ -9,12 +9,14 @@
     #include "gcode_parser.hpp"
 #endif
 
-SerialParser::SerialParser(Hexapod &hexapod) {
-    _Hexapod = hexapod;
-    _JsonParser = JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed);
-    #if DEBUG
-        _GcodeParser = GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed);
-    #endif
+SerialParser::SerialParser(Hexapod &hexapod) 
+    : _Hexapod(hexapod),  // Initialize reference _Hexapod with the passed object
+      _JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed),  // Initialize JsonParser
+      #if DEBUG
+      _GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed)  // Initialize GcodeParser
+      #endif
+{
+    
 }
 
 void SerialParser::parseCommand(String command) {
@@ -38,16 +40,23 @@ void SerialParser::parseCommand(String command) {
 
 _Bool SerialParser::optimizableCommand(const String &command) {
 
-    _Bool ret_val = false;
+    _Bool retval = false;
     if (command.startsWith("{")) {
-        ret_val = _JsonParser.optimizableCommand(command);
+        retval = _JsonParser.optimizableCommand(command);
     }
     else {
         #if DEBUG
-            ret_val = _GcodeParser.optimizableCommand(command);
+            retval = _GcodeParser.optimizableCommand(command);
         #endif
     }
 
-    return ret_val;
+    return retval;
 
+}
+
+void SerialParser::test(Hexapod hexapod) {
+    //_GcodeParser.performPreset(1);
+    //hexapod.sit();
+    //_Hexapod.moveToZeros();
+    //_Hexapod.sit();
 }

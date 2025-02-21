@@ -8,7 +8,6 @@
 
     class GcodeParser {
         public:
-            GcodeParser();
             GcodeParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed);
             void parseCommand(String command);
             void performPreset(uint8_t preset);
@@ -18,7 +17,7 @@
             uint8_t movement_sel = 255;
 
         private:
-            Hexapod _Hexapod;
+            Hexapod &_Hexapod;
             double _x;
             double _y;
             double _z;

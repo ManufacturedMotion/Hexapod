@@ -5,13 +5,7 @@
 #include <sstream>
 #include <stdbool.h>
 
-
-GcodeParser::GcodeParser() {
-    return;
-}
-
-GcodeParser::GcodeParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed) {
-    _Hexapod = hexapod;
+GcodeParser::GcodeParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed) : _Hexapod(hexapod){
     _x = x;
     _y = y;
     _z = z;
@@ -38,6 +32,7 @@ void GcodeParser::parseCommand(String command) {
             _position.set(_x, _y, _z, _roll, _pitch, _yaw);
             performMovement(movement_sel);
             movement_sel = 255;
+            return;
         }
         else {
             SERIAL_OUTPUT.printf("ERROR! Unsupported Gcode command received via Serial");
@@ -156,7 +151,7 @@ void GcodeParser::updateVariables(const String &command) {
 
 _Bool GcodeParser::optimizableCommand(const String &command) {
 
-    _Bool ret_val = false;
+    _Bool retval = false;
     String command_copy = command;
     String caps_command = command_copy.toUpperCase();
     std::string cmd = caps_command.c_str();
@@ -164,11 +159,11 @@ _Bool GcodeParser::optimizableCommand(const String &command) {
     std::string token;
 
     while (ss >> token) {
-        if (token[0] == 'G' && token[1] == 1) {
-            ret_val = true;
+        if (token[0] == 'G' && token[1] == '1') {
+            retval = true;
         }
     }
 
-    return ret_val;
+    return retval;
 
 }
