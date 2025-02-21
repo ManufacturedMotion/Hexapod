@@ -17,9 +17,9 @@ Hexapod::Hexapod() {
 
 void Hexapod::startUp() {
 
-	//#if DEBUG
+	#if DEBUG
 	return; 
-	//#endif
+	#endif
 
 	uint32_t start_time = millis();
 	while(1) {

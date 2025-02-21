@@ -16,15 +16,13 @@ GcodeParser::GcodeParser(Hexapod &hexapod, double &x, double &y, double &z, doub
 }
 
 void GcodeParser::parseCommand(String command) {
-
+    
         String caps_command = command.toUpperCase();
         if (caps_command.startsWith("P")) {
             String preset_sel_str = caps_command.substring(1);
             uint8_t preset_sel = 255;
             preset_sel = uint8_t(std::stoi(preset_sel_str.c_str())); 
-            SERIAL_OUTPUT.printf("PRESET SEL IS %hu \n", preset_sel);
             performPreset(preset_sel);
-            return;
         }
         else if (caps_command.startsWith("G")) {
             std::string command_str = caps_command.c_str();
@@ -32,18 +30,15 @@ void GcodeParser::parseCommand(String command) {
             _position.set(_x, _y, _z, _roll, _pitch, _yaw);
             performMovement(movement_sel);
             movement_sel = 255;
-            return;
         }
         else {
             SERIAL_OUTPUT.printf("ERROR! Unsupported Gcode command received via Serial");
-            return;
         }
-
+    return;
 }
 
 void GcodeParser::performPreset(uint8_t preset) {
 
-    SERIAL_OUTPUT.printf("PRESET IS %hu \n", preset);
     switch(preset) {
         default:
             SERIAL_OUTPUT.printf("ERROR! Gcode parser detected input for a preset that is not yet supported: %hu.\n", preset);
@@ -61,7 +56,7 @@ void GcodeParser::performPreset(uint8_t preset) {
             _Hexapod.stand();
             break;
     }
-
+    return;
 }
 
 void GcodeParser::performMovement(uint8_t movement) {
@@ -99,7 +94,7 @@ void GcodeParser::performMovement(uint8_t movement) {
             _Hexapod.linearMoveSetup(_position, _speed);
             break;       
     }
-
+    return;
 }
 
 void GcodeParser::updateVariables(const String &command) {
@@ -146,7 +141,7 @@ void GcodeParser::updateVariables(const String &command) {
             }
         }
     }
-
+    return;
 }
 
 _Bool GcodeParser::optimizableCommand(const String &command) {
@@ -157,13 +152,10 @@ _Bool GcodeParser::optimizableCommand(const String &command) {
     std::string cmd = caps_command.c_str();
     std::stringstream ss(cmd);
     std::string token;
-
     while (ss >> token) {
         if (token[0] == 'G' && token[1] == '1') {
             retval = true;
         }
     }
-
     return retval;
-
 }

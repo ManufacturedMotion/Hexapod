@@ -33,8 +33,7 @@ void JsonParser::parseCommand(String command_str) {
         String preset_sel = "None";
         preset_sel = String(command["PRE"].as<const char*>()); 
         SERIAL_OUTPUT.printf("JSON PRESET SEL IS %s\n", preset_sel);
-        performPreset(preset_sel);
-        return;
+        performPreset(preset_sel);  
     }
     else if (command_type == "MV") {
         updateVariables(caps_command); 
@@ -45,6 +44,7 @@ void JsonParser::parseCommand(String command_str) {
     else {
         SERIAL_OUTPUT.printf("ERROR! Unsupported JSON command received via Serial");
     }
+    return;
 }
 
 String JsonParser::getCommandType(const String &command_str) {
@@ -64,7 +64,6 @@ String JsonParser::getCommandType(const String &command_str) {
         return String(kv.key().c_str());
     }
     return key;
-
 }
 
 _Bool JsonParser::optimizableCommand(String command_str) {
@@ -100,7 +99,6 @@ _Bool JsonParser::optimizableCommand(String command_str) {
 
 void JsonParser::performPreset(String preset) {
 
-    SERIAL_OUTPUT.printf("JSON PRESET IS %s\n", preset);
     if (preset == "Z") {
         SERIAL_OUTPUT.printf("JSON parsing success; starfish preset selected (move all motors to zero).\n");
         _Hexapod.moveToZeros();
@@ -116,7 +114,7 @@ void JsonParser::performPreset(String preset) {
     else {
         SERIAL_OUTPUT.printf("ERROR! JSON parser detected input for a preset that is not yet supported: %s.\n", preset);
     }
-
+    return;
 }
 
 void JsonParser::performMovement(String movement) {
@@ -152,7 +150,7 @@ void JsonParser::performMovement(String movement) {
     else {
         SERIAL_OUTPUT.printf("ERROR! JSON parser detected input for a movement that is not yet supported: %hu. \n", movement);
     }
-
+    return;
 }
 
 void JsonParser::updateVariables(const String &command_str) {
@@ -206,5 +204,5 @@ void JsonParser::updateVariables(const String &command_str) {
             }
         }
     }
-
+    return;
 }

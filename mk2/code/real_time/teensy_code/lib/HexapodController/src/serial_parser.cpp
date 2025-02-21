@@ -10,13 +10,13 @@
 #endif
 
 SerialParser::SerialParser(Hexapod &hexapod) 
-    : _Hexapod(hexapod),  // Initialize reference _Hexapod with the passed object
-      _JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed),  // Initialize JsonParser
-      #if DEBUG
-      _GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed)  // Initialize GcodeParser
-      #endif
+    : _Hexapod(hexapod),  
+    _JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed),  
+    #if DEBUG
+        _GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed)  
+    #endif
 {
-    
+    return;
 }
 
 void SerialParser::parseCommand(String command) {
