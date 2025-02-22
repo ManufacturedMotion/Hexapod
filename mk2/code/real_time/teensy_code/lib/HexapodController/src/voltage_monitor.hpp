@@ -11,6 +11,8 @@
 #ifndef VOLT_SENSE
 #define VOLT_SENSE
 
+    #define NUM_MEASUREMENTS 7
+
     class VoltageSensor {
         public:
             VoltageSensor();
@@ -24,9 +26,8 @@
         private:
             uint16_t _measure_interval = 0;
             uint16_t _report_interval = 0;
-            uint8_t _num_measurements = 0;
             float _change_threshold = 0;
-            uint16_t _last_measure_time = 0;
+            uint32_t _last_measure_time = 0;
             float _last_reported_vdd = 0;
             float _current_vdd = 0;
             float _last_raw_vdd = 0;

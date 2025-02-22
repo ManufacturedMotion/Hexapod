@@ -10,9 +10,8 @@ uint32_t VoltageSensor::_voltage_sensor_timer = 0;
 
 VoltageSensor::VoltageSensor() {
     _report_interval = 7000;
-    _measure_interval = 1000;
-    _num_measurements = uint8_t(floor(_report_interval / _measure_interval));
-    _change_threshold = 0.15;
+    _measure_interval = uint16_t(floor(_report_interval / NUM_MEASUREMENTS));
+    _change_threshold = 0.1;
     pinMode(VSENSE_PIN, INPUT); //INPUT_DISABLE
 }
 
@@ -43,28 +42,40 @@ _Bool VoltageSensor::canRead() {
 }
 
 float VoltageSensor::takeReading() {
-    uint16_t measure_start_time = _voltage_sensor_timer;
-    float raw_vdds[_num_measurements];
-
-    uint16_t measure_times[_num_measurements];
-    for (uint8_t measure_index = 0; measure_index < _num_measurements; measure_index++) {
-        measure_times[measure_index] = measure_start_time + (measure_index * _measure_interval);
-    }
-
-    for (uint8_t measure_index = 0; measure_index < _num_measurements; measure_index++) {
-        while(1) {
-            if (_voltage_sensor_timer >= measure_times[measure_index]) {
-                raw_vdds[measure_index] = analogRead(VSENSE_PIN);
-                #if VOLTAGE_DEBUG
-                    SERIAL_OUTPUT.printf("raw vdd %hu is %f \n", measure_index, raw_vdds[measure_index]);
-                #endif
-                break;
-            }
+    static uint32_t measure_start_time = 0;
+    static float raw_vdds[NUM_MEASUREMENTS];
+    static uint32_t measure_times[NUM_MEASUREMENTS];
+    
+    if (measure_start_time == 0)  {
+        measure_start_time = _voltage_sensor_timer;
+        for (uint8_t measure_index = 0; measure_index < NUM_MEASUREMENTS; measure_index++) {
+            measure_times[measure_index] = measure_start_time + (measure_index * _measure_interval);
         }
     }
 
-    float raw_vdd = getMode(raw_vdds, _num_measurements);
-    return (round((raw_vdd * VSENSE_FACTOR) * 100) / 100); 
+    for (uint8_t measure_index = 0; measure_index < NUM_MEASUREMENTS; measure_index++) {
+        if ((_voltage_sensor_timer >= measure_times[measure_index]) && measure_times[measure_index] != 0) {
+            raw_vdds[measure_index] = analogRead(VSENSE_PIN);
+            //overwrite measure time after saving vdd. prevents same reading from being recorded multiple times
+            measure_times[measure_index] = 0; 
+            #if VOLTAGE_DEBUG
+                SERIAL_OUTPUT.printf("raw vdd %hu is %f \n", measure_index, raw_vdds[measure_index]);
+            #endif
+        }
+    }
+
+    //only report vdd if we took all measurements
+    if (measure_times[NUM_MEASUREMENTS - 1] == 0) {
+        float raw_vdd = getMode(raw_vdds, NUM_MEASUREMENTS);
+        measure_start_time = 0;
+        for (uint8_t i = 0; i < NUM_MEASUREMENTS; i++) {
+            raw_vdds[i] = 0;
+        }
+        return (raw_vdd * VSENSE_FACTOR); 
+    }
+    else {
+        return 0;
+    }
 }
 
 _Bool VoltageSensor::canSend(float voltage) {
