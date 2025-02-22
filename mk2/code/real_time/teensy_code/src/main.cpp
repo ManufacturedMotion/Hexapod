@@ -22,6 +22,7 @@ commandQueue command_queue;
 void setup() {
   Serial.begin(115200);
   Serial4.begin(115200);
+  hexapod.startUp();
 }
 
 void loop() {
