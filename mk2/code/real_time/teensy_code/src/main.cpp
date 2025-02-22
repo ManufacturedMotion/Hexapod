@@ -32,11 +32,7 @@ void loop() {
   static _Bool expand_queue_flag = false;
   static _Bool started_idle_timer = false;
 
-  voltage_measurement = hexapod.voltageSensor.checkVoltage(); 
-  if (voltage_measurement != 0) {
-    //SERIAL_OUTPUT.printf("VOLTAGE READING: %f, %f\n", voltage_measurement, (voltage_measurement * VSENSE_FACTOR));
-    SERIAL_OUTPUT.printf("VOLTAGE READING: %.2f\n", voltage_measurement);
-  }
+  hexapod.voltageSensor.checkVoltage(); 
 
   if (Serial.available() > 0 || Serial4.available() > 0) {
     if (Serial4.available() > 0) {

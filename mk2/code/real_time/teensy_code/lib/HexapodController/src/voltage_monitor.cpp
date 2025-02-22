@@ -3,37 +3,38 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <cmath>
+#include "config.hpp"
+#include <ArduinoJson.h>
 
-//TODO -this stuff is blocking. It needs to be non blocking
-//after above fixed can work on polishing factor and change threshold
+uint32_t VoltageSensor::_voltage_sensor_timer = 0;
 
 VoltageSensor::VoltageSensor() {
-    _report_interval = 4500;
-    _measure_interval = 500;
+    _report_interval = 7000;
+    _measure_interval = 1000;
     _num_measurements = uint8_t(floor(_report_interval / _measure_interval));
-    _change_threshold = 5;
+    _change_threshold = 0.15;
     pinMode(VSENSE_PIN, INPUT); //INPUT_DISABLE
 }
 
-float VoltageSensor::checkVoltage() {
+void VoltageSensor::checkVoltage() {
     if (canRead()) {
-        //TODO - two options; only report new vdd OR always report measured vdd every report interval
         float current_vdd = takeReading();
-        //if (canSend(current_vdd)) {
-        if (current_vdd != 0) {
-            _last_measure_time = millis();
-            _last_reported_vdd = current_vdd;
-            return current_vdd;
+        if (canSend(current_vdd)) {
+            if (current_vdd != 0) {
+                _last_measure_time = _voltage_sensor_timer;
+                _last_reported_vdd = current_vdd;
+                json_voltage["VDD"] = round(current_vdd * 100) / 100.0;
+                serializeJson(json_voltage, SERIAL_OUTPUT);
+                SERIAL_OUTPUT.println();
+                _voltage_sensor_timer = 0;
+            }
         }
-        return 0;
     }
-    else {
-        return 0; 
-    }
+    _voltage_sensor_timer++;
 }
 
 _Bool VoltageSensor::canRead() {
-    if ((millis() - _last_measure_time) >= _report_interval) {
+    if ((_voltage_sensor_timer - _last_measure_time) >= _report_interval) {
         return true;
     }
     else {
@@ -42,20 +43,20 @@ _Bool VoltageSensor::canRead() {
 }
 
 float VoltageSensor::takeReading() {
-    uint32_t measure_start_time = millis();
+    uint16_t measure_start_time = _voltage_sensor_timer;
     float raw_vdds[_num_measurements];
 
-    uint32_t measure_times[_num_measurements];
+    uint16_t measure_times[_num_measurements];
     for (uint8_t measure_index = 0; measure_index < _num_measurements; measure_index++) {
         measure_times[measure_index] = measure_start_time + (measure_index * _measure_interval);
     }
 
     for (uint8_t measure_index = 0; measure_index < _num_measurements; measure_index++) {
         while(1) {
-            if (millis() >= measure_times[measure_index]) {
+            if (_voltage_sensor_timer >= measure_times[measure_index]) {
                 raw_vdds[measure_index] = analogRead(VSENSE_PIN);
                 #if VOLTAGE_DEBUG
-                    Serial.printf("raw vdd %hu is %f \n", measure_index, raw_vdds[measure_index]);
+                    SERIAL_OUTPUT.printf("raw vdd %hu is %f \n", measure_index, raw_vdds[measure_index]);
                 #endif
                 break;
             }
@@ -100,7 +101,7 @@ float VoltageSensor::getMode(float voltages[], const uint8_t num_measurements) {
         }
     }
     #if VOLTAGE_DEBUG
-        Serial.printf("most frequent raw voltage was %f \n", voltage);
+        SERIAL_OUTPUT.printf("most frequent raw voltage was %f \n", voltage);
     #endif
     return voltage;
 }
