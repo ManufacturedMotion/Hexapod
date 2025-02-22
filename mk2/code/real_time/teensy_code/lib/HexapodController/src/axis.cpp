@@ -50,7 +50,12 @@ uint8_t Axis::moveToPosAtSpeed(double pos, double target_speed) { //Must call ru
         speed = _max_speed;
         retval = 1; // move speed capped
     }
-    _move_time = (fabs(getCurrentPos() - pos) / speed) * 1000;
+    if ((getCurrentPos() - pos) == 0) {
+        _move_time = 1;
+    }
+    else {
+        _move_time = (fabs(getCurrentPos() - pos) / speed) * 1000;
+    }
     _start_rads = getCurrentPos();
     _end_rads = pos;
     _move_progress = 0;

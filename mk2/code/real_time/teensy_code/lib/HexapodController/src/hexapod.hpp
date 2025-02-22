@@ -54,6 +54,7 @@
 			ThreeByOne get_max_step(ThreeByOne);
 			void legEnqueue(uint8_t leg, ThreeByOne op_end_pos, double op_speed, _Bool op_relative, uint32_t op_wait_time_ms = 0);
 			void legEnqueue(uint8_t leg, ThreeByOne op_end_pos, uint32_t op_time, _Bool op_relative, uint32_t op_wait_time_ms = 0);
+			void startUp();
 			VoltageSensor voltageSensor;
 
 		private:

@@ -2,28 +2,17 @@
 #include <math.h>
 #include <stdbool.h>
 #include <Arduino.h>
+
 Hexapod hexapod;
+SerialParser parser(hexapod);
 
 _Bool commandQueueNeedsExpansion();
-void splitString(String command, String sub_string, String split_words[], uint32_t& num_words);
-void updateVariables(String current_command_substring);
-void executeCommand(String command);
+
+//TODO - MAYBE NEW PR AFTER PARSING TO MOVE THIS?
 _Bool commandQueueNeedsExpansion();
 String getOptimizedCommand();
 String combineSteps(String step_1, String step_2);
-String getCommandType(String command);
 
-#if DEBUG
-#define SERIAL_OUTPUT Serial
-#else
-#define SERIAL_OUTPUT Serial4
-#endif
-
-const int bufferSize = 64;
-String buffer[bufferSize];
-String split_command[bufferSize];
-uint32_t num_words = 0;
-double x = 0, y = 0, z = 200, roll = 0, pitch = 0, yaw = 0, speed = 100;
 _Bool wait = false;
 float voltage_measurement = 0;
 
@@ -62,7 +51,8 @@ void loop() {
   if (!command_queue.isEmpty()) {
 
     //TODO - need to find fix for hexapod.isBusy() - seems to get stuck at 1
-  
+    parser.parseCommand(command_queue.dequeue());
+
     if (hexapod.isBusy()) {
 
     } else {
@@ -72,7 +62,7 @@ void loop() {
       //if we are letting the command_queue grow we do not want to execute any commands
       if (!command_queue.isIdleTimer()){
         //if the first command is a step we should try to optimize the command queue
-        if (getCommandType(command_queue.readIndex(0)).equals("step")){
+        if (parser.optimizableCommand(command_queue.readIndex(0))){
           need_optimize = true;
         }
         else {
@@ -81,7 +71,7 @@ void loop() {
         if (!need_optimize) {
           SERIAL_OUTPUT.print("No optimization needed, executing command as is\n");
           current_command = command_queue.dequeue();
-          executeCommand(current_command);
+          parser.parseCommand(current_command);
         }
         else {         
           //if the command queue could not optimize we check to see if we tried letting the command queue grow 
@@ -97,7 +87,7 @@ void loop() {
             SERIAL_OUTPUT.print("command_queue growing complete - still cannot make a full step. Getting partial command\n");
             current_command = getOptimizedCommand();
             SERIAL_OUTPUT.print("partial step formed: " + current_command + ".\n");
-            executeCommand(current_command);
+            parser.parseCommand(current_command);
             started_idle_timer = false; 
           }
           //otherwise we have a set of commands in the command_queue that now combine to meet our step threshold
@@ -105,7 +95,7 @@ void loop() {
             SERIAL_OUTPUT.print("command_queue growing complete - full command could be made\n");
             current_command = getOptimizedCommand();
             SERIAL_OUTPUT.print("full step formed: " + current_command + ".\n");
-            executeCommand(current_command);
+            parser.parseCommand(current_command);
             started_idle_timer = false;
           }
         }
@@ -117,189 +107,13 @@ void loop() {
   hexapod.runSpeed();
 }
 
-//function to split string on specified substring
-void splitString(String command, String sub_string, String split_words[], uint32_t& num_words) {
-  uint32_t start_index = 0;
-  int16_t substring_index = 0;
-  uint32_t word_index = 0;
-
-  // Initialize split_words array with empty strings
-  for (uint32_t i = 0; i < bufferSize; i++) {
-    split_words[i] = "";
-  }
-
-  command.toLowerCase();
-  sub_string.toLowerCase();
-
-  while (true) {
-    substring_index = command.indexOf(sub_string, start_index);
-    if (substring_index == -1) {
-      split_words[word_index] = command.substring(start_index);
-      break;
-    }
-    split_words[word_index] = command.substring(start_index, substring_index);
-    start_index = substring_index + sub_string.length();  // Move the start index past the substring
-    word_index++;
-  }
-
-  num_words = word_index + 1;
-}
-
-//update x y z roll pitch yaw, etc
-void updateVariables(String current_command_substring) {
-
-  if (current_command_substring.startsWith('x')) {
-    splitString(current_command_substring, 'X', buffer, num_words);
-    String x_str = buffer[1];
-    x = x_str.toFloat();
-  } else if (current_command_substring.startsWith('y')) {
-    splitString(current_command_substring, 'Y', buffer, num_words);
-    String y_str = buffer[1];
-    y = y_str.toFloat();
-  } else if (current_command_substring.startsWith('z')) {
-    splitString(current_command_substring, 'Z', buffer, num_words);
-    String z_str = buffer[1];
-    z = z_str.toFloat();
-  } else if (current_command_substring.startsWith('r')) {
-    splitString(current_command_substring, 'R', buffer, num_words);
-    String roll_str = buffer[1];
-    roll = roll_str.toFloat();
-  } else if (current_command_substring.startsWith('p')) {
-    splitString(current_command_substring, 'P', buffer, num_words);
-    String pitch_str = buffer[1];
-    pitch = pitch_str.toFloat();
-  } else if (current_command_substring.startsWith('w')) {
-    splitString(current_command_substring, 'W', buffer, num_words);
-    String yaw_str = buffer[1];
-    yaw = yaw_str.toFloat();
-  } else if (current_command_substring.startsWith('s')) {
-    splitString(current_command_substring, 'S', buffer, num_words);
-    String speed_str = buffer[1];
-    speed = speed_str.toFloat();
-  } else if (current_command_substring.startsWith('h')) {
-    splitString(current_command_substring, 'H', buffer, num_words);
-    wait = buffer[1].toInt();
-  }
-}
-
-//execute a command string
-void executeCommand(String command) {
-
-  //split on spaces
-  splitString(command, ' ', split_command, num_words);
-  uint32_t cmd_line_word_count = 0;
-  cmd_line_word_count = num_words;
-
-  //G-code commands
-  if (split_command[0].startsWith('g')) {
-    splitString(split_command[0], 'G', buffer, num_words);
-    if (!buffer[1].equals("0") and !buffer[1].equals("1") and !buffer[1].equals("2") and !buffer[1].equals("8") and !buffer[1].equals("9")) {
-      SERIAL_OUTPUT.printf("Error: only G0, G1, G2, G8 and G9 implemented.\n");
-    } else {
-      String current_command_substring;
-      if (buffer[1].equals("0")) {
-        for (uint8_t i = 0; i < cmd_line_word_count; i++) {
-          current_command_substring = split_command[i];
-          updateVariables(current_command_substring);
-          position.set(x, y, z, roll, pitch, yaw);
-        }
-        SERIAL_OUTPUT.printf("rapid move parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);
-        hexapod.rapidMove(position);
-      }
-      else if (buffer[1].equals("1")) {
-        for (uint8_t i = 0; i < cmd_line_word_count; i++) {
-          current_command_substring = split_command[i];
-          updateVariables(current_command_substring);
-          position.set(x, y, z, roll, pitch, yaw);
-        }
-        SERIAL_OUTPUT.printf("walk setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);
-        hexapod.walkSetup(position, speed);
-      }
-      else if (buffer[1].equals("2")) {
-        //for position debug -- can change G2 later
-        for (uint8_t i = 0; i < cmd_line_word_count; i++) {
-          current_command_substring = split_command[i];
-          updateVariables(current_command_substring);
-        }
-        SERIAL_OUTPUT.printf("parsing success; moving leg %f motor %f to pos %f at speed\n", x, y, z, roll);
-        //hexapod.moveLegAxisToPos(x, y, z);
-        hexapod.legs[int(x)].axes[int(y)].moveToPosAtSpeed(z, roll);
-      }
-      else if (buffer[1].equals("9")) {
-        for (uint8_t i = 0; i < cmd_line_word_count; i++) {
-          current_command_substring = split_command[i];
-          updateVariables(current_command_substring);
-          position.set(x, y, z, roll, pitch, yaw);    
-          SERIAL_OUTPUT.printf("linear move setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);                                                                                                              }                                                                                                                                                           SERIAL_OUTPUT.printf("linear move parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", x, y, z, roll, pitch, yaw, speed);
-        hexapod.linearMoveSetup(position, speed);
-      }
-      else if (buffer[1].equals("8")) {\
-        //TODO: Initialize leg_positions to all 0s, then change the enqueue to not be in an if and remove legs_used 
-        uint32_t movement_time = 0;
-        double leg_positions[NUM_LEGS][NUM_AXES_PER_LEG] = {{0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}};
-        uint8_t current_leg = 255;
-        for (uint8_t i = 0; i < cmd_line_word_count; i++) {
-          current_command_substring = split_command[i];
-          String temp;
-          if (current_command_substring.startsWith("l")) {
-            current_command_substring.remove(0,1);
-            current_leg = current_command_substring.toInt();
-          }
-          else if (current_command_substring.startsWith("x")
-                   || current_command_substring.startsWith("y")
-                   || current_command_substring.startsWith("z")) {
-            char axis_char = current_command_substring[0];
-            current_command_substring.remove(0,1);
-            leg_positions[current_leg][axis_char - 'x'] = current_command_substring.toFloat();
-          }
-          else if (current_command_substring.startsWith("t")) {
-            current_command_substring.remove(0,1);
-            movement_time = current_command_substring.toInt();
-          }
-          else {
-            SERIAL_OUTPUT.printf("Invalid character sent to G8, valid characters are: L, X, Y, Z, and T %c\n", current_command_substring[0]);
-          }
-        }
-        if (movement_time != 0)
-          for (uint8_t leg = 0; leg < NUM_LEGS; leg++) {
-            hexapod.legEnqueue(leg, ThreeByOne(leg_positions[leg]), movement_time, true);
-          }
-      }
-    }
-  }
-  else if (split_command[0].startsWith('p')) {
-    splitString(split_command[0], 'P', buffer, num_words);
-    if (buffer[1].equals("0")) {
-      SERIAL_OUTPUT.printf("parsing success; starfish preset selected (move all motors to zero).\n");
-      hexapod.moveToZeros();
-      return;
-    }
-    else if (buffer[1].equals("1")) {
-      SERIAL_OUTPUT.printf("parsing success; sit preset selected.\n");
-      hexapod.sit();
-      return;
-    }
-    else if (buffer[1].equals("2")) {
-      SERIAL_OUTPUT.printf("parsing success; stand preset selected.\n");
-      hexapod.stand();
-      return;
-    }
-    else {
-      SERIAL_OUTPUT.printf("parser detected input for a preset that is not yet supported.\n");
-    }
-  }
-  else {
-    SERIAL_OUTPUT.printf("Unsupported input recieved.\n");
-  }
-}
-
 //check if we can make a full step with the commands at the top of the command_queue. If we do not change command types and can not make a full step we need to try letting the command queue grow
 _Bool commandQueueNeedsExpansion() {
   Position position = getPosFromCommand(command_queue.readIndex(0));
   double step_size = hexapod.getDistance(position);
   for (uint32_t i = 1; i < command_queue.length; i++){
       //if we hit a command that is not a step we stop the optimization. We do not need to wait for the queue to expand
-      if ((step_size < STEP_THRESHOLD) and (!getCommandType(command_queue.readIndex(i)).equals("step"))){
+      if ((step_size < STEP_THRESHOLD) and (!parser.optimizableCommand(command_queue.readIndex(i)))){
         return false;
       }
       Position next_position = getPosFromCommand(command_queue.readIndex(i));
@@ -323,7 +137,7 @@ String getOptimizedCommand() {
   uint32_t command_queue_length = command_queue.length;
   for (uint32_t i = 0; i < command_queue_length; i++){
     //if we see the next command is not a step, return what we currently optimized to
-    if (!getCommandType(next_command).equals("step")) {
+    if (!parser.optimizableCommand(next_command)) {
       return command;
     }
     //otherwise we can add the steps and see if we have made a full step. If so we can return the optimized command early
@@ -354,17 +168,4 @@ String combineSteps(String step_1, String step_2) {
   bool new_wait = 1;
   String new_step = "G1 X" + String(new_pos.X) + " Y" + String(new_pos.Y) + " Z" + String(new_pos.Z) + " R" + String(new_pos.roll) + " P" + String(new_pos.pitch) + " W" + String(new_pos.yaw) + " S" + String(new_speed) + " H" + String(new_wait);
   return new_step;
-}
-
-//check the first index of the command and return a string summarizing the type
-String getCommandType(String command) {
-  String ret_val = "unknown";
-  splitString(command, ' ', split_command, num_words);
-  if (split_command[0].toLowerCase().equals("g1")) {
-   ret_val = "step"; 
-  }
-  else if (split_command[0].toLowerCase().startsWith('p')) {
-   ret_val = "preset";
-  }
-  return ret_val;
 }

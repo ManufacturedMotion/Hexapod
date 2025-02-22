@@ -17,6 +17,21 @@ Hexapod::Hexapod() {
 	voltageSensor = VoltageSensor();
 }
 
+void Hexapod::startUp() {
+
+	#if DEBUG
+		return; 
+	#endif
+
+	uint32_t start_time = millis();
+	while(1) {
+		if (millis() >= (start_time + 5000)) {
+			sit();
+			break;
+		}
+	}
+}
+
 void Hexapod::moveLegAxisToPos(uint8_t leg_number, uint8_t axis_number, double target_position) {
 	legs[leg_number].axes[axis_number].moveToPos(target_position);
 }

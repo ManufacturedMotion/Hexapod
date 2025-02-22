@@ -4,10 +4,16 @@
 
 #ifndef HEXA_CONFIG
 #define HEXA_CONFIG
- 
-  #define STEP_THRESHOLD 40 
-  #define FIFO_IDLE_THRESHOLD 100
+
+	#define STEP_THRESHOLD 40 
+	#define FIFO_IDLE_THRESHOLD 100
 	
+	#if DEBUG
+		#define SERIAL_OUTPUT Serial
+	#else
+		#define SERIAL_OUTPUT Serial4
+	#endif
+
 	#ifdef DANNY	
 		#define PWM_PINS {{2, 3, 4}, {5, 6, 7}, {8, 9, 10},  {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}
 		#define ZERO_POINTS {{2.05, 2.3, 2.68}, {1.87, 2.30, 2.8}, {1.8, 2.2, 2.65}, {2.2, 2.15, 2.5}, {2.2, 2.4, 2.8}, {2.15, 2.35, 2.53}}

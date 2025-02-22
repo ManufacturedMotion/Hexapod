@@ -4,3 +4,6 @@ source;share/teensy_node/hook/pythonpath.sh
 source;share/teensy_node/hook/ament_prefix_path.ps1
 source;share/teensy_node/hook/ament_prefix_path.dsv
 source;share/teensy_node/hook/ament_prefix_path.sh
+source;../../build/teensy_node/share/teensy_node/hook/pythonpath_develop.ps1
+source;../../build/teensy_node/share/teensy_node/hook/pythonpath_develop.dsv
+source;../../build/teensy_node/share/teensy_node/hook/pythonpath_develop.sh

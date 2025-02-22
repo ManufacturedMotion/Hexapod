@@ -10,3 +10,7 @@ libsdl2-mixer-dev
 libsdl2-ttf-dev
 ros-iron-joy
 ros-iron-teleop-tools
+ros-iron-teleop-twist-keyboard
+ros-iron-teleop-twist-joy
+ros-iron-joy-linux
+ros-iron-rqt*

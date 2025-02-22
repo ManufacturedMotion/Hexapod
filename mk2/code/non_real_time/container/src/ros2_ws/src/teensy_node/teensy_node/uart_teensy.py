@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+from geometry_msgs.msg import Twist
 import serial
 
 name = "TeensyNode"
@@ -11,6 +12,9 @@ serial_checking_period = 0.01
 class TeensyNode(Node):
     def __init__(self):
         super().__init__(name)
+        self._cmd_vel_sub = self.create_subscription(
+            Twist, "/cmd_vel", self.on_cmd_vel_msg, 10
+        )
         self.ser = serial.Serial(teensy_port, teensy_baudrate, timeout=1)
         self.publisher_ = self.create_publisher(String, '/teensy_receive', 10)
         self.subscriber = self.create_subscription(String,'teensy_send',self.send_to_teensy,10)
@@ -28,6 +32,9 @@ class TeensyNode(Node):
             msg.data = response
             self.publisher.publish(msg)
             self.get_logger().info(f"{name} received {msg.data} from teensy")
+
+    def on_cmd_vel_msg(self, msg: Twist):
+        self.get_logger().info(f"Got msg: {msg}")
 
 def main(args=None):
     rclpy.init(args=args)

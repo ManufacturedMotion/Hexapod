@@ -1,3 +1,4 @@
+# Existing ignored files
 mk2/code/real_time/teensy_code/.pio
 mk2/code/real_time/teensy_code/.vscode/.browse.c_cpp.db*
 mk2/code/real_time/teensy_code/.vscode/c_cpp_properties.json
@@ -5,3 +6,17 @@ mk2/code/real_time/teensy_code/.vscode/launch.json
 mk2/code/real_time/teensy_code/.vscode/ipch
 mk2/code/real_time/teensy_code/lib/HexapodController/src/user_config.hpp
 .DS_Store
+
+# Ignore select Docker-related files
+**/docker-compose.override.yml
+**/Dockerfile.backup
+**/Dockerfile.old
+**/.dockerignore
+**/docker_build/
+**/docker_volumes/
+**/docker_cache/
+**/docker_logs/
+**/logs/
+**/*.log
+**/tmp/
+**/var/
