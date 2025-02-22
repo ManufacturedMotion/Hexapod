@@ -6,6 +6,7 @@
 #include <math.h>
 #include "operation_queue.hpp"
 #include "three_by_matrices.hpp"
+#include "voltage_monitor.hpp"
 
 #ifndef HEXA_H
 #define HEXA_H
@@ -54,7 +55,8 @@
 			void legEnqueue(uint8_t leg, ThreeByOne op_end_pos, double op_speed, _Bool op_relative, uint32_t op_wait_time_ms = 0);
 			void legEnqueue(uint8_t leg, ThreeByOne op_end_pos, uint32_t op_time, _Bool op_relative, uint32_t op_wait_time_ms = 0);
 			void startUp();
-			
+			VoltageSensor voltageSensor;
+
 		private:
 			uint8_t _step_groups[NUM_STEP_GROUPS][NUM_LEGS / 2] = {{1,3,5}, {2,4,6}}; // Divide legs into two self-stable groups
 			uint8_t _next_step_group = 0;

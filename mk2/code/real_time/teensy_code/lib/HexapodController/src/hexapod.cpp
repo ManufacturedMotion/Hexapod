@@ -7,18 +7,20 @@
 #include <math.h>
 #include "three_by_matrices.hpp"
 #include <Arduino.h>
+#include "voltage_monitor.hpp"
 
 Hexapod::Hexapod() { 
     for (uint8_t i = 0; i < NUM_LEGS; i++) {
         legs[i].initializeAxes(i);
 		_leg_queues[i].setLeg(&legs[i]);
     }
+	voltageSensor = VoltageSensor();
 }
 
 void Hexapod::startUp() {
 
 	#if DEBUG
-	return; 
+		return; 
 	#endif
 
 	uint32_t start_time = millis();

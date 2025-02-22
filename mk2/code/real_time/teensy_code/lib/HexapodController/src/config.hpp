@@ -4,11 +4,9 @@
 
 #ifndef HEXA_CONFIG
 #define HEXA_CONFIG
- 
+
 	#define STEP_THRESHOLD 40 
 	#define FIFO_IDLE_THRESHOLD 100
-	#define VSENSE_PIN 38 
-	#define VSENSE_FACTOR 0.01606
 	
 	#if DEBUG
 		#define SERIAL_OUTPUT Serial

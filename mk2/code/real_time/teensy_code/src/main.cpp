@@ -14,6 +14,7 @@ String getOptimizedCommand();
 String combineSteps(String step_1, String step_2);
 
 _Bool wait = false;
+float voltage_measurement = 0;
 
 Position position;
 commandQueue command_queue;
@@ -21,7 +22,6 @@ commandQueue command_queue;
 void setup() {
   Serial.begin(115200);
   Serial4.begin(115200);
-  pinMode(VSENSE_PIN, INPUT); 
   hexapod.startUp();
 }
 
@@ -32,6 +32,8 @@ void loop() {
   _Bool need_optimize = false;
   static _Bool expand_queue_flag = false;
   static _Bool started_idle_timer = false;
+
+  hexapod.voltageSensor.checkVoltage(); 
 
   if (Serial.available() > 0 || Serial4.available() > 0) {
     if (Serial4.available() > 0) {
