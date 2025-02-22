@@ -11,9 +11,9 @@
 
 SerialParser::SerialParser(Hexapod &hexapod) 
     : _Hexapod(hexapod),  
-    _JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed),  
+    _JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed)  
     #if DEBUG
-        _GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed)  
+        , _GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed)  
     #endif
 {
     return;
@@ -23,7 +23,7 @@ void SerialParser::parseCommand(String command) {
 
     #if !DEBUG
         if (!command.startsWith("{")) {
-            Serial.printf("ERROR! Serial command not in json format. This is not supported unles DEBUG set to true in user_config.hpp");
+            Serial.printf("ERROR! Serial command not in json format. This is not supported unles DEBUG set to true in user_config.hpp\n");
             return;
         }
     #endif
@@ -52,11 +52,4 @@ _Bool SerialParser::optimizableCommand(const String &command) {
 
     return retval;
 
-}
-
-void SerialParser::test(Hexapod hexapod) {
-    //_GcodeParser.performPreset(1);
-    //hexapod.sit();
-    //_Hexapod.moveToZeros();
-    //_Hexapod.sit();
 }

@@ -32,7 +32,6 @@ void JsonParser::parseCommand(String command_str) {
     if (command_type == "PRE"){
         String preset_sel = "None";
         preset_sel = String(command["PRE"].as<const char*>()); 
-        SERIAL_OUTPUT.printf("JSON PRESET SEL IS %s\n", preset_sel);
         performPreset(preset_sel);  
     }
     else if (command_type == "MV") {
@@ -42,7 +41,7 @@ void JsonParser::parseCommand(String command_str) {
         movement_sel = "None";
     }
     else {
-        SERIAL_OUTPUT.printf("ERROR! Unsupported JSON command received via Serial");
+        SERIAL_OUTPUT.printf("ERROR! Unsupported JSON command received via Serial\n");
     }
     return;
 }
@@ -127,13 +126,14 @@ void JsonParser::performMovement(String movement) {
         SERIAL_OUTPUT.printf("JSON walk setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", _x, _y, _z, _roll, _pitch, _yaw, _speed);
         _Hexapod.walkSetup(_position, _speed);
     }
+    //NOTE: if not all 18 positions specified, motors who were not explicitly provided will move to where the hexapod has memory of them being. (What is in the parsers _leg_positions array)
     else if (movement == "MTPS") {
         for (uint8_t leg = 0; leg < NUM_LEGS; leg++) {
             for (uint8_t axis = 0; axis < NUM_AXES_PER_LEG; axis++) {
                 _Hexapod.legs[leg].axes[axis].moveToPosAtSpeed(_leg_positions[leg][axis], _speed);
             }
         }
-        SERIAL_OUTPUT.printf("JSON move to pos at speed x18 parsing success.");
+        SERIAL_OUTPUT.printf("JSON move to pos at speed x18 parsing success.\n");
     }
     else if (movement == "3B1") {
         if (_movement_time != 0) {
@@ -141,7 +141,7 @@ void JsonParser::performMovement(String movement) {
                 //_Hexapod.legEnqueue(leg, ThreeByOne(_leg_positions[leg]), _movement_time, true);
               }
         }
-        SERIAL_OUTPUT.printf("JSON leg enqueue parsing success.");
+        SERIAL_OUTPUT.printf("JSON leg enqueue parsing success.\n");
     }
     else if (movement == "LMS") {
         SERIAL_OUTPUT.printf("JSON linear move setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", _x, _y, _z, _roll, _pitch, _yaw, _speed);
