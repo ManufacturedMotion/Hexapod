@@ -7,5 +7,6 @@
 	#include "hexapod.hpp"
 	#include "hexapod.hpp"
 	#include "command_queue.hpp"
+	#include "serial_parser.hpp"
 
 #endif
