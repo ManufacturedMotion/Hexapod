@@ -1,4 +1,0 @@
-[console_scripts]
-listener = hexapod.subscriber_member_function:main
-talker = hexapod.publisher_member_function:main
-
