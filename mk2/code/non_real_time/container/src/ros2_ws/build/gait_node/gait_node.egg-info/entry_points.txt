@@ -1,3 +1,0 @@
-[console_scripts]
-gait_node = gait_node.gait:main
-

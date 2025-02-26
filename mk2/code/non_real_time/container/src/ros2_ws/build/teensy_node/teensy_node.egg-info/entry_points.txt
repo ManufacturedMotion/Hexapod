@@ -1,3 +1,0 @@
-[console_scripts]
-teensy_node = teensy_node.uart_teensy:main
-

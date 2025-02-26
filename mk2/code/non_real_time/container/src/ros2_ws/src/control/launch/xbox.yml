@@ -9,28 +9,24 @@ launch:
       param:
         - name: require_enable_button
           value: false
-        - name: axis_linear.y
-          value: 2
+        - name: axis_linear.y #Left Joystick Horizontal
+          value: 0
         - name: scale_linear.y
           value: 1.0
-        - name: axis_linear.x #right joystick, couldn't map both left and right
-          value: 3
+        - name: axis_linear.x  #Left Joystick Vertical
+          value: 1
         - name: scale_linear.x
           value: 1.0
-        - name: axis_linear.z #right trigger
-          value: 4
-        - name: scale_linear.z
-          value: 1.0
-        - name: axis_angular.roll
-          value: 7
-        - name: scale_angular.roll
-          value: 1.0
-        - name: axis_angular.pitch
+        - name: axis_angular.pitch #D-Pad Horizontal - Angular Y
           value: 6
         - name: scale_angular.pitch
           value: 1.0
-        - name: axis_angular.yaw
-          value: 0
+        - name: axis_angular.roll #D-Pad Vertical - Angular X
+          value: 7
+        - name: scale_angular.roll
+          value: 1.0
+        - name: axis_angular.yaw  #Right Joystick Horizontal - Angular Z
+          value: 2
         - name: scale_angular.yaw
           value: 1.0
 
