@@ -20,8 +20,8 @@ class TeensyNode(Node):
         self.get_logger().info(f'{name} has begun')
 
     def writeToSerial(self, msg):
-        self.serial.write(msg.data.encode('UTF-8'))
-        self.get_logger().info(f'{name} wrote {msg.data} to teensy serial')
+        self.serial.write(msg.data.encode('UTF-8') + b'\n')
+        self.get_logger().info(f'{name} writing to teensy serial: {msg.data}')
 
     def circulateResponses(self):
         if self.serial.in_waiting > 0:
