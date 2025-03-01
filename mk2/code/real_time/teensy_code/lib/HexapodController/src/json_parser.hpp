@@ -29,7 +29,7 @@
             double _yaw;
             double _speed;
             Position _position;
-            uint16_t _movement_time = 0;
+            uint32_t _movement_time = 0;
             double _leg_positions[NUM_LEGS][NUM_AXES_PER_LEG] = {{0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}};
     };
 

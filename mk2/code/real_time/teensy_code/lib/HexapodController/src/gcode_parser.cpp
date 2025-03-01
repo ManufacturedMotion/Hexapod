@@ -88,7 +88,7 @@ void GcodeParser::performMovement(uint8_t movement) {
         case 8:
             if (_movement_time != 0) {
                 for (uint8_t leg = 0; leg < NUM_LEGS; leg++) {
-                    //_Hexapod.legEnqueue(leg, ThreeByOne(_leg_positions[leg]), _movement_time, true);
+                    _Hexapod.legEnqueue(leg, ThreeByOne(_leg_positions[leg]), _movement_time, true);
                   }
             }
             SERIAL_OUTPUT.printf("Gcode leg enqueue parsing success.\n");
