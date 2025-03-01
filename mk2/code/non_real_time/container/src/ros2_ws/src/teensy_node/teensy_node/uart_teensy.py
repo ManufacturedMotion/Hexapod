@@ -6,7 +6,7 @@ import serial
 
 name = "TeensyNode"
 teensy_port = "/dev/ttyAMA0" 
-teensy_baudrate = 115200
+teensy_baudrate = 250000
 serial_checking_period = 0.01
 
 class TeensyNode(Node):
@@ -15,15 +15,15 @@ class TeensyNode(Node):
         super().__init__(name)
         self.subscriber = self.create_subscription(String, "/to_teensy", self.writeToSerial, 10)
         self.serial = serial.Serial(teensy_port, teensy_baudrate, timeout=1)
-        self.publisher_ = self.create_publisher(String, '/from_teensy', 10)
-        self.timer = self.create_timer(serial_checking_period, self.get_and_circulate_responses)
+        self.publisher = self.create_publisher(String, '/from_teensy', 10)
+        self.timer = self.create_timer(serial_checking_period, self.circulateResponses)
         self.get_logger().info(f'{name} has begun')
 
     def writeToSerial(self, msg):
         self.serial.write(msg.data.encode('UTF-8'))
         self.get_logger().info(f'{name} wrote {msg.data} to teensy serial')
 
-    def get_and_circulate_responses(self):
+    def circulateResponses(self):
         if self.serial.in_waiting > 0:
             response = self.serial.readline().decode().strip()
             msg = String()

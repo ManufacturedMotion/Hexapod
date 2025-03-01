@@ -10,8 +10,8 @@ Position position;
 commandQueue command_queue;
 
 void setup() {
-  Serial.begin(115200);
-  Serial4.begin(115200);
+  Serial.begin(250000);
+  Serial4.begin(250000);
   hexapod.startUp();
 }
 
