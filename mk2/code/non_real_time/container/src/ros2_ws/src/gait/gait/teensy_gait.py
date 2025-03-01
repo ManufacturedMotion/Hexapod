@@ -6,6 +6,7 @@ from sensor_msgs.msg import Joy
 from std_msgs.msg import String
 import math
 import time
+import copy
 
 name = "teensyGait"
 
@@ -19,6 +20,7 @@ class TeensyGait(Node):
         self.publish_timer = self.create_timer(0.2, self.publishCommand) #publish command every .2 seconds       
         self.get_logger().info(f"{name} has begun")
         self.joy_cmd = {}
+        self.last_joy_cmd = {}
         self.pos = {
             "x": 0,
             "y": 0,
@@ -31,26 +33,29 @@ class TeensyGait(Node):
             "x": 0,
             "y": 0
         }
-        self.walk_scale_fact = 10
+        self.walk_scale_fact = 5
         self.minimum_step_size = 40
         self.last_command_time = time.time()
-        self.step_timeout = 2
+        self.step_timeout = 3
+        self.drift_factor = 0.1
+        self.need_to_move = False
 
     def publishCommand(self):
 
         current_time = time.time()
         time_since_last_publish = current_time - self.last_command_time
 
-        if self.joy_cmd:
+        if self.joy_cmd and self.joy_cmd != self.last_joy_cmd:
             if "MV" in self.joy_cmd.keys() or self.joy_cmd["PRE"] == "STND":
                 self.resetPos(200) #TODO measure z height for stand, if not 200 make new logic here
             else:
                 self.resetPos()
-            self.publisher.publish(self.prepCommand(self.joy))
+            self.publisher.publish(self.prepCommand(self.joy_cmd))
+            self.last_joy_cmd = copy.deepcopy(self.joy_cmd)
             self.joy_cmd = {}
             self.last_command_time = current_time
             
-        elif self.getStepDistance() >= self.minimum_step_size or time_since_last_publish >= self.step_timeout:
+        elif self.getStepDistance() >= self.minimum_step_size or (time_since_last_publish >= self.step_timeout and self.need_to_move):
             step_command = {
                 "MV": "WLK",
                 "X": self.step['x'],
@@ -61,22 +66,26 @@ class TeensyGait(Node):
                 "YAW": self.pos['yaw']
             }
             self.publisher.publish(self.prepCommand(step_command))
-            self.pos['x'] = self.step['x']
-            self.pos['y'] = self.step['y']
+            self.pos['x'] += self.step['x']
+            self.pos['y'] += self.step['y']
+            self.step['x'] = 0
+            self.step['y'] = 0
             self.last_command_time = current_time
+            self.need_to_move = False
+            self.last_joy_cmd = {}
 
     def parse_cmd_vel(self, msg: Twist):
 
-        if (abs(msg.linear.x) <= 0.1 and abs(msg.linear.y) <= 0.1 and abs(msg.linear.z) <= 0.1 and abs(msg.angular.x) <= 0.1 and abs(msg.angular.y) <= 0.1 and abs(msg.angular.z) <= 0.1):
+        if (abs(msg.linear.x) <= self.drift_factor and abs(msg.linear.y) <= self.drift_factor and abs(msg.linear.z) <= self.drift_factor and abs(msg.angular.x) <= self.drift_factor and abs(msg.angular.y) <= self.drift_factor and abs(msg.angular.z) <= self.drift_factor):
             return
         
         self.pos['roll'] += msg.angular.x
         self.pos['pitch'] += msg.angular.y
-        self.pos['yaw'] += msg.linear.z
-        self.pos['z'] += msg.angular.z #??
+        self.pos['yaw'] += msg.angular.z
         #walk scale will eventually move to Danny's twist yaml 
         self.step['x'] += (msg.linear.x * self.walk_scale_fact)
         self.step['y'] += (msg.linear.y * self.walk_scale_fact)
+        self.need_to_move = True
 
     def parse_joy(self, msg: Joy):
         stand = msg.buttons[0]
@@ -101,9 +110,11 @@ class TeensyGait(Node):
                 "Y": 0,
                 "Z": 200
             }
-            return
         else:
             return
+
+        if self.joy_cmd == self.last_joy_cmd:
+            self.joy_cmd = {}
 
     def prepCommand(self, command):
         json_string = json.dumps(command)
@@ -113,18 +124,26 @@ class TeensyGait(Node):
         return string_msg
     
     def getStepDistance(self):
-        dx = self.pos['x'] - self.step['x']
-        dy = self.pos['y'] - self.step['y'] 
+        dx = self.step['x']
+        #dx = self.pos['x'] - self.step['x']
+        dy = self.step['y'] 
+        #dy = self.pos['y'] - self.step['y'] 
         distance = math.sqrt( dx ** 2 + dy ** 2)
         return distance
 
     def resetPos(self, z = 0):
+        yaw = self.pos['yaw']
         self.pos = {
             "x": 0,
             "y": 0,
             "z": z,
             "roll": 0,
-            "pitch": 0
+            "pitch": 0,
+            "yaw": yaw
+        }
+        self.step = {
+            "x": 0,
+            "y": 0
         }
 
 def main(args=None):
