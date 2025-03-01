@@ -13,17 +13,23 @@ class TeensyNode(Node):
 
     def __init__(self):
         super().__init__(name)
-        self.subscriber = self.create_subscription(String, "/to_teensy", self.writeToSerial, 10)
+        self.subscriber = self.create_subscription(String, "/to_teensy", self.enqueueSerial, 10)
         self.serial = serial.Serial(teensy_port, teensy_baudrate, timeout=1)
         self.publisher = self.create_publisher(String, '/from_teensy', 10)
         self.timer = self.create_timer(serial_checking_period, self.circulateResponses)
+        self.msg_send_queue = []
         self.get_logger().info(f'{name} has begun')
 
-    def writeToSerial(self, msg):
-        self.serial.write(msg.data.encode('UTF-8') + b'\n')
-        self.get_logger().info(f'{name} writing to teensy serial: {msg.data}')
+    def enqueueSerial(self, msg):
+        self.msg_send_queue.append(msg)
 
     def circulateResponses(self):
+        
+        if self.msg_send_queue:
+            msg = self.msg_send_queue.pop(0)
+            self.serial.write(msg.data.encode('UTF-8') + b'\n')
+            self.get_logger().info(f'{name} writing to teensy serial: {msg.data}')
+        
         if self.serial.in_waiting > 0:
             response = self.serial.readline().decode().strip()
             msg = String()

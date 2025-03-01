@@ -17,7 +17,7 @@ class TeensyGait(Node):
         self.cmd_vel_subscriber = self.create_subscription(Twist, "/cmd_vel", self.parse_cmd_vel, 10)
         self.joy_subscriber = self.create_subscription(Joy, "/joy", self.parse_joy, 10)
         self.publisher = self.create_publisher(String, '/to_teensy', 10)
-        self.publish_timer = self.create_timer(0.2, self.publishCommand) #publish command every .2 seconds       
+        self.publish_timer = self.create_timer(0.1, self.publishCommand) #publish command every .2 seconds       
         self.get_logger().info(f"{name} has begun")
         self.joy_cmd = {}
         self.last_joy_cmd = {}
@@ -33,10 +33,10 @@ class TeensyGait(Node):
             "x": 0,
             "y": 0
         }
-        self.walk_scale_fact = 5
-        self.minimum_step_size = 40
+        self.walk_scale_fact = 1
+        self.minimum_step_size = 30
         self.last_command_time = time.time()
-        self.step_timeout = 3
+        self.step_timeout = 1.5
         self.drift_factor = 0.1
         self.need_to_move = False
 
@@ -58,12 +58,12 @@ class TeensyGait(Node):
         elif self.getStepDistance() >= self.minimum_step_size or (time_since_last_publish >= self.step_timeout and self.need_to_move):
             step_command = {
                 "MV": "WLK",
-                "X": self.step['x'],
-                "Y": self.step['y'],
-                "Z": self.pos['z'], 
-                "ROLL": self.pos['roll'],
-                "PTCH": self.pos['pitch'],
-                "YAW": self.pos['yaw']
+                "X": round(self.step['x'], 3),
+                "Y": round(self.step['y'], 3),
+                "Z": round(self.pos['z'], 3),
+                "ROLL": round(self.pos['roll'], 3),
+                "PTCH": round(self.pos['pitch'], 3),
+                "YAW": round(self.pos['yaw'], 3)
             }
             self.publisher.publish(self.prepCommand(step_command))
             self.pos['x'] += self.step['x']
