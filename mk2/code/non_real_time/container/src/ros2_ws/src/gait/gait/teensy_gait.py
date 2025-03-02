@@ -33,7 +33,7 @@ class TeensyGait(Node):
             "x": 0,
             "y": 0
         }
-        self.walk_scale_fact = 1
+        self.walk_scale_fact = 4
         self.minimum_step_size = 30
         self.last_command_time = time.time()
         self.step_timeout = 1.5
