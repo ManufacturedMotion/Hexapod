@@ -1,10 +1,3 @@
-### Package installations ###
-sudo apt update  
-sudo apt install -y python3-gpiozero python3-rpi.gpio i2c-tools libgpiod-dev python3-libgpiod python3-pip  
-sudo apt full-upgrade -y  
-sudo pip3 install --upgrade adafruit-circuitpython-neopixel-spi --break-system-packages  
-sudo pip3 install --upgrade adafruit-blinka --break-system-packages  
-
 ### CRONJOB SETUP ###
 echo "Beginning cronjob setup"
 cd cron_jobs 
