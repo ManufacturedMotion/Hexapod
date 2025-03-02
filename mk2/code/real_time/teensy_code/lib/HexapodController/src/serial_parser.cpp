@@ -23,7 +23,7 @@ void SerialParser::parseCommand(String command) {
 
     #if !DEBUG
         if (!command.startsWith("{")) {
-            Serial.printf("ERROR! Serial command not in json format. This is not supported unles DEBUG set to true in user_config.hpp\n");
+            SERIAL_OUTPUT.printf("ERROR! Serial command not in json format. This is not supported unles DEBUG set to true in user_config.hpp\n");
             return;
         }
     #endif

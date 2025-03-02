@@ -5,36 +5,37 @@ from geometry_msgs.msg import Twist
 import serial
 
 name = "TeensyNode"
-teensy_port = "/dev/ttyS0" # TODO: Confirm
-teensy_baudrate = 115200
+teensy_port = "/dev/ttyAMA0" 
+teensy_baudrate = 250000
 serial_checking_period = 0.01
 
 class TeensyNode(Node):
+
     def __init__(self):
         super().__init__(name)
-        self._cmd_vel_sub = self.create_subscription(
-            Twist, "/cmd_vel", self.on_cmd_vel_msg, 10
-        )
-        self.ser = serial.Serial(teensy_port, teensy_baudrate, timeout=1)
-        self.publisher_ = self.create_publisher(String, '/teensy_receive', 10)
-        self.subscriber = self.create_subscription(String,'teensy_send',self.send_to_teensy,10)
-        self.timer = self.create_timer(serial_checking_period, self.get_and_circulate_responses)
+        self.subscriber = self.create_subscription(String, "/to_teensy", self.enqueueSerial, 10)
+        self.serial = serial.Serial(teensy_port, teensy_baudrate, timeout=1)
+        self.publisher = self.create_publisher(String, '/from_teensy', 10)
+        self.timer = self.create_timer(serial_checking_period, self.circulateResponses)
+        self.msg_send_queue = []
         self.get_logger().info(f'{name} has begun')
 
-    def send_to_teensy(self, msg):
-        self.ser.write(msg.data.encode('UTF-8'))
-        self.get_logger().info(f'{name} wrote {msg.data} to teensy')
+    def enqueueSerial(self, msg):
+        self.msg_send_queue.append(msg)
 
-    def get_and_circulate_responses(self):
-        if self.ser.in_waiting > 0:
-            response = self.ser.readline().decode().strip()
+    def circulateResponses(self):
+        
+        if self.msg_send_queue:
+            msg = self.msg_send_queue.pop(0)
+            self.serial.write(msg.data.encode('UTF-8') + b'\n')
+            self.get_logger().info(f'{name} writing to teensy serial: {msg.data}')
+        
+        if self.serial.in_waiting > 0:
+            response = self.serial.readline().decode().strip()
             msg = String()
             msg.data = response
             self.publisher.publish(msg)
             self.get_logger().info(f"{name} received {msg.data} from teensy")
-
-    def on_cmd_vel_msg(self, msg: Twist):
-        self.get_logger().info(f"Got msg: {msg}")
 
 def main(args=None):
     rclpy.init(args=args)
