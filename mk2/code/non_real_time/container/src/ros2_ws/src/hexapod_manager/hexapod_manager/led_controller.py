@@ -10,125 +10,172 @@ LED_COUNT = 60
 LED_PIN = board.SPI()
 DEBOUNCE_DELAY = 0.3
 
-off = (0, 0, 0, 0)
-colors = {
+OFF = (0, 0, 0, 0)
+COLORS = {
     "red": (255, 0, 0, 0), "green": (0, 255, 0, 0), "blue": (0, 0, 255, 0),
     "white": (0, 0, 0, 255), "purple": (106, 27, 154, 0), "yellow": (255, 255, 0, 0),
 }
-color_keys = list(colors.keys())
+COLOR_KEYS = list(COLORS.keys())
 
 class LEDController(Node):
     def __init__(self):
         super().__init__('led_controller')
         self.pixels = neopixel.NeoPixel_SPI(LED_PIN, LED_COUNT, pixel_order=neopixel.GRBW, auto_write=True)
-
-        self.subscription = self.create_subscription(
-            Joy,
-            '/joy',
-            self.joy_callback,
-            10
-        )
-
+        
+        self.subscription = self.create_subscription(Joy, '/joy', self.joy_callback, 10)
+        
         self.pattern_index = 0
-        self.running = True
-        self.last_button_press = 0
+        self.is_running = False
+        self.last_button_press_time = 0
         self.color_index = 0
-        self.color_1 = color_keys[self.color_index]
-        self.animation_thread = threading.Thread(target=self.run_animations, daemon=True)
-        self.animation_thread.start()
+        self.current_color = COLOR_KEYS[self.color_index]
+        
+        self.animation_thread = None
+        self.start_animation()
 
-    def clear_pixels(self):
-        self.pixels.fill(off)
+    def clear_leds(self):
+        self.pixels.fill(OFF)
 
-    def loop(self, color, delay=0.005, reverse=False):
-        color_val = colors.get(color, off)
+    def constant_effect(self):
+        self.pixels.fill(COLORS.get(self.current_color, OFF))
+
+    def chase_effect(self, delay=0.005, reverse=False):
+        color_value = COLORS.get(self.current_color, OFF)
         width = 3
         
-        for _ in range(LED_COUNT):
-            if not self.running:
+        for i in range(LED_COUNT):
+            if not self.is_running:
                 return
             
-            for i in range(width):
-                index = (-_ - i) % LED_COUNT if reverse else (_ + i) % LED_COUNT
-                self.pixels[index] = color_val
-
+            for j in range(width):
+                index = (-i - j) % LED_COUNT if reverse else (i + j) % LED_COUNT
+                self.pixels[index] = color_value
+            
             time.sleep(delay)
+            
+            tail_index = (-i - width) % LED_COUNT if reverse else (i - 1) % LED_COUNT
+            self.pixels[tail_index] = OFF
 
-            tail_index = (-_ - width) % LED_COUNT if reverse else (_ - 1) % LED_COUNT
-            self.pixels[tail_index] = off
-
-    def windmill(self, color, delay=0.05, sections=4, reverse=False):
-        primary_color = colors.get(color, off)
-        secondary_color = colors["white"]
-
-        for _ in range(1):
-            for pixel in range(LED_COUNT):
-                if not self.running:
-                    return
-                time.sleep(delay)
-
-                index = LED_COUNT - 1 - pixel if reverse else pixel
-
-                for section in range(sections):
-                    section_color = primary_color if section % 2 == 0 else secondary_color
-                    section_index = (index + section * (LED_COUNT // sections)) % LED_COUNT
-                    self.pixels[section_index] = section_color
-
-    def pattern(self, color, width=1, delay=0.2):
-        color_val = colors.get(color, off)
-        pixel_group = [i for i in range(0, LED_COUNT, 2 * width)]
-        for _ in range(4):
-            if not self.running:
+    def windmill_effect(self, delay=0.05, sections=4, reverse=False):
+        color_value = COLORS.get(self.current_color, OFF)
+        
+        for pixel in range(LED_COUNT):
+            if not self.is_running:
                 return
             time.sleep(delay)
-            self.pixels.fill(color_val)
-            for pixel in pixel_group:
-                self.pixels[pixel] = off
+            
+            index = LED_COUNT - 1 - pixel if reverse else pixel
+            
+            for section in range(sections):
+                section_color = color_value if section % 2 == 0 else OFF
+                section_index = (index + section * (LED_COUNT // sections)) % LED_COUNT
+                self.pixels[section_index] = section_color
+
+    def pattern_effect(self, width=1, delay=0.2):
+        color_value = COLORS.get(self.current_color, OFF)
+        pixel_group = [i for i in range(0, LED_COUNT, 2 * width)]
+        
+        for _ in range(4):
+            if not self.is_running:
+                return
+            
             time.sleep(delay)
-            self.pixels.fill(color_val)
+            self.pixels.fill(color_value)
+            
+            for pixel in pixel_group:
+                self.pixels[pixel] = OFF
+            
+            time.sleep(delay)
+            self.pixels.fill(color_value)
+            
             for pixel in range(LED_COUNT):
                 if pixel not in pixel_group:
-                    self.pixels[pixel] = off
+                    self.pixels[pixel] = OFF
+
+    def joystick_direction_effect(self, x_axis, y_axis):
+        # Clear LEDs before lighting up new ones
+        self.clear_leds()
+
+        # Calculate number of LEDs to light up in the direction of the joystick
+        led_count = 5
+        start_index = 0
+
+        # For horizontal movement (X-axis)
+        if x_axis > 0.5:  # Move right
+            for i in range(led_count):
+                self.pixels[(start_index + i) % LED_COUNT] = COLORS.get(self.current_color, OFF)
+        elif x_axis < -0.5:  # Move left
+            for i in range(led_count):
+                self.pixels[(LED_COUNT - led_count + i) % LED_COUNT] = COLORS.get(self.current_color, OFF)
+
+        # For vertical movement (Y-axis)
+        elif y_axis > 0.5:  # Move up
+            for i in range(led_count):
+                self.pixels[i] = COLORS.get(self.current_color, OFF)
+        elif y_axis < -0.5:  # Move down
+            for i in range(led_count):
+                self.pixels[LED_COUNT - 1 - i] = COLORS.get(self.current_color, OFF)
+
+        # Ensure the LEDs light up in a circular fashion
+        self.pixels.show()
 
     def joy_callback(self, msg):
         current_time = time.time()
         
+        # Toggle pattern with buttons
         if len(msg.buttons) > 10 and msg.buttons[10] == 1:
-            if current_time - self.last_button_press < DEBOUNCE_DELAY:
+            if current_time - self.last_button_press_time < DEBOUNCE_DELAY:
                 return
             
-            self.last_button_press = current_time
-            self.pattern_index = (self.pattern_index + 1) % 3
-            
-            self.running = False
-            time.sleep(0.1)
-            self.running = True
-            self.animation_thread = threading.Thread(target=self.run_animations, daemon=True)
-            self.animation_thread.start()
+            self.last_button_press_time = current_time
+            self.pattern_index = (self.pattern_index + 1) % 5  # Add new mode 4
+            self.start_animation()
         
         if len(msg.buttons) > 11 and msg.buttons[11] == 1:
-            if current_time - self.last_button_press < DEBOUNCE_DELAY:
+            if current_time - self.last_button_press_time < DEBOUNCE_DELAY:
                 return
             
-            self.last_button_press = current_time
-            self.color_index = (self.color_index + 1) % len(color_keys)
-            self.color_1 = color_keys[self.color_index]
+            self.last_button_press_time = current_time
+            self.color_index = (self.color_index + 1) % len(COLOR_KEYS)
+            self.current_color = COLOR_KEYS[self.color_index]
+            self.start_animation()
 
-    def run_animations(self):
-        while self.running:
+        # Get axes values
+        x_axis = msg.axes[0]  # Joystick X-axis
+        y_axis = msg.axes[1]  # Joystick Y-axis
+        
+        # Call the joystick direction effect if the pattern index is 4
+        if self.pattern_index == 4:
+            self.joystick_direction_effect(x_axis, y_axis)
+
+    def start_animation(self):
+        self.is_running = False
+        if self.animation_thread and self.animation_thread.is_alive():
+            self.animation_thread.join()
+        self.is_running = True
+        self.animation_thread = threading.Thread(target=self.run_animation, daemon=True)
+        self.animation_thread.start()
+
+    def run_animation(self):
+        while self.is_running:
             if self.pattern_index == 0:
-                self.loop(self.color_1)
+                self.chase_effect()
             elif self.pattern_index == 1:
-                self.windmill(self.color_1)
+                self.windmill_effect()
             elif self.pattern_index == 2:
-                self.pattern(self.color_1)
+                self.pattern_effect()
+            elif self.pattern_index == 3:
+                self.constant_effect()
+            elif self.pattern_index == 4:
+                # Joystick direction mode active
+                pass
 
     def stop(self):
-        self.running = False
-        self.animation_thread.join()
-        self.clear_pixels()
+        self.is_running = False
+        if self.animation_thread and self.animation_thread.is_alive():
+            self.animation_thread.join()
+        self.clear_leds()
         self.get_logger().info("LED Controller Shutting Down")
-
 
 def main():
     rclpy.init()
