@@ -9,7 +9,8 @@ apt-get upgrade -y
 # Setup python and system dependencies
 ADD setup /app/setup
 RUN bash -c 'apt-get install -y $(cat /app/setup/system-requirements.txt)'
-RUN pip install -r /app/setup/python-requirements.txt
+RUN apt full-upgrade -y
+RUN pip3 install -r /app/setup/python-requirements.txt
 
 # Put ros commands on path
 RUN echo "source \"/opt/ros/$ROS_DISTRO/setup.bash\"" >> ~/.bashrc && \

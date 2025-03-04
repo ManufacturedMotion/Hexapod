@@ -1,2 +1,4 @@
 pygame
 pyserial
+adafruit-circuitpython-neopixel-spi
+adafruit-blinka
