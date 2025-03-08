@@ -15,7 +15,6 @@
         public:
             SerialParser(Hexapod &hexapod);
             void parseCommand(String command);
-            _Bool optimizableCommand(const String &command);
             double x = 0;
             double y = 0;
             double z = 200;

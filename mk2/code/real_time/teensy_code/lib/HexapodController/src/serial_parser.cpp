@@ -37,19 +37,3 @@ void SerialParser::parseCommand(String command) {
         #endif
     }
 }
-
-_Bool SerialParser::optimizableCommand(const String &command) {
-
-    _Bool retval = false;
-    if (command.startsWith("{")) {
-        retval = _JsonParser.optimizableCommand(command);
-    }
-    else {
-        #if DEBUG
-            retval = _GcodeParser.optimizableCommand(command);
-        #endif
-    }
-
-    return retval;
-
-}

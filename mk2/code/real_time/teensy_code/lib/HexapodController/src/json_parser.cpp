@@ -65,37 +65,6 @@ String JsonParser::getCommandType(const String &command_str) {
     return key;
 }
 
-_Bool JsonParser::optimizableCommand(String command_str) {
-
-    String caps_command = command_str.toUpperCase();
-    JsonDocument command;
-    DeserializationError json_error = deserializeJson(command, caps_command);
-
-    if (json_error) {
-        SERIAL_OUTPUT.printf("Error converting command to JSON object! Could not parse\n");
-        SERIAL_OUTPUT.println(json_error.f_str());
-        return false;
-      }
-  
-    String command_type = getCommandType(caps_command);
-
-    if ((command_type == "PRE") or (command_type == "")) {
-        return false;
-    }
-    else {
-        String movement_sel = "None";
-        movement_sel = String(command["MV"]);
-        if (movement_sel == "WALK") { 
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-    return false;
-
-}
-
 void JsonParser::performPreset(String preset) {
 
     if (preset == "Z") {

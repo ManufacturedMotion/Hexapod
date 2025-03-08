@@ -11,7 +11,6 @@
         public:
             JsonParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed);
             void parseCommand(String command_str);
-            _Bool optimizableCommand(String command);
             String getCommandType(const String &command);
             void performPreset(String preset);
             void performMovement(String movement);

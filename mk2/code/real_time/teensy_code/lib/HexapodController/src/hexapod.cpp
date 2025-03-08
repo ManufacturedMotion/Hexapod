@@ -284,7 +284,7 @@ uint8_t Hexapod::stepToNeutral(double speed) {
 				step_segment[j].values[2] += segment_z_offsets[j];
 				step_path_length += step_segment[j].magnitude();
 			}
-			double speed_mult = step_path_length / _current_step_permutation[i].magnitude();
+			double speed_mult = 1; //step_path_length / _current_step_permutation[i].magnitude();
 			uint32_t move_time = uint32_t(step_path_length / (speed_mult * speed) * 1000.0);
 			for (uint8_t j = 0; j < NUM_LEGS / NUM_STEP_GROUPS; j++) {
 				for (uint8_t k = 0; k < num_segments; k++) {
