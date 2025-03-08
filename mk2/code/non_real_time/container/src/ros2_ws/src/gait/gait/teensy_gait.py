@@ -17,7 +17,7 @@ class TeensyGait(Node):
         self.cmd_vel_subscriber = self.create_subscription(Twist, "/cmd_vel", self.parse_cmd_vel, 10)
         self.joy_subscriber = self.create_subscription(Joy, "/joy", self.parse_joy, 10)
         self.publisher = self.create_publisher(String, '/to_teensy', 10)
-        self.publish_timer = self.create_timer(0.1, self.publishCommand) #publish command every .2 seconds       
+        self.publish_timer = self.create_timer(0.2, self.publishCommand) #publish command every .2 seconds       
         self.get_logger().info(f"{name} has begun")
         self.joy_cmd = {}
         self.last_joy_cmd = {}
@@ -33,10 +33,13 @@ class TeensyGait(Node):
             "x": 0,
             "y": 0
         }
-        self.walk_scale_fact = 4
-        self.minimum_step_size = 30
+        self.walk_scale_fact = 10
+        self.default_speed = 150
+        self.speed = self.default_speed
+        self.speed_scale_fact = 1.3
+        self.minimum_step_size = 100
         self.last_command_time = time.time()
-        self.step_timeout = 1.5
+        self.step_timeout = 1.2
         self.drift_factor = 0.1
         self.need_to_move = False
 
@@ -63,13 +66,15 @@ class TeensyGait(Node):
                 "Z": round(self.pos['z'], 3),
                 "ROLL": round(self.pos['roll'], 3),
                 "PTCH": round(self.pos['pitch'], 3),
-                "YAW": round(self.pos['yaw'], 3)
+                "YAW": round(self.pos['yaw'], 3),
+                "SPD": self.speed
             }
             self.publisher.publish(self.prepCommand(step_command))
             self.pos['x'] += self.step['x']
             self.pos['y'] += self.step['y']
             self.step['x'] = 0
             self.step['y'] = 0
+            self.speed = self.default_speed
             self.last_command_time = current_time
             self.need_to_move = False
             self.last_joy_cmd = {}
@@ -82,9 +87,9 @@ class TeensyGait(Node):
         self.pos['roll'] += msg.angular.x
         self.pos['pitch'] += msg.angular.y
         self.pos['yaw'] += msg.angular.z
-        #walk scale will eventually move to Danny's twist yaml 
-        self.step['x'] += (msg.linear.x * self.walk_scale_fact)
-        self.step['y'] += (msg.linear.y * self.walk_scale_fact)
+        self.step['x'] += (msg.linear.y * self.walk_scale_fact)
+        self.step['y'] += (msg.linear.x * self.walk_scale_fact)
+        self.speed = self.getSpeed(msg.linear.x, msg.linear.y)
         self.need_to_move = True
 
     def parse_joy(self, msg: Joy):
@@ -145,6 +150,11 @@ class TeensyGait(Node):
             "x": 0,
             "y": 0
         }
+    
+    def getSpeed(self, x, y):
+        distance = math.sqrt( x ** 2 + y ** 2)
+        speed = ((distance+1)*self.default_speed*self.speed_scale_fact)
+        return round(speed, 2)
 
 def main(args=None):
     rclpy.init(args=args)
