@@ -19,3 +19,11 @@ ros-iron-teleop-twist-keyboard
 ros-iron-teleop-twist-joy
 ros-iron-joy-linux
 ros-iron-rqt*
+libwayland-client0
+libwayland-server0
+wayland-protocols
+weston
+xwayland
+qt5-wayland
+libxcb-xinerama0
+x11-apps
