@@ -8,7 +8,7 @@ services:
       - /dev/ttyAMA0:/dev/ttyAMA0:rw
       - /dev/input/:/dev/input/  # Pass all input devices
       - /tmp/.X11-unix:/tmp/.X11-unix  # Share XWayland socket
-      - /run/user/1002:/run/user/1002  # Share Mutter XWayland auth
+      - /run/user/1002/.mutter-Xwaylandauth.GL9S22:/root/.Xauthority  # Share Mutter XWayland auth
     environment:
       - DISPLAY=:0
       - XAUTHORITY=/root/.Xauthority  # Set correct X auth file inside container
