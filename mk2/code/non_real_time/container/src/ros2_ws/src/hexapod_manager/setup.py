@@ -21,6 +21,7 @@ setup(
     entry_points={
         'console_scripts': [
             'led_controller = hexapod_manager.led_controller:main',
+            'display = hexapod_manager.display:main',
         ],
     },
 )
