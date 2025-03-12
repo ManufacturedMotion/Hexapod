@@ -43,29 +43,6 @@ We're just getting started on planning for Mark2, but some of the details includ
 
 For more info on what we're planning to change, checkout our Github issues!
 
-## Coding Standards
-
-We primarily follow [Google's C++ coding standards](https://google.github.io/styleguide/cppguide.html#Function_Names) with the exceptions and highlights below:
-
-### Naming Conventions
-
-- Class Names: ClassName
-- Constant: kVariableName
-- Defined: VARIABLENAME
-- File Names: file_name.extension
-- Function Names: functionName
-- Private Class: _class
-- Type Names: TypeName
-- Variable Names: snake_case
-- Struct: StructName
-
-- Variable names should be self-documenting (I.E., `LegSegment1` instead of `A`)
-
-### Misc Standards
-
-- Every file should have exactly 1 empty line as the last line.
-- There should not be any spaces at the end of a line.
-
 ## License
 
 [License](./LICENSE)
