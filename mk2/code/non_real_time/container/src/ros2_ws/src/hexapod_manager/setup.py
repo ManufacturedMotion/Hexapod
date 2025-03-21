@@ -1,4 +1,6 @@
 from setuptools import find_packages, setup
+import os
+from glob import glob
 
 package_name = 'hexapod_manager'
 
@@ -10,6 +12,8 @@ setup(
         ('share/ament_index/resource_index/packages',
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
+        # Ensure launch files are installed
+        (os.path.join('share', package_name), glob('launch/**'))
     ],
     install_requires=['setuptools'],
     zip_safe=True,
