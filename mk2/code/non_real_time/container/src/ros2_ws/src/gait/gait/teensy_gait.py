@@ -54,6 +54,8 @@ class TeensyGait(Node):
             else:
                 self.resetPos()
             self.publisher.publish(self.prepCommand(self.joy_cmd))
+            print(f"=================================")
+            print(f"Sending message {self.prepCommand(self.joy_cmd)}")
             self.last_joy_cmd = copy.deepcopy(self.joy_cmd)
             self.joy_cmd = {}
             self.last_command_time = current_time

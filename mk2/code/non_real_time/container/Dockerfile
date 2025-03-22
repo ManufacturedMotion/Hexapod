@@ -8,7 +8,7 @@ apt-get upgrade -y
 
 # Setup python and system dependencies
 ADD setup /app/setup
-RUN bash -c 'apt-get install --no-install-recommends --fix-missing -y $(cat /app/setup/system-requirements.txt)'
+RUN bash -c 'apt-get install -y $(cat /app/setup/system-requirements.txt)'
 RUN apt full-upgrade -y
 RUN pip3 install --no-cache-dir -r /app/setup/python-requirements.txt
 
