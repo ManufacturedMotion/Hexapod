@@ -27,11 +27,11 @@
 	#ifdef ZACK
 	
 		#define PWM_PINS {{2, 3, 4}, {5, 6, 7}, {8, 9, 10},  {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}
-		#define ZERO_POINTS {{2.55, 2.4, 1.4}, {2.4, 2.25, 1.5}, {2.1, 2.4, 1.6}, {1.8, 2.35, 1.4}, {1.95, 2.3, 1.53}, {2.6, 2.35, 1.55}}
+		#define ZERO_POINTS {{2.24, 2.8, 1.4}, {2.3, 2.3, 1.98}, {2.4, 2.6, 2.38}, {2.7, 2.55, 1.4}, {2.45, 2.65, 1.5}, {2.6, 2.55, 2.15}} //L0S3, L3S3, L5S0 broken
 		#define MAX_POS {{PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}}
 		#define MIN_POS {{-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}}
 		#define SCALE_FACT {{0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}}
-		#define REVERSE_AXIS {{false, false, true}, {false, false, true}, {false, false, true}, {false, false, true}, {false, false, true}, {false, false, true}}
+		#define REVERSE_AXIS {{false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}}
 		
 	#endif
 

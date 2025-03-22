@@ -71,9 +71,9 @@
 			double _max_speed = 1000000;
 			_Bool _preCheckSafePos(Position pos);
 			_Bool _postCheckSafeCoords(double x, double y, double z);
-			uint8_t _inverseKinematics(Position pos);
-			uint8_t _inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]);
-			uint8_t _inverseKinematics(double x, double y, double z, double roll, double pitch, double yaw);
+			uint8_t _inverseKinematics(Position pos, ThreeByOne * results);
+			uint8_t _inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS], ThreeByOne * results);
+			uint8_t _inverseKinematics(double x, double y, double z, double roll, double pitch, double yaw, ThreeByOne * results);
 			void _moveLegs();
 			double _move_progress;
 			uint32_t _move_start_time;
