@@ -69,12 +69,6 @@ void Hexapod::stand() {
 	}
 }
 
-uint8_t Hexapod::_inverseKinematics(double x, double y, double z, double roll, double pitch, double yaw) {
-	Position pos;
-	pos.set(x, y, z, roll, pitch, yaw);
-	return _inverseKinematics(pos);
-}
-
 void Hexapod::rapidMove(double x, double y, double z, double roll, double pitch, double yaw) {
 	Position pos;
 	pos.set(x, y, z, roll, pitch, yaw);
@@ -90,7 +84,15 @@ void Hexapod::rapidMove(Position next_pos) {
 }
 
 void Hexapod::rapidMove(Position next_pos, _Bool active_legs[NUM_LEGS]) {
-	_inverseKinematics(next_pos, active_legs);
+	// Updated to use new _inverseKinematics caller, but not tested since this
+	// function is not currently used
+	ThreeByOne next_positions[NUM_LEGS];
+	_inverseKinematics(next_pos, active_legs, next_positions);
+	for (uint8_t i = 0; i < NUM_LEGS; i++) {
+		for (uint8_t j = 0; j < NUM_AXES_PER_LEG; j++) {
+			_next_leg_pos[i][j] = next_positions[i].values[j];
+		}
+	}
 	_moveLegs();
 	_current_pos.setPos(next_pos);
 }
@@ -221,12 +223,6 @@ void Hexapod::_moveLegs() {
 double Hexapod::get_max_step_magnitude() {
 	return _current_step_permutation[_next_step_group % 2].magnitude() + MAX_STEP_MAGNITUDE;
 }
-
-// ThreeByOne Hexapod::get_max_step(ThreeByOne direction) {
-// 	return _current_step_permutation[_next_step_group % 2] * direction.unit_vector();
-// }
-
-
 
 uint8_t Hexapod::walkSetup(double x, double y, double speed, _Bool return_to_neutral) {
 	ThreeByOne relative_end_coord = ThreeByOne(x, y, 0.0);
@@ -418,15 +414,21 @@ _Bool Hexapod::isLowLevelBusy() {
 	return _moving_flag;
 }
 
-uint8_t Hexapod::_inverseKinematics(Position pos) {
+uint8_t Hexapod::_inverseKinematics(double x, double y, double z, double roll, double pitch, double yaw, ThreeByOne *results) {
+	Position pos;
+	pos.set(x, y, z, roll, pitch, yaw);
+	return _inverseKinematics(pos, results);
+}
+
+uint8_t Hexapod::_inverseKinematics(Position pos, ThreeByOne * results) {
 	_Bool active_legs[NUM_LEGS];
 	for (uint8_t i = 0; i < NUM_LEGS; i++) {
 		active_legs[i] = true;
 	} 
-	return _inverseKinematics(pos, active_legs);
+	return _inverseKinematics(pos, active_legs, results);
 }
 
-uint8_t Hexapod::_inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]) {
+uint8_t Hexapod::_inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS], ThreeByOne * results) {
 	// Just to get something workign assume yaw = 0 
 	// Must rework leg IK or set points align all coordinate systems
 	// Right now we have 6 coordinate systems harder than we want to do
@@ -465,20 +467,18 @@ uint8_t Hexapod::_inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS]) {
 		if (!_postCheckSafeCoords(potential_results[i][0], potential_results[i][1], potential_results[i][2]))
 			return 255; // Post-check fail
 	}
-
+	uint8_t results_index = 0;
 	for (uint8_t i = 0; i < NUM_LEGS; i++) {
-		for (uint8_t j = 0; j < NUM_AXES_PER_LEG; j++) {
-			if(active_legs[i]) {
-				_next_leg_pos[i][j] = potential_results[i][j];
-			}
+		if(active_legs[i]) {
+			results[results_index] = ThreeByOne(potential_results[i]);
+			results_index++;
 		}
 		#if DEBUG
-			Serial.printf("Leg %d, x:%lf, y:%lf, z:%lf\n",i,_next_leg_pos[i][0], _next_leg_pos[i][1], _next_leg_pos[i][2]);
+			Serial.printf("Leg %d, x:%lf, y:%lf, z:%lf\n",i,results[i].values[0], results[i].values[0], results[i].values[0]);
 		#endif
 	}
 	return 0;
 }
-
 
 
 _Bool Hexapod::_preCheckSafePos(Position pos) {
