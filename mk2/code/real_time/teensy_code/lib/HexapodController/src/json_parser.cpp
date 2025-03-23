@@ -13,7 +13,6 @@ JsonParser::JsonParser(Hexapod &hexapod, double &x, double &y, double &z, double
     _pitch = pitch;
     _yaw = yaw;
     _speed = speed;
-    json_joints = getJsonJoints();
 }
 
 void JsonParser::parseCommand(String command_str) {
@@ -41,7 +40,7 @@ void JsonParser::parseCommand(String command_str) {
         movement_sel = "None";
     }
     else {
-        SERIAL_OUTPUT.printf("ERROR! Unsupported JSON command received via Serial\n");
+        SERIAL_OUTPUT.printf("ERROR: Unsupported JSON command received via Serial\n");
     }
     return;
 }
@@ -80,7 +79,7 @@ void JsonParser::performPreset(String preset) {
         _Hexapod.stand();
     }
     else {
-        SERIAL_OUTPUT.printf("ERROR! JSON parser detected input for a preset that is not yet supported: %s.\n", preset);
+        SERIAL_OUTPUT.printf("ERROR: JSON parser detected input for a preset that is not yet supported: %s.\n", preset);
     }
     return;
 }
@@ -97,12 +96,21 @@ void JsonParser::performMovement(String movement) {
     }
     //NOTE: if not all 18 positions specified, motors who were not explicitly provided will move to where the hexapod has memory of them being. (What is in the parsers _leg_positions array)
     else if (movement == "MTPS") {
-        for (uint8_t leg = 0; leg < NUM_LEGS; leg++) {
-            for (uint8_t axis = 0; axis < NUM_AXES_PER_LEG; axis++) {
-                _Hexapod.legs[leg].axes[axis].moveToPosAtSpeed(_leg_positions[leg][axis], _speed);
+        if (valid_MTPS){ 
+            for (uint8_t leg = 0; leg < NUM_LEGS; leg++) {
+                for (uint8_t axis = 0; axis < NUM_AXES_PER_LEG; axis++) {
+                    _Hexapod.legs[leg].axes[axis].moveToPosAtSpeed(_leg_positions[leg][axis], _speed);
+                }
             }
+            SERIAL_OUTPUT.printf("JSON move to pos at speed x18 parsing success.\n");
+            valid_MTPS = false;
         }
-        SERIAL_OUTPUT.printf("JSON move to pos at speed x18 parsing success.\n");
+    }
+    else if (movement == "TUNE") {
+        if ((_tune_leg >= 0 && _tune_leg < NUM_LEGS) && (_tune_axis >= 0 && _tune_axis < NUM_AXES_PER_LEG)) {
+            _Hexapod.moveLegAxisToPos(_tune_leg, _tune_axis, _tune_pos);
+            SERIAL_OUTPUT.printf("TUNE move parsing success; moving Leg %d, Axis %d to position %f\n", _tune_leg, _tune_axis, _tune_pos);
+        }
     }
     else if (movement == "3B1") {
         if (_movement_time != 0) {
@@ -117,7 +125,7 @@ void JsonParser::performMovement(String movement) {
         _Hexapod.linearMoveSetup(_position, _speed);
     }
     else {
-        SERIAL_OUTPUT.printf("ERROR! JSON parser detected input for a movement that is not yet supported: %hu. \n", movement);
+        SERIAL_OUTPUT.printf("ERROR: JSON parser detected input for a movement that is not yet supported: %hu. \n", movement);
     }
     return;
 }
@@ -165,13 +173,110 @@ void JsonParser::updateVariables(const String &command_str) {
             _movement_time = kv.value().as<uint16_t>(); 
         }
         else if ((key.indexOf('S') != -1) && (key.indexOf('L') != -1)) {
-            uint8_t leg = json_joints[key]["leg"];
-            uint8_t axis = json_joints[key]["axis"];
-            double pos = kv.value().as<double>();
-            if ((leg >= 0 && leg < NUM_LEGS) && (axis >= 0 && axis < NUM_AXES_PER_LEG)) {
-                _leg_positions[leg][axis] = pos;
+            if (movement_sel == "TUNE") {
+                if (json_command.size() != 2) {
+                    SERIAL_OUTPUT.println("ERROR: TUNE command only allows one position specification.");
+                    return;
+                }
+                auto [tune_leg, tune_axis, tune_pos] = parseJsonJoint(key, kv);
+                _tune_leg = tune_leg;
+                _tune_axis = tune_axis;
+                _tune_pos = tune_pos;
+                return;
+            }
+            
+            else if (movement_sel == "MTPS") {
+                valid_MTPS = true;
+                if (json_command.size() != 19) {
+                    SERIAL_OUTPUT.println("ERROR: MTPS command requires all 18 positions to be specified.");
+                    valid_MTPS = false;
+                    return;
+                }
+                auto [leg, axis, pos] = parseJsonJoint(key, kv);
+                if ((leg >= 0 && leg < NUM_LEGS) && (axis >= 0 && axis < NUM_AXES_PER_LEG)) {
+                    _leg_positions[leg][axis] = pos;
+                }
+                else {
+                    valid_MTPS = false;
+                }
+            }
+            else {
+                SERIAL_OUTPUT.println("Warning: Provided Joint key to command that does not consume it.");
             }
         }
     }
     return;
+}
+
+std::tuple<uint8_t, uint8_t, double> JsonParser::parseJsonJoint(String joint, JsonPair json_pos) {
+
+    uint8_t leg = 0;
+    uint8_t axis = 0;
+    double pos = 0.0;
+    std::tuple<uint8_t, uint8_t, double> error_return = std::make_tuple(25, 25, 0);
+
+    int leg_start_idx = joint.indexOf('L') + 1;
+    int axis_start_idx = joint.indexOf('S');
+
+    if (leg_start_idx == 0 || axis_start_idx == -1) {
+        SERIAL_OUTPUT.println("ERROR: Joint key requires the form 'L<leg>S<axis>'.");
+        return error_return;
+    }
+    if (axis_start_idx == -1 || axis_start_idx == int(joint.length() - 1)) {
+        SERIAL_OUTPUT.println("ERROR: Joint key requires a valid 'S' value after 'L<leg>S<axis>'.");
+        return error_return;
+    }
+
+    String leg_str = joint.substring(leg_start_idx, axis_start_idx);
+    String axis_str = joint.substring(axis_start_idx + 1);
+    if (!isNumeric(leg_str) || !isNumeric(axis_str)) {
+        SERIAL_OUTPUT.println("ERROR: Both the leg and axis values must be integers.");
+        return error_return;
+    }
+    
+    leg = leg_str.toInt(); 
+    axis = axis_str.toInt();
+    if (leg < 0 || leg >= NUM_LEGS || axis <= 0 || axis > NUM_AXES_PER_LEG) {
+        SERIAL_OUTPUT.println("ERROR: Leg or axis value is invalid.");
+        return error_return;
+    }
+    axis -= 1; //do this after check because if axis = 0, we would roll back to 255 and bypass the return
+
+    std::string pos_str = json_pos.value(); 
+    bool is_valid_number = checkPositionString(pos_str);
+    if (!is_valid_number) {
+        SERIAL_OUTPUT.printf("ERROR: Invalid position format for leg %d, axis %d. Position contains invalid characters: '%s'\n", leg, axis, pos_str.c_str());
+        return error_return;
+    }
+
+    pos = json_pos.value().as<double>();
+    return std::make_tuple(leg, axis, pos);
+}
+
+_Bool JsonParser::checkPositionString(std::string pos_str) {
+    bool is_valid_number = true;
+    bool decimal_point_found = false;
+    for (char c : pos_str) {
+        if (!std::isdigit(c) && c != '.' && c != '-' && c != '+') {
+            is_valid_number = false;
+            break;
+        }
+        if (c == '.') {
+            if (decimal_point_found) {
+                is_valid_number = false; 
+                break;
+            }
+            decimal_point_found = true;
+        }
+    }
+    return is_valid_number;
+}
+
+_Bool JsonParser::isNumeric(const String &str) {
+    for (unsigned int i = 0; i < str.length(); i++) {
+        if (!isdigit(str.charAt(i))) {
+            return false;
+        }
+    }
+    return true;
 }
