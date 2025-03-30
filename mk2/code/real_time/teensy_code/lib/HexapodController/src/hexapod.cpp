@@ -264,7 +264,7 @@ void Hexapod::wait(uint32_t time_ms) {
 uint8_t Hexapod::stepToNeutral(double speed) {
 	uint8_t retval = 0;
 	uint8_t num_segments = 3;
-	double segment_z_offsets[num_segments] = {-20.0, 0.0, 20.0};
+	double segment_z_offsets[num_segments] = {-30.0, 0.0, 30.0};
 	ThreeByOne step_segment[num_segments];
 	#if DEBUG
 		Serial.printf("\nCurrent permutations:\nStep group 0:\n\tx:%f, y:%f z:%f\nStep group 1:\n\tx:%f, y:%f z:%f", 
@@ -322,7 +322,7 @@ uint8_t Hexapod::stepSetup(ThreeByOne relative_end_coord, double speed) {
 		return 255; //Error code for too big step size
 	}
 	uint8_t num_step_segments = 5;
-	double step_z_offsets[num_step_segments] = {-20.0, -10.0, 0.0, 10.0, 20.0};
+	double step_z_offsets[num_step_segments] = {-30.0, -20.0, 0.0, 20.0, 30.0};
 	ThreeByOne step_segment[num_step_segments];
 	double step_path_length = 0.0;
 	for (uint8_t i = 0; i < num_step_segments; i++) {
