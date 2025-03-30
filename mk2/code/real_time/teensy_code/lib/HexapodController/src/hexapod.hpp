@@ -13,7 +13,7 @@
 
 	#define NUM_LEGS 6
 	#define NUM_STEP_GROUPS 2
-	#define MAX_STEP_MAGNITUDE 35.0
+	#define MAX_STEP_MAGNITUDE 60.0
 	#define STEP_TO_NEUTRAL_SPEED 200.0
 	class Hexapod {
 		public:
@@ -66,7 +66,7 @@
 			double _leg_Y_offset[NUM_LEGS] = { 94.583,    0.000, -94.583, -94.583,   0.000, 94.583};
 			double _home_yaws[NUM_LEGS] = { ((-M_PI / 2.0) - 1.0),	(-M_PI / 2.0),	((-M_PI / 2.0) + 1.0), 
 											(1.0), 					( M_PI / 2.0),	(( M_PI / 2.0) + 1.0)};
-			ThreeByOne _stance_offset = ThreeByOne(0.0, 100.0, 0.0);
+			ThreeByOne _stance_offset = ThreeByOne(0.0, 200.0, 0.0);
 			// double _home_yaws[NUM_LEGS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 			double _max_speed = 1000000;
 			_Bool _preCheckSafePos(Position pos);
