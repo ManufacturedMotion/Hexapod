@@ -8,6 +8,7 @@
 #include "three_by_matrices.hpp"
 #include <Arduino.h>
 #include "voltage_monitor.hpp"
+#include "serial_handler.hpp"
 
 Hexapod::Hexapod() { 
     for (uint8_t i = 0; i < NUM_LEGS; i++) {
@@ -182,10 +183,10 @@ void Hexapod::linearMovePerform() {
 		if (move_progress <= 1.0) {
 			Position next_pos = (_end_pos - _start_pos) * move_progress + _start_pos;
 			rapidMove(next_pos, _linear_move_legs);
-			#if DEBUG
-				Serial.printf("linear move legs: %d %d %d %d %d %d\n", 
-				_linear_move_legs[0], _linear_move_legs[1], _linear_move_legs[2],
-				_linear_move_legs[3], _linear_move_legs[4], _linear_move_legs[5]);
+			#if LOG_LEVEL >= CALCULATION_LOGGING
+				String msg = "linear move legs: " + String(_linear_move_legs[0]) + " " + String(_linear_move_legs[1]) + " " + String(_linear_move_legs[2]) + " "
+				+ String(_linear_move_legs[3]) + " " + String(_linear_move_legs[4]) + " " + String(_linear_move_legs[5]) + "\n";
+				serial.logMsg(msg);
 			#endif
 		}
 		for (uint8_t i = 0; i < NUM_LEGS; i++) {
@@ -200,14 +201,15 @@ void Hexapod::linearMovePerform() {
 }
 
 void Hexapod::_moveLegs() {
+	#if LOG_LEVEL >= CALCULATION_LOGGING
+		serial.logMsg("Next leg positions]");
+	#endif
     for (uint8_t i = 0; i < NUM_LEGS; i++) {
-		#if DEBUG
-			Serial.println("Next leg positions");
-		#endif
 		if (!legs[i].isMoving()) {
         	legs[i].rapidMove(_next_leg_pos[i][0], _next_leg_pos[i][1],_next_leg_pos[i][2]);
-			#if DEBUG
-				Serial.printf("leg %d x:%f y:%f z:%f", i, _next_leg_pos[i][0],_next_leg_pos[i][1], _next_leg_pos[i][2]);
+			#if LOG_LEVEL >= CALCULATION_LOGGING
+				String msg = "leg: " + String(i) + " x:" + String(_next_leg_pos[i][0]) + " y:" + String(_next_leg_pos[i][1]) + " z:" + String(_next_leg_pos[i][2]) + "\n";
+				serial.logMsg(msg);
 			#endif
 		}
 	}
@@ -235,8 +237,10 @@ uint8_t Hexapod::walkSetup(ThreeByOne relative_end_coord, double speed, _Bool re
 		ThreeByOne max_step_size = end_unit_vector * get_max_step_magnitude();
 		ThreeByOne distance_to_go = relative_end_coord - distance_traveled;
 		ThreeByOne this_step = (distance_to_go > max_step_size) ? ThreeByOne(max_step_size) : ThreeByOne(distance_to_go);
-		#if DEBUG
-			Serial.printf("Taking step: x:%f, y:%f, z:%f, speed: %f\n", this_step.values[0], this_step.values[1], this_step.values[2], speed);
+		#if LOG_LEVEL >= CALCULATION_LOGGING
+			String msg = "Taking step: x: " + String(this_step.values[0]) + " y:" + String(this_step.values[1]) + " z:" + String(this_step.values[2]) + " speed:"
+			+ String(speed) + "\n";
+			serial.logMsg(msg);
 		#endif
 		stepSetup(this_step, speed);
 		distance_traveled += this_step;
@@ -259,12 +263,12 @@ uint8_t Hexapod::stepToNeutral(double speed) {
 	uint8_t num_segments = 3;
 	double segment_z_offsets[num_segments] = {-30.0, 0.0, 30.0};
 	ThreeByOne step_segment[num_segments];
-	#if DEBUG
-		Serial.printf("\nCurrent permutations:\nStep group 0:\n\tx:%f, y:%f z:%f\nStep group 1:\n\tx:%f, y:%f z:%f", 
-		_current_step_permutation[0].values[0], _current_step_permutation[0].values[1], _current_step_permutation[0].values[2],
-		_current_step_permutation[1].values[0], _current_step_permutation[1].values[1], _current_step_permutation[1].values[2]);
+	#if LOG_LEVEL >= CALCULATION_LOGGING
+		String msg = "\nCurrent permutations:\nStep group 0:\n\tx:" + String(_current_step_permutation[0].values[0]) + " y:" + String(_current_step_permutation[0].values[1])
+		+ " z:" + String(_current_step_permutation[0].values[2]) + "\nStep group 1:\n\tx:" String(_current_step_permutation[1].values[0]) + " y:" + String(_current_step_permutation[1].values[1])
+		+ " z:" + String(_current_step_permutation[1].values[2]) + "\n";
+		serial.logMsg(msg);
 	#endif
-	
 	double step_path_length = 0.0;
 	for (uint8_t i = 0; i < NUM_STEP_GROUPS; i++) {
 		if (_current_step_permutation[i].magnitude() > 0.1) {
@@ -367,11 +371,10 @@ uint16_t Hexapod::comboMovePerform() {
 				legWaitSetup(i, queue_head->wait_time_ms);
 				if (!queue_head->wait_time_ms) {
 					legLinearMoveSetup(i, queue_head->end_pos, queue_head->speed, queue_head->relative);
-					#if DEBUG
-						Serial.printf("Leg %d moving to x:%f y:%f z:%f\nRelative:%d speed:%f\n",
-						i, _leg_queues[i].head->end_pos.values[0],
-						_leg_queues[i].head->end_pos.values[1], _leg_queues[i].head->end_pos.values[2],
-						_leg_queues[i].head->relative, _leg_queues[i].head->speed);
+					#if LOG_LEVEL >= CALCULATION_LOGGING
+						String msg = "Leg " + String(i) + " moving to x:" + String(_leg_queues[i].head->end_pos.values[0]) + ", y: " + String(_leg_queues[i].head->end_pos.values[1]) + ", z: "
+						+ String(_leg_queues[i].head->end_pos.values[2]) + "\nRelative: " + String(_leg_queues[i].head->relative) + " speed: " + String(_leg_queues[i].head->speed) + "\n";
+						serial.logMsg(msg);
 					#endif
 				}
 				_leg_queues[i].dequeue();
@@ -466,8 +469,9 @@ uint8_t Hexapod::_inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS], T
 			results[results_index] = ThreeByOne(potential_results[i]);
 			results_index++;
 		}
-		#if DEBUG
-			Serial.printf("Leg %d, x:%lf, y:%lf, z:%lf\n",i,results[i].values[0], results[i].values[0], results[i].values[0]);
+		#if LOG_LEVEL >= CALCULATION_LOGGING
+			String msg = "IK value; leg: " + String(i) + " x:" + String(results[i].values[0]) + " y:" + String(results[i].values[1]) + " z:" + String(results[i].values[2]) + "\n";
+			serial.logMsg(msg);
 		#endif
 	}
 	return 0;
@@ -487,8 +491,9 @@ _Bool Hexapod::_postCheckSafeCoords(double x, double y, double z) {
 
 void Hexapod::forwardKinematics(double angle0, double angle1, double angle2) {
 	ThreeByOne resulting_pos = legs[0].forwardKinematics(angle0, angle1, angle2);
-    #if DEBUG
-		Serial.printf("Result\n  x: %f; y: %f; z: %f\n", resulting_pos.values[0], resulting_pos.values[1], resulting_pos.values[2]);
+	#if LOG_LEVEL >= CALCULATION_LOGGING
+		String msg = "FK value; x: " + String(resulting_pos.values[0]) + " y:" + String(resulting_pos.values[1]) + " z:" + String(resulting_pos.values[2]) + "\n";
+		serial.logMsg(msg);
 	#endif
 }
 

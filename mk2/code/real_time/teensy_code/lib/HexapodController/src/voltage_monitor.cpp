@@ -59,8 +59,10 @@ float VoltageSensor::takeReading() {
             raw_vdds[measure_index] = analogRead(VSENSE_PIN);
             //overwrite measure time after saving vdd. prevents same reading from being recorded multiple times
             measure_times[measure_index] = 0; 
-            String msg = "raw vdd " + String(measure_index) + " is " + String(raw_vdds[measure_index]) + "\n";
-            _serial->logMsg(msg, VOLTAGE_DEBUG);
+            #if LOG_LEVEL >= VOLTAGE_DEBUG 
+                String msg = "raw vdd " + String(measure_index) + " is " + String(raw_vdds[measure_index]) + "\n";
+                _serial->logMsg(msg);
+            #endif
         }
     }
 
@@ -111,7 +113,9 @@ float VoltageSensor::getMode(float voltages[], const uint8_t num_measurements) {
             voltage = 0;
         }
     }
-    String msg = "most frequent raw voltage was " + String(voltage) + "\n";
-    _serial->logMsg(msg, VOLTAGE_DEBUG);
+    #if LOG_LEVEL >= VOLTAGE_DEBUG
+        String msg = "most frequent raw voltage was " + String(voltage) + "\n";
+        _serial->logMsg(msg);
+    #endif
     return voltage;
 }

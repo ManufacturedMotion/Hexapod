@@ -18,11 +18,9 @@ void SerialHandler::writeMsg(String message, uint8_t log_threshold) {
 
 }
 
-void SerialHandler::logMsg(String message, uint8_t log_threshold) {
+void SerialHandler::logMsg(String message) {
 
-    if(LOG_LEVEL >= log_threshold){
-        Serial.printf(message);
-    }
+    Serial.printf(message);
 
 }
 
