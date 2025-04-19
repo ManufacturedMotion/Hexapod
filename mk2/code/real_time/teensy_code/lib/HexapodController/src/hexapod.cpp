@@ -14,22 +14,15 @@ Hexapod::Hexapod() {
         legs[i].initializeAxes(i);
 		_leg_queues[i].setLeg(&legs[i]);
     }
-	voltageSensor = VoltageSensor();
+	serial = SerialHandler();
+	voltageSensor = VoltageSensor(&serial);
 }
 
 void Hexapod::startUp() {
 
-	#if DEBUG
-		return; 
-	#endif
+	delay(5000);
+	sit();
 
-	uint32_t start_time = millis();
-	while(1) {
-		if (millis() >= (start_time + 5000)) {
-			sit();
-			break;
-		}
-	}
 }
 
 void Hexapod::moveLegAxisToPos(uint8_t leg_number, uint8_t axis_number, double target_position) {
@@ -318,7 +311,7 @@ uint8_t Hexapod::stepSetup(ThreeByOne relative_end_coord, double speed) {
 	_neutral_position_flag = false;
 	double linear_path_length = relative_end_coord.magnitude();
 	if (linear_path_length > get_max_step_magnitude()) {
-		SERIAL_OUTPUT.printf("Step size too big, try again with a smaller step");
+		serial.errorMsg("Step size too big, try again with a smaller step");
 		return 255; //Error code for too big step size
 	}
 	uint8_t num_step_segments = 5;

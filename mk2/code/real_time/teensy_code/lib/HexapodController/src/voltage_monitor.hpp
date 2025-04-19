@@ -15,7 +15,7 @@
 
     class VoltageSensor {
         public:
-            VoltageSensor();
+            VoltageSensor(SerialHandler* serial_handler);
             void checkVoltage();
             _Bool canRead();
             float takeReading();
@@ -32,6 +32,7 @@
             float _current_vdd = 0;
             float _last_raw_vdd = 0;
             static uint32_t _voltage_sensor_timer;
+            SerialHandler* _serial = nullptr;
     };
 
 #endif
