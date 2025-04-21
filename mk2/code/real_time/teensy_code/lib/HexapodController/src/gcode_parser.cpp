@@ -5,15 +5,15 @@
 #include <sstream>
 #include <stdbool.h>
 
-GcodeParser::GcodeParser(Hexapod &hexapod, double &x, double &y, double &z, double &roll, double &pitch, double &yaw, double &speed) : _Hexapod(hexapod){
-    _x = x;
-    _y = y;
-    _z = z;
-    _roll = roll;
-    _pitch = pitch;
-    _yaw = yaw;
-    _speed = speed;
-}
+GcodeParser::GcodeParser(
+    Hexapod &hexapod, 
+    double &x, double &y, double &z, 
+    double &roll, double &pitch, double &yaw, double &speed
+)
+: _Hexapod(hexapod),
+  _x(x), _y(y), _z(z),
+  _roll(roll), _pitch(pitch), _yaw(yaw), _speed(speed)
+{}
 
 void GcodeParser::parseCommand(String command) {
     
@@ -36,8 +36,8 @@ void GcodeParser::parseCommand(String command) {
         movement_sel = 255;
     }
     else {
-        SERIAL_OUTPUT.printf("ERROR: Unsupported Gcode command received via Serial\n");
-        SERIAL_OUTPUT.printf("STRING IS: %s", command);
+        _msg = "ERROR: Unsupported Gcode command received via Serial\nSTRING IS: " + command + "\n";
+        _Hexapod.serial.errorMsg(_msg);
     }
 
     return;
@@ -47,19 +47,26 @@ void GcodeParser::performPreset(uint8_t preset) {
 
     switch(preset) {
         case 0:
-            SERIAL_OUTPUT.printf("Gcode parsing success; starfish preset selected (move all motors to zero).\n");
+            #if LOG_LEVEL >= BASIC_DEBUG
+                _Hexapod.serial.logMsg("Gcode parsing success; starfish preset selected (move all motors to zero).\n");
+            #endif
             _Hexapod.moveToZeros();
             break;
         case 1:
-            SERIAL_OUTPUT.printf("Gcode parsing success; sit preset selected.\n");
+            #if LOG_LEVEL >= BASIC_DEBUG
+                _Hexapod.serial.logMsg("Gcode parsing success; sit preset selected.\n");
+            #endif
             _Hexapod.sit();
             break;
         case 2:
-            SERIAL_OUTPUT.printf("Gcode parsing success; stand preset selected.\n");
+            #if LOG_LEVEL >= BASIC_DEBUG
+                _Hexapod.serial.logMsg("Gcode parsing success; stand preset selected.\n");
+            #endif
             _Hexapod.stand();
             break;
         default:
-            SERIAL_OUTPUT.printf("ERROR: Gcode parser detected input for a preset that is not yet supported: %hu.\n", preset);
+            _msg = "ERROR: Gcode parser detected input for a preset that is not yet supported: " + String(preset) + "\n"; 
+            _Hexapod.serial.errorMsg(_msg);
             break;
     }
     return;
@@ -69,11 +76,19 @@ void GcodeParser::performMovement(uint8_t movement) {
 
     switch(movement) {
         case 0:
-            SERIAL_OUTPUT.printf("Gcode rapid move parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", _x, _y, _z, _roll, _pitch, _yaw, _speed);
+            #if LOG_LEVEL >= BASIC_DEBUG
+                _msg = "Gcode rapid move parsing success; x, y, z is " + String (_x) + " " + String (_y) + " " + String (_z) + "\nroll, pitch, yaw, speed are " + 
+                    String (_roll) + " " + String (_pitch) + " " + String (_yaw) + " " + String(_speed) + "\n";
+                _Hexapod.serial.logMsg(_msg);
+            #endif
             _Hexapod.rapidMove(_position);
             break;
         case 1:
-            SERIAL_OUTPUT.printf("Gcode walk setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", _x, _y, _z, _roll, _pitch, _yaw, _speed);
+            #if LOG_LEVEL >= BASIC_DEBUG
+                _msg = "Gcode walk setup parsing success; x, y, z is " + String (_x) + " " + String (_y) + " " + String (_z) + "\nroll, pitch, yaw, speed are " + 
+                    String (_roll) + " " + String (_pitch) + " " + String (_yaw) + " " + String(_speed) + "\n";
+                _Hexapod.serial.logMsg(_msg);
+            #endif
             _Hexapod.walkSetup(_position, _speed);
             break;
         case 2: 
@@ -84,13 +99,18 @@ void GcodeParser::performMovement(uint8_t movement) {
                         _Hexapod.legs[leg].axes[axis].moveToPosAtSpeed(_leg_positions[leg][axis], _speed);
                     }
                 }
-                SERIAL_OUTPUT.printf("Gcode move to pos at speed x18 parsing success.\n");
+                #if LOG_LEVEL >= BASIC_DEBUG
+                    _Hexapod.serial.logMsg("Gcode move to pos at speed x18 parsing success.\n");
+                #endif
                 valid_MTPS = false;
             }   
             break;
         case 3:
             if ((_tune_leg >= 0 && _tune_leg < NUM_LEGS) && (_tune_axis >= 0 && _tune_axis < NUM_AXES_PER_LEG)) {
-                SERIAL_OUTPUT.printf("TUNE move parsing success; moving Leg %d, Axis %d to position %f\n", _tune_leg, _tune_axis, _tune_pos);
+                #if LOG_LEVEL >= BASIC_DEBUG
+                    _msg = "TUNE move parsing success; moving Leg: " + String (_tune_leg) + ", Axis: " + String (_tune_axis) + "to position " + String (_tune_pos) + "\n";
+                    _Hexapod.serial.logMsg(_msg);
+                #endif
                 _Hexapod.moveLegAxisToPos(_tune_leg, _tune_axis, _tune_pos);
                 _tune_leg = 25;
                 _tune_axis = 25;
@@ -102,14 +122,21 @@ void GcodeParser::performMovement(uint8_t movement) {
                     _Hexapod.legEnqueue(leg, ThreeByOne(_leg_positions[leg]), _movement_time, true);
                   }
             }
-            SERIAL_OUTPUT.printf("Gcode leg enqueue parsing success.\n");
+            #if LOG_LEVEL >= BASIC_DEBUG
+                _Hexapod.serial.logMsg("Gcode leg enqueue parsing success.\n");
+            #endif
             break;
         case 9:
-            SERIAL_OUTPUT.printf("Gcode linear move setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", _x, _y, _z, _roll, _pitch, _yaw, _speed);
+            #if LOG_LEVEL >= BASIC_DEBUG
+                _msg = "Gcode linear move setup parsing success; x, y, z is " + String (_x) + " " + String (_y) + " " + String (_z) + "\nroll, pitch, yaw, speed are " + 
+                    String (_roll) + " " + String (_pitch) + " " + String (_yaw) + " " + String(_speed) + "\n";
+                _Hexapod.serial.logMsg(_msg);
+            #endif
             _Hexapod.linearMoveSetup(_position, _speed);
             break;    
         default:
-            SERIAL_OUTPUT.printf("ERROR: Gcode parser detected input for a movement that is not yet supported: %hu. \n", movement);
+            _msg = "ERROR: Gcode parser detected input for a movement that is not yet supported: " + String(movement) + "\n";
+            _Hexapod.serial.errorMsg(_msg);
             break;   
     }
     return;
@@ -162,7 +189,7 @@ void GcodeParser::updateVariables(const String &command) {
         else if (token[0] == 'L') {
             if (movement_sel == 3) {
                 if (gcode_words != 2) {
-                    SERIAL_OUTPUT.println("ERROR: G3 command only allows one position specification.");
+                    _Hexapod.serial.errorMsg("ERROR: G3 command only allows one position specification.");
                     return;
                 }
                 auto [tune_leg, tune_axis, tune_pos] = parseGcodeJoint(token);
@@ -175,7 +202,7 @@ void GcodeParser::updateVariables(const String &command) {
             else if (movement_sel == 2) {
                 valid_MTPS = true;
                 if (gcode_words != 19) {
-                    SERIAL_OUTPUT.println("ERROR: G2 command requires all 18 positions to be specified.");
+                    _Hexapod.serial.errorMsg("ERROR: G2 command requires all 18 positions to be specified.");
                     valid_MTPS = false;
                     return;
                 }
@@ -188,7 +215,7 @@ void GcodeParser::updateVariables(const String &command) {
                 }
             }
             else {
-                SERIAL_OUTPUT.println("Warning: Provided Joint key to command that does not consume it.");
+                _Hexapod.serial.errorMsg("Warning: Provided Joint key to command that does not consume it.");
             }
         }
     }
@@ -221,7 +248,8 @@ std::tuple<uint8_t, uint8_t, double> GcodeParser::parseGcodeJoint(std::string jo
     uint8_t L_pos = 0;  
     uint8_t S_pos = joint.find('S');
     if (S_pos == 255) {
-        SERIAL_OUTPUT.printf("ERROR: Invalid format for command. Missing 'S' after 'L' for leg %f. Expected format: 'L<leg>S<axis><position>'.\n", leg);
+        _msg = "ERROR: Invalid format for command. Missing 'S' after 'L' for leg: " + String(leg) + ". Expected format: 'L<leg>S<axis><position>'.\n";
+        _Hexapod.serial.errorMsg(_msg);
         return error_return;
     }
 
@@ -229,31 +257,34 @@ std::tuple<uint8_t, uint8_t, double> GcodeParser::parseGcodeJoint(std::string jo
     leg = std::stoi(leg_str);
     std::string axis_str = joint.substr(S_pos + 1, 1);  
     if (axis_str.empty() || axis_str.find_first_not_of(" \t\n\r") == std::string::npos) {
-        SERIAL_OUTPUT.printf("ERROR: No axis given for leg %d. Expected format: 'L<leg>S<axis><position>'.\n", leg);
+        _msg = "ERROR: No axis given for leg: " + String(leg) + ". Expected format: 'L<leg>S<axis><position>'.\n";
+        _Hexapod.serial.errorMsg(_msg);
         return error_return;
     } 
 
     if (!isNumeric(leg_str) || !isNumeric(axis_str)) {
-        SERIAL_OUTPUT.println("ERROR: Both the leg and axis values must be integers.");
+        _Hexapod.serial.errorMsg("ERROR: Both the leg and axis values must be integers.");
         return error_return;
     }
 
     axis = std::stoi(axis_str); 
     if (leg < 0 || leg >= NUM_LEGS || axis <= 0 || axis > NUM_AXES_PER_LEG) {
-        SERIAL_OUTPUT.println("ERROR: Leg or axis value is invalid.");
+        _Hexapod.serial.errorMsg("ERROR: Leg or axis value is invalid.");
         return error_return;
     }
     axis -= 1; //do this after check because if axis = 0, we would roll back to 255 and bypass the return
 
     std::string pos_str = joint.substr(S_pos + 2); 
     if (pos_str.empty() || pos_str.find_first_not_of(" \t\n\r") == std::string::npos) {
-        SERIAL_OUTPUT.printf("ERROR: No position given for leg %d, axis %d. Expected format: 'L<leg>S<axis><position>'.\n", leg, axis);
+        _msg = "ERROR: No position given for leg: " + String(leg) + " axis: " + String(axis) + ". Expected format: 'L<leg>S<axis><position>'\n";
+        _Hexapod.serial.errorMsg(_msg);
         return error_return;
     }
 
     bool is_valid_number = checkPositionString(pos_str);
     if (!is_valid_number) {
-        SERIAL_OUTPUT.printf("ERROR: Invalid position format for leg %d, axis %d. Position contains invalid characters: '%s'\n", leg, axis, pos_str.c_str());
+        _msg = "ERROR: Invalid position format for leg: " + String(leg) + " axis: " + String(axis) + ". Position contains invalid characters: " + String(pos_str.c_str()) + "\n";
+        _Hexapod.serial.errorMsg(_msg);
         return error_return;
     }
     

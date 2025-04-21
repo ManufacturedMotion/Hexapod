@@ -1,26 +1,34 @@
 #include "serial_handler.hpp"
 #include "config.hpp"
-#inlcude <stdint.h>
+#include <stdint.h>
 #include <Arduino.h>
 
-SerialHandler::SerialHandler(){
+//TODO - move all hexapod execute code inside of hexapod class
+SerialHandler::SerialHandler(Hexapod &hexapod,
+    double &x, double &y, double &z,
+    double &roll, double &pitch, double &yaw, double &speed)
+: _JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed)
+#if LOG_LEVEL > 0
+, _GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed)
+#endif
+{
     Serial.begin(250000);
     Serial4.begin(250000);
 }
 
 void SerialHandler::writeMsg(String message, uint8_t log_threshold) {
 
-    Serial4.printf(message);
+    Serial4.println(message);
 
     if(LOG_LEVEL >= log_threshold){
-        Serial.printf(message);
+        Serial.println(message);
     }
 
 }
 
 void SerialHandler::logMsg(String message) {
 
-    Serial.printf(message);
+    Serial.println(message);
 
 }
 
@@ -30,6 +38,7 @@ bool SerialHandler::msgAvailable(){
     if (Serial.available() > 0){
         msg_available = true;
         _read_channel = 1;
+    }
     else if (Serial4.available() > 0) {
         msg_available = true;
         _read_channel = 2;
@@ -47,10 +56,10 @@ String SerialHandler::getMsg(){
         default:
             Serial.printf("ERROR! getMsg called with incorrect read channel selected, %u! Only supports 1 & 2\n", _read_channel);
             break;
-        case(1)://serial
+        case 1://serial
             msg = Serial.readStringUntil('\n');
             break;
-        case(2): //serial 4
+        case 2: //serial 4
             msg = Serial4.readStringUntil('\n');
             break;
     }
@@ -78,4 +87,24 @@ void SerialHandler::writeJsonMsg(JsonDocument json_msg, uint8_t log_threshold){
         Serial.println();
     }
 
+}
+
+void SerialHandler::parseCommand(String command) {
+
+    #if LOG_LEVEL == 0
+        if (!command.startsWith("{")) {
+            errorMsg("ERROR! Serial command not in json format. This is not supported unles DEBUG set to true in user_config.hpp\n");
+            return;
+        }
+    #endif
+
+    if (command.startsWith("{")) {
+        _JsonParser.parseCommand(command);
+    }
+    else {
+        #if LOG_LEVEL
+            _GcodeParser.parseCommand(command);
+        #endif
+    }
+    
 }

@@ -16,6 +16,7 @@
 	#define NUM_STEP_GROUPS 2
 	#define MAX_STEP_MAGNITUDE 60.0
 	#define STEP_TO_NEUTRAL_SPEED 200.0
+
 	class Hexapod {
 		public:
 			Hexapod();
@@ -90,6 +91,7 @@
 			OperationQueue _leg_queues[NUM_LEGS];
 			ThreeByOne _current_step_permutation[NUM_STEP_GROUPS];
 			ThreeByOne _previous_step_unit_vector = ThreeByOne(0.0, 0.0, 0.0);
+			double _current_speed = 100;
 
 			
 	};

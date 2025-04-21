@@ -2,11 +2,10 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <ArduinoJson.h>
+#include "serial_handler.hpp"
 
 #define VSENSE_PIN 38 
 #define VSENSE_FACTOR 0.016113 
-
-#define VOLTAGE_DEBUG false
 
 #ifndef VOLT_SENSE
 #define VOLT_SENSE

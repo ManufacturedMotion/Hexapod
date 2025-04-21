@@ -24,19 +24,20 @@
 
         private:
             Hexapod &_Hexapod;
-            double _x;
-            double _y;
-            double _z;
-            double _roll;
-            double _pitch;
-            double _yaw;
-            double _speed;
+            double &_x;
+            double &_y;
+            double &_z;
+            double &_roll;
+            double &_pitch;
+            double &_yaw;
+            double &_speed;
             Position _position;
             uint32_t _movement_time = 0;
             double _leg_positions[NUM_LEGS][NUM_AXES_PER_LEG] = {{0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}, {0.00, 0.00, 0.00}};
             uint8_t _tune_leg = 25;
             uint8_t _tune_axis = 25;
             double _tune_pos;
+            String _msg = "";
     };
 
 #endif

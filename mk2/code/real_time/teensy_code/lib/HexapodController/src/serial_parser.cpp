@@ -5,15 +5,20 @@
 #include <stdbool.h>
 #include "position.hpp"
 
+#include "json_parser.hpp"    // 👈 full definition required
+#include "gcode_parser.hpp"
+//class JsonParser;
+//class GcodeParser;
+
 #if DEBUG
     #include "gcode_parser.hpp"
 #endif
 
 SerialParser::SerialParser(Hexapod &hexapod) 
     : _Hexapod(hexapod),  
-    _JsonParser(hexapod, x, y, z, roll, pitch, yaw, speed)  
+    _JsonParser(*hexapod, *x, *y, *z, *roll, *pitch, *yaw, *speed)  
     #if DEBUG
-        , _GcodeParser(hexapod, x, y, z, roll, pitch, yaw, speed)  
+        , _GcodeParser(*hexapod, *x, *y, *z, *roll, *pitch, *yaw, *speed)  
     #endif
 {
     return;

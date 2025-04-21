@@ -10,13 +10,18 @@
 #include "voltage_monitor.hpp"
 #include "serial_handler.hpp"
 
-Hexapod::Hexapod() { 
+Hexapod::Hexapod() 
+//: serial(*this, _current_pos.X, _current_pos.Y, _current_pos.Z, _current_pos.roll, _current_pos.pitch, _current_pos.yaw, _current_speed),
+//voltageSensor(&serial)
+{ 
     for (uint8_t i = 0; i < NUM_LEGS; i++) {
         legs[i].initializeAxes(i);
 		_leg_queues[i].setLeg(&legs[i]);
     }
+
 	serial = SerialHandler();
 	voltageSensor = VoltageSensor(&serial);
+
 }
 
 void Hexapod::startUp() {
@@ -67,6 +72,7 @@ void Hexapod::rapidMove(double x, double y, double z, double roll, double pitch,
 	Position pos;
 	pos.set(x, y, z, roll, pitch, yaw);
 	rapidMove(pos);
+	_current_pos.setPos(pos);
 }
 
 void Hexapod::rapidMove(Position next_pos) {
