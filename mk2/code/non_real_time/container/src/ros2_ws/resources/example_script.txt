@@ -1,0 +1,11 @@
+{"PRE": "STND"}
+delay 3
+{"MV": "RPD", "X": 0, "Y": 0, "Z": 200}
+sleep 4
+{"MV": "WLK", "X": 300, "Y": 0, "Z": 200, "ROLL": 0, "PTCH": 0, "YAW": 0, "SPD": 150}
+sleep 3
+{"MV": "WLK", "X": 0, "Y": 300, "Z": 200, "ROLL": 0, "PTCH": 0, "YAW": 0, "SPD": 150}
+sleep 3
+{"MV": "WLK", "X": -300, "Y": 0, "Z": 200, "ROLL": 0, "PTCH": 0, "YAW": 0, "SPD": 150}
+delay 3
+{"PRE": "SIT"}

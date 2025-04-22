@@ -1,5 +1,0 @@
-{"PRE": "STND"}
-delay 5
-{"MV": "RPD", "X": 0, "Y": 0, "Z": 200}
-sleep 10
-{"MV": "WLK", "X": 30, "Y": 0, "Z": 200, "ROLL": 0, "PTCH": 0, "YAW": 0, "SPD": 150}
