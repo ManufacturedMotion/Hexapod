@@ -34,6 +34,10 @@ def main(args=None):
             for line in file:
                 clean_line = line.strip()
                 if clean_line: 
+                    if "delay" in clean_line or "sleep" in clean_line:
+                        delay_time = clean_line.split(" ")[-1]
+                        time.sleep(int(delay_time))
+                        continue
                     clean_line += "\n"
                     node.publish_line(clean_line)
                     time.sleep(1) #TODO - optimize time between sending messages?
