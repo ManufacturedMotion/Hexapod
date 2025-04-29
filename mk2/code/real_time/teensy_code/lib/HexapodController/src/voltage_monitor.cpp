@@ -5,12 +5,10 @@
 #include <cmath>
 #include "config.hpp"
 #include <ArduinoJson.h>
-#include "serial_handler.hpp"
 
 uint32_t VoltageSensor::_voltage_sensor_timer = 0;
 
-VoltageSensor::VoltageSensor(SerialHandler* serial_handler) {
-    _serial = serial_handler;
+VoltageSensor::VoltageSensor() {
     _report_interval = 7000;
     _measure_interval = uint16_t(floor(_report_interval / NUM_MEASUREMENTS));
     _change_threshold = 0.1;
@@ -25,7 +23,8 @@ void VoltageSensor::checkVoltage() {
                 _last_measure_time = _voltage_sensor_timer;
                 _last_reported_vdd = current_vdd;
                 json_voltage["VDD"] = round(current_vdd * 100) / 100.0;
-                _serial->writeJsonMsg(json_voltage, BASIC_DEBUG);
+                serializeJson(json_voltage, Serial4);
+                Serial4.println("");
                 _voltage_sensor_timer = 0;
             }
         }
@@ -60,8 +59,7 @@ float VoltageSensor::takeReading() {
             //overwrite measure time after saving vdd. prevents same reading from being recorded multiple times
             measure_times[measure_index] = 0; 
             #if LOG_LEVEL >= VOLTAGE_DEBUG 
-                String msg = "raw vdd " + String(measure_index) + " is " + String(raw_vdds[measure_index]) + "\n";
-                _serial->logMsg(msg);
+                Serial.println("raw vdd " + String(measure_index) + " is " + String(raw_vdds[measure_index]) + "\n");
             #endif
         }
     }
@@ -114,8 +112,7 @@ float VoltageSensor::getMode(float voltages[], const uint8_t num_measurements) {
         }
     }
     #if LOG_LEVEL >= VOLTAGE_DEBUG
-        String msg = "most frequent raw voltage was " + String(voltage) + "\n";
-        _serial->logMsg(msg);
+        Serial.println("most frequent raw voltage was " + String(voltage) + "\n");
     #endif
     return voltage;
 }

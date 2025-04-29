@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <ArduinoJson.h>
-#include "serial_handler.hpp"
 
 #define VSENSE_PIN 38 
 #define VSENSE_FACTOR 0.016113 
@@ -14,7 +13,7 @@
 
     class VoltageSensor {
         public:
-            VoltageSensor(SerialHandler* serial_handler);
+            VoltageSensor();
             void checkVoltage();
             _Bool canRead();
             float takeReading();
@@ -31,7 +30,6 @@
             float _current_vdd = 0;
             float _last_raw_vdd = 0;
             static uint32_t _voltage_sensor_timer;
-            SerialHandler* _serial = nullptr;
     };
 
 #endif
