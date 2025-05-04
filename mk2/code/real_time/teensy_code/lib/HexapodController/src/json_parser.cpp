@@ -88,7 +88,7 @@ void JsonParser::performMovement(String movement) {
     
     if (movement == "RPD") {
         SERIAL_OUTPUT.printf("JSON rapid move parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", _x, _y, _z, _roll, _pitch, _yaw, _speed);
-        _Hexapod.rapidMove(_position);
+        _Hexapod.enqueueRapidMove(_position);
     }
     else if (movement == "WLK") {
         SERIAL_OUTPUT.printf("JSON walk setup parsing success; x, y, z is %f, %f, %f\n roll, pitch, yaw, speed are %f, %f, %f, %f.\n", _x, _y, _z, _roll, _pitch, _yaw, _speed);

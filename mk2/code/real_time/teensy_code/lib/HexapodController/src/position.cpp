@@ -4,37 +4,48 @@
 #include <math.h>
 #include "three_by_matrices.hpp"
 
-void Position::set(double new_X, double new_Y, double new_Z, double new_roll, double new_pitch, double new_yaw) {
-    X = new_X;
-    Y = new_Y;
-    Z = new_Z;
+void Position::set(double new_x, double new_y, double new_z, double new_roll, double new_pitch, double new_yaw) {
+    x = new_x;
+    y = new_y;
+    z = new_z;
     roll = new_roll;
     pitch = new_pitch;
     yaw = new_yaw;
 }
 
 void Position::setPos(const Position& pos) {
-    X = pos.X;
-    Y = pos.Y;
-    Z = pos.Z;
+    x = pos.x;
+    y = pos.y;
+    z = pos.z;
     roll = pos.roll;
     pitch = pos.pitch;
     yaw = pos.yaw;
 }
 
 void Position::scalarMult(double factor) {
-    X = X * factor;
-    Y = Y * factor;
-    Z = Z * factor;
+    x = x * factor;
+    y = y * factor;
+    z = z * factor;
     roll = roll * factor;
     pitch = pitch * factor;
     yaw = yaw * factor;
 }
 
+Position Position::unitVector() {
+    Position unit_vector;
+    unit_vector = (*this);
+    double magnitude = unit_vector.magnitude();
+    if (fabs(magnitude) > .001) {
+        unit_vector.scalarMult(1.0 / unit_vector.magnitude());
+    }
+
+    return unit_vector;
+}
+
 void Position::operator*=(const double& multiplier) {
-    X = X * multiplier;
-    Y = Y * multiplier;
-    Z = Z * multiplier;
+    x = x * multiplier;
+    y = y * multiplier;
+    z = z * multiplier;
     roll = roll * multiplier;
     pitch = pitch * multiplier;
     yaw = yaw * multiplier;
@@ -42,24 +53,24 @@ void Position::operator*=(const double& multiplier) {
 
 Position Position::operator*(const double& multiplier) {
     Position product;
-    product.set(X, Y, Z, roll, pitch, yaw);
+    product.set(x, y, z, roll, pitch, yaw);
     product *= multiplier;
     return product;
 }
 
 void Position::independentScalarMult(double factors[6]) {
-    X = X * factors[0];
-    Y = Y * factors[1];
-    Z = Z * factors[2];
+    x = x * factors[0];
+    y = y * factors[1];
+    z = z * factors[2];
     roll = roll * factors[3];
     pitch = pitch * factors[4];
     yaw = yaw * factors[5];
 }
 
 void Position::operator-=(const Position& pos) {
-    X = X - pos.X;
-    Y = Y - pos.Y;
-    Z = Z - pos.Z;
+    x = x - pos.x;
+    y = y - pos.y;
+    z = z - pos.z;
     roll = roll - pos.roll;
     pitch = pitch - pos.pitch;
     yaw = yaw - pos.yaw;
@@ -67,15 +78,15 @@ void Position::operator-=(const Position& pos) {
 
 Position Position::operator-(const Position& subtrahend) {
     Position difference;
-    difference.set(X, Y, Z, roll, pitch, yaw);
+    difference.set(x, y, z, roll, pitch, yaw);
     difference -= subtrahend;
     return difference;
 }
 
 void Position::operator+=(const Position& pos) {
-    X = X + pos.X;
-    Y = Y + pos.Y;
-    Z = Z + pos.Z;
+    x = x + pos.x;
+    y = y + pos.y;
+    z = z + pos.z;
     roll = roll + pos.roll;
     pitch = pitch + pos.pitch;
     yaw = yaw + pos.yaw;
@@ -83,23 +94,30 @@ void Position::operator+=(const Position& pos) {
 
 Position Position::operator+(const Position& addend) {
     Position sum;
-    sum.set(X, Y, Z, roll, pitch, yaw);
+    sum.set(x, y, z, roll, pitch, yaw);
     sum += addend;
     return sum;
 }
 
 double Position::magnitude() {
-    double orientation_magnitude = sqrt(roll*roll + pitch*pitch + yaw*yaw) * 100.0;
-    double cartesian_magnitude = sqrt(X*X + Y*Y + Z*Z);
+    double orientation_magnitude = sqrt(roll*roll + pitch*pitch + yaw*yaw);
+    double cartesian_magnitude = sqrt(x*x + y*y + z*z);
     return sqrt(orientation_magnitude*orientation_magnitude + cartesian_magnitude*cartesian_magnitude);
 }
 
+double Position::scaledMagnitude() {
+    double orientation_magnitude = sqrt(roll*roll + pitch*pitch + yaw*yaw) * ROTATION_MAGNITUDE_SCALE;
+    double cartesian_magnitude = sqrt(x*x + y*y + z*z);
+    return sqrt(orientation_magnitude*orientation_magnitude + cartesian_magnitude*cartesian_magnitude);
+}
+
+
 _Bool Position::equals(const Position& pos) {
-    if (fabs(X - pos.X) > 0.003)
+    if (fabs(x - pos.x) > 0.003)
         return false;
-    if (fabs(Y - pos.Y) > 0.003)
+    if (fabs(y - pos.y) > 0.003)
         return false;
-    if (fabs(Z - pos.Z) > 0.003)
+    if (fabs(z - pos.z) > 0.003)
         return false;
     if (fabs(roll - pos.roll) > 0.003)
         return false;
@@ -114,9 +132,9 @@ _Bool Position::equals(const Position& pos) {
 Position getPosFromCommand(String command) {
   Position position;
   double x = 0, y = 0, z = 0, roll = 0, pitch = 0, yaw= 0;
-  x = command.substring(command.indexOf('X') + 1).toFloat();
-  y = command.substring(command.indexOf('Y') + 1).toFloat();
-  z = command.substring(command.indexOf('Z') + 1).toFloat();
+  x = command.substring(command.indexOf('x') + 1).toFloat();
+  y = command.substring(command.indexOf('y') + 1).toFloat();
+  z = command.substring(command.indexOf('z') + 1).toFloat();
   roll = command.substring(command.indexOf('R') + 1).toFloat();
   pitch = command.substring(command.indexOf('P') + 1).toFloat();
   yaw = command.substring(command.indexOf('W') + 1).toFloat();
@@ -125,5 +143,84 @@ Position getPosFromCommand(String command) {
 }
 
 ThreeByOne Position::coord() {
-    return ThreeByOne(X, Y, Z);
+    return ThreeByOne(x, y, z);
+}
+
+_Bool Position::operator==(const Position& pos) {
+    if (fabs(x - pos.x) > 0.003)
+        return false;
+    if (fabs(y - pos.y) > 0.003)
+        return false;
+    if (fabs(z - pos.z) > 0.003)
+        return false;
+    if (fabs(roll - pos.roll) > 0.003)
+        return false;
+    if (fabs(pitch - pos.pitch) > 0.003)
+        return false;
+    if (fabs(yaw - pos.yaw) > 0.003)
+        return false;
+    return true;
+}
+
+_Bool Position::operator!=(const Position& pos) {
+    return !((*this) == pos);
+}
+
+_Bool Position::operator<(const Position& pos) {
+    if (x - pos.x > 0.0)
+        return false;
+    if (y - pos.y > 0.0)
+        return false;
+    if (z - pos.z > 0.0)
+        return false;
+    if (roll - pos.roll > 0.0)
+        return false;
+    if (pitch - pos.pitch > 0.0)
+        return false;
+    if (yaw - pos.yaw > 0.0)
+        return false;
+    return true;
+}
+
+_Bool Position::operator>(const Position& pos) {
+    if (x - pos.x < 0.0)
+        return false;
+    if (y - pos.y < 0.0)
+        return false;
+    if (z - pos.z < 0.0)
+        return false;
+    if (roll - pos.roll < 0.0)
+        return false;
+    if (pitch - pos.pitch < 0.0)
+        return false;
+    if (yaw - pos.yaw < 0.0)
+        return false;
+    return true;
+}
+
+_Bool Position::operator<=(const Position& pos) {
+    return (!(*this > pos));
+}
+
+_Bool Position::operator>=(const Position& pos) {
+    return (!(*this < pos));
+}
+
+Position Position::operator=(const Position& pos) {
+    x = pos.x;
+    y = pos.y;
+    z = pos.z;
+    roll = pos.roll;
+    pitch = pos.pitch;
+    yaw = pos.yaw;
+    return *this;
+}
+
+void Position::clear() {
+    x = 0.00;
+    y = 0.00;
+    z = 0.00;
+    roll = 0.00;
+    pitch = 0.00;
+    yaw = 0.00;
 }
