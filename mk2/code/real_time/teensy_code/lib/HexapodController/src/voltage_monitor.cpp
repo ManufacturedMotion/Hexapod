@@ -5,6 +5,7 @@
 #include <cmath>
 #include "config.hpp"
 #include <ArduinoJson.h>
+#include "serial_parser.hpp"
 
 uint32_t VoltageSensor::_voltage_sensor_timer = 0;
 
