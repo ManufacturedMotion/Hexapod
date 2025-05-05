@@ -46,6 +46,8 @@ void loop() {
   
   }
   //call move every iteration of loop
+  // hexapod.run();
+  hexapod.walkPerform();
   hexapod.comboMovePerform();
   hexapod.runSpeed();
 }

@@ -79,18 +79,29 @@ void Hexapod::rapidMove(Position next_pos) {
 	rapidMove(next_pos, active_legs);
 }
 
-void Hexapod::rapidMove(Position next_pos, _Bool active_legs[NUM_LEGS]) {
+void Hexapod::rapidMove(Position next_pos, _Bool active_legs[NUM_LEGS], _Bool update_current_pos) {
 	// Updated to use new _inverseKinematics caller, but not tested since this
 	// function is not currently used
 	ThreeByOne next_positions[NUM_LEGS];
-	_inverseKinematics(next_pos, active_legs, next_positions);
+	_inverseKinematics(next_pos, next_positions);
 	for (uint8_t i = 0; i < NUM_LEGS; i++) {
 		for (uint8_t j = 0; j < NUM_AXES_PER_LEG; j++) {
-			_next_leg_pos[i][j] = next_positions[i].values[j];
+			if (active_legs[i]) {
+				_next_leg_pos[i][j] = next_positions[i].values[j];
+			}
+			#ifdef SERIAL_CSV_DEBUG
+				Serial.print(_next_leg_pos[i][j]);
+				Serial.print(",");
+			#endif
 		}
 	}
+	#ifdef SERIAL_CSV_DEBUG
+		Serial.print('\n');
+	#endif
 	_moveLegs();
-	_current_pos.setPos(next_pos);
+	if (update_current_pos) {
+		_current_pos.setPos(next_pos);
+	}
 }
 
 uint8_t Hexapod::linearMoveSetup(double x, double y, double z, double roll, double pitch, double yaw, double target_speed, _Bool active_legs[NUM_LEGS]) {
@@ -128,7 +139,7 @@ uint8_t Hexapod::linearMoveSetup(Position next_pos, double target_speed, _Bool a
 	_move_progress = 0;
 	_move_start_time = millis();
 	Position pos_delta = _end_pos - _start_pos;
-	_move_time = (fabs(pos_delta.magnitude()) / speed) * 1000; //convert to seconds
+	_move_time = (fabs(pos_delta.magnitude()) / speed) * 1000; //convert to milliseconds
 	_moving_flag = true;
 	return retval;
 }
@@ -224,8 +235,176 @@ uint8_t Hexapod::walkSetup(double x, double y, double speed, _Bool return_to_neu
 	return walkSetup(relative_end_coord, speed, return_to_neutral);
 }
 
-uint8_t Hexapod::walkSetup(Position relative_end_pos, double speed, _Bool return_to_neutral) {
-	return walkSetup(relative_end_pos.coord(), speed, return_to_neutral);
+uint8_t Hexapod::enqueueRapidMove(Position pos) {
+	return _step_queue.enqueue(pos, 0.0, StepType::RAPID_MOVE);
+}
+
+double Hexapod::_getMaxStepMagnitudeInDirection(Position direction_vector, _Bool flipped_step_group) {	
+	Position buffer1;
+	Position buffer2;
+	// Create a vector of the next step that ends up with the max step magnitude in the direction of the move
+	// and enqueue it
+
+	// Constraints:
+	// 1. The step must be in the direction of the move
+	// 2. The step should end up in a position that is equal to the max step magnitude
+	// | _step_queue.getCurrentQueueEndPos() + step | = MAX_STEP_MAGNITUDE
+	// _step_queue.getCurrentQueueEndPos() + (magnitude * relative_end_pos) = MAX_STEP_MAGNITUDE^2
+	// 
+	// step = magnitude * relative_end_pos.unit_vector()
+	// 
+	// magnitude = -2 * (_step_queue.getCurrentQueueEndPos() * relative_end_pos.unit_vector()) + sqrt
+	buffer1.setPos(_step_queue.getCurrentQueueEndPos());
+	buffer1.z = 0.00; // For now we don't consider Z, roll, or pitch
+	buffer1.roll = 0.00;
+	buffer1.pitch = 0.00;
+	if (flipped_step_group) {
+		buffer1 *= -1.0; // If the step group has been flipped, then the previous step was in the opposite direction
+	}
+	// buffer1.yaw *= ROTATION_MAGNITUDE_SCALE; // Scale yaw to have a similar range as x and y
+	
+	buffer2 = direction_vector;
+	buffer2.z = 0.00; // For now we don't consider Z, roll, or pitch
+	buffer2.roll = 0.00;
+	buffer2.pitch = 0.00;
+	// buffer2.yaw *= ROTATION_MAGNITUDE_SCALE; // Scale yaw to have a similar range as x and y
+
+	double c = pow(buffer1.x, 2) + pow(buffer1.y, 2) + pow(buffer1.yaw, 2) - pow(MAX_STEP_MAGNITUDE, 2);
+	double b = 2.0 * (buffer1.x * buffer2.x + buffer1.y * buffer2.y + buffer1.yaw * buffer2.yaw);
+	double a = pow(buffer2.x, 2) + pow(buffer2.y, 2) + pow(buffer2.yaw, 2);
+
+	// Solve the quadratic equation for the step magnitude
+	double discriminant = pow(b, 2) - 4.0 * a * c;
+	double step_magnitude;
+	if (discriminant < 0.0) {
+		// No solution, return 0
+		step_magnitude = 0.00;
+	}
+	else if (fabs(discriminant) <= 0.001) {
+		// One solution, use it
+		step_magnitude = -b / (2.0 * a);
+	}
+	else {
+		// Two solutions, use the positive one (if there is one)
+		step_magnitude = ((-b + sqrt(discriminant)) / (2.0 * a)) > 0.00 ? (-b + sqrt(discriminant)) / (2.0 * a) : (-b - sqrt(discriminant)) / (2.0 * a);
+	}
+	return step_magnitude;
+}
+
+uint32_t Hexapod::walkSetup(Position relative_end_pos, double speed) {
+
+	/*
+		For every move we must do:
+			1. [x] Check if move magnitude is 0
+			  	- If so, return 0
+			2. [x] Determine if destination is reachable
+			  	- X, Y, and Yaw have no limits
+				- Z, Roll, and Pitch DO
+				- If not reachable, return 0
+			3. [x] Determine if move must be broken up into one or more steps
+				- If not, enqueue linearMove and return time it takes
+			4. [x] Determine if return to neutral necessary before taking steps in commanded direction
+			    - If yes, enqueue a return to neutral position first
+			5. [x] Break up move into N steps
+			  	- After completing end steps the COM of the hexapod should have moved the distance commanded 
+				- Keep track of total move time to be returned (including return to neutral if necessary)
+		For every step we must do:
+			6. [x] Determine if step group should be changed
+			7. [x] Determine length of next step (either distance to end point or distance to MAX_STEP_MAGNITUDE in direction of motion)
+				- [ ] May be able to reuse length of previous step if the step magnitude has remained constant for two steps in a row and is less than magnitude to end point
+			8. [x] Add actual step in
+	*/
+
+	// Buffers for later use
+	Position buffer0;
+
+	// Check if step should be taken
+	Position abs_end_pos = _current_pos + relative_end_pos;
+	if (relative_end_pos.magnitude() > .001 
+		|| fabs(abs_end_pos.z) > Z_MAX_MAGNITUDE 
+		|| fabs(abs_end_pos.roll) > ROLL_MAX_MAGNITUDE 
+		|| fabs(abs_end_pos.pitch) > PITCH_MAX_MAGNITUDE) {
+		
+		// Check if move should be broken up into one or more steps
+		if (fabs(_step_queue.getCurrentQueueEndPos().x + relative_end_pos.x) > X_MAX_NO_STEP_MAGNITUDE
+			|| fabs(_step_queue.getCurrentQueueEndPos().y + relative_end_pos.y) > Y_MAX_NO_STEP_MAGNITUDE
+			|| fabs(_step_queue.getCurrentQueueEndPos().yaw + relative_end_pos.yaw) > YAW_MAX_NO_STEP_MAGNITUDE) {
+
+			uint32_t walk_time = 0;
+			Position move_direction = relative_end_pos.unitVector();
+			// Check if return to neutral is needed
+			// If the step is in the opposite direction as the current end position, then the don't change step group 
+			
+			double max_step_magnitude_with_flip = _getMaxStepMagnitudeInDirection(move_direction, true);
+			double max_step_magnitude_without_flip = _getMaxStepMagnitudeInDirection(move_direction, false);
+			_Bool flip_first_step = max_step_magnitude_with_flip >= max_step_magnitude_without_flip ? true : false;
+			double step_magnitude = flip_first_step ? max_step_magnitude_with_flip : max_step_magnitude_without_flip;
+			_Bool returned_to_neutral = false;
+			if (step_magnitude < MAX_STEP_MAGNITUDE) { // If the biggest step in the right direction is less than the max step magnitude, then we need to return to neutral
+				// Return to neutral IS needed
+				// Enqueue a return to neutral move to move the legs back to the neutral position with out moving the body
+				// Neutral position is 0,0,0 for X, Y, and Yaw; Z, Roll, and Pitch are unaffected
+				buffer0.setPos(_step_queue.getCurrentQueueEndPos());
+				buffer0.x = 0.00;
+				buffer0.y = 0.00;
+				buffer0.yaw = 0.00;
+				walk_time += _step_queue.enqueue(buffer0, speed, StepType::RETURN_TO_NEUTRAL);
+				returned_to_neutral = true;
+			}
+
+			Position traveled_pos;
+			traveled_pos.clear();
+			Position direction_vector = relative_end_pos.unitVector();
+			
+			// Step magnitude must be recalculated if the a return to neutral was performed
+			// Otherise the calculation for checking if return to neutral was necessary will be sufficient
+			if (returned_to_neutral) {
+				step_magnitude = _getMaxStepMagnitudeInDirection(move_direction, false);
+			}
+			// Adjust step group if the first step should be flipped
+			if (flip_first_step) {
+				// Change step group for the first step
+				_next_step_type = static_cast<decltype(_next_step_type)>(static_cast<uint8_t>(_next_step_type) ^ 1);
+			}
+
+			// Check if move can be completed outright
+			if (step_magnitude > relative_end_pos.magnitude()) {
+				walk_time += _step_queue.enqueue(relative_end_pos, speed, _next_step_type);
+				return walk_time; // The move is complete, exit the function
+			}
+
+			// Enqueue the first step in the direction of the move
+			walk_time += _step_queue.enqueue(direction_vector * step_magnitude, speed, _next_step_type);
+			traveled_pos += direction_vector * step_magnitude;
+
+			// Enqueue steps until the end position is reached
+			while (traveled_pos.magnitude() < relative_end_pos.magnitude()) {
+				// Change step group between each step
+				_next_step_type = static_cast<decltype(_next_step_type)>(static_cast<uint8_t>(_next_step_type) ^ 1);
+				buffer0 = move_direction * _getMaxStepMagnitudeInDirection(move_direction, true);
+				
+				// Check if move can be completed outright
+				if ((buffer0 + traveled_pos).magnitude() >= relative_end_pos.magnitude()) {
+					// Complete the move
+					walk_time += _step_queue.enqueue(relative_end_pos - traveled_pos, speed, _next_step_type);
+					break; // The move is complete, exit the loop
+
+				}
+				else {
+					walk_time += _step_queue.enqueue(buffer0, speed, _next_step_type);
+					traveled_pos += buffer0;
+				}
+
+			}
+			return walk_time;
+		}
+		else {
+			return _step_queue.enqueue(relative_end_pos, speed, StepType::LINEAR_MOVE);
+		}
+	}
+	else {
+		return 0;
+	}
 }
 
 uint8_t Hexapod::walkSetup(ThreeByOne relative_end_coord, double speed, _Bool return_to_neutral) {
@@ -354,16 +533,142 @@ void Hexapod::returnToNeutral() {
 	_return_to_neutral_flag = true;
 }
 
+// void Hexapod::setMoveLegs(StepType step_type, _Bool * active_legs[NUM_LEGS]) {
+// 	// Set the legs that are moving for the current step type
+// 	switch(step_type) {
+// 		case StepType::LINEAR_MOVE:
+// 			for (uint8_t i = 0; i < NUM_LEGS; i++) {
+// 				active_legs[i] = true;
+// 			}
+// 			break;
+// 		case StepType::RETURN_TO_NEUTRAL:
+// 			for (uint8_t i = 0; i < NUM_LEGS; i++) {
+// 				active_legs[i] = true;
+// 			}
+// 			break;
+// 		default:
+// 			break;
+// 	}
+// }
+
+uint8_t Hexapod::walkPerform() {
+	if (_step_in_progress) {
+		_Bool active_legs[NUM_LEGS];
+		double step_progress = static_cast<double>(millis() - _move_start_time) / (_move_time);
+		if (step_progress <= 1.0) {
+			Position next_pos = (_end_pos - _start_pos) * step_progress + _start_pos;
+			uint8_t step_group;
+			switch(_current_step_type) {
+				case StepType::LINEAR_MOVE:
+					// All legs stay together and move to the same position
+					for (uint8_t i = 0; i < NUM_LEGS; i++) {
+						active_legs[i] = true;
+					}					
+					rapidMove(next_pos, active_legs);
+					break;
+				case StepType::RETURN_TO_NEUTRAL:
+					// For first half of the step move step group 0 to neutral
+					// For second half of the step move step group 1 to neutral
+					step_group = step_progress > 0.5 ? 1 : 0;
+					for (uint8_t i = 0; i < NUM_LEGS / NUM_STEP_GROUPS; i++) {
+						active_legs[_step_groups[step_group][i]] = true;
+						active_legs[_step_groups[(step_group^1)][i]] = false;
+					}
+					next_pos = (_end_pos - _start_pos) * _move_progress * 2.0 + _start_pos; // Move twice as fast so there is time to move set of legs back to neutral
+					next_pos.z -= -16 * step_progress * (step_progress - 0.5) * MAX_STEP_HEIGHT;
+					rapidMove(next_pos, active_legs, false);
+					break;
+				case StepType::GROUP0:
+				case StepType::GROUP1:
+					step_group = static_cast<uint8_t>(_current_step_type);
+					for (uint8_t i = 0; i < NUM_LEGS / NUM_STEP_GROUPS; i++) {
+						active_legs[_step_groups[step_group][i]] = true;
+						active_legs[_step_groups[(step_group^1)][i]] = false;
+					}
+					rapidMove(next_pos, active_legs);
+					step_group ^= 1; 
+					for (uint8_t i = 0; i < NUM_LEGS / 2; i++) {
+						active_legs[_step_groups[step_group][i]] = true;
+						active_legs[_step_groups[(step_group^1)][i]] = false;
+					}
+					next_pos.z -= -4 * step_progress * (step_progress - 1.0) * MAX_STEP_HEIGHT;
+					next_pos.x *= -1.0;
+					next_pos.y *= -1.0;
+					next_pos.yaw *= -1.0;
+					rapidMove(next_pos, active_legs, false);
+					break;	
+				case StepType::RAPID_MOVE:
+					rapidMove(_end_pos);
+			}
+			
+			#if true 
+				Serial.printf("Step progress: %f\n", step_progress);
+				Serial.printf("Current position: x:%f, y:%f, z:%f, roll:%f, pitch:%f, yaw:%f\n",
+				_current_pos.x, _current_pos.y, _current_pos.z, _current_pos.roll, _current_pos.pitch, _current_pos.yaw);
+			#endif
+		}
+		else {
+			_step_in_progress = false;
+		}
+		return 255;
+	}
+	else {
+		if (_step_queue.isEmpty()) {
+			return 0;
+		}
+		else {
+			_last_step_type = _current_step_type;
+			_current_step_type = _step_queue.head->step_type;
+			if (_current_step_type == StepType::GROUP0) {
+				if (_last_step_type == StepType::GROUP1) {
+					_current_pos.x *= -1.0;
+					_current_pos.y *= -1.0;
+					_current_pos.yaw *= -1.0;
+				}
+			}
+			else if (_current_step_type == StepType::GROUP1) {
+				if (_last_step_type == StepType::GROUP0) {
+					_current_pos.x *= -1.0;
+					_current_pos.y *= -1.0;
+					_current_pos.yaw *= -1.0;
+				}
+			}
+			
+			switch(_current_step_type) {
+				case StepType::RETURN_TO_NEUTRAL:
+				case StepType::RAPID_MOVE:
+					_end_pos = _step_queue.head->end_pos;
+					break;
+				case StepType::GROUP0:
+				case StepType::GROUP1:
+				case StepType::LINEAR_MOVE:
+				default:
+					_end_pos = _current_pos + _step_queue.head->end_pos;
+					break;
+			}
+			_start_pos = _current_pos;
+			_current_speed = _step_queue.head->speed;
+			_move_time = _step_queue.head->time;
+			_move_progress = 0.0;
+			_move_start_time = millis();
+			_step_queue.dequeue();
+			_step_in_progress = true;
+		}
+	}
+	return 255; // TODO: rethink return codes
+}
 uint16_t Hexapod::comboMovePerform() {
 	// Return code is two 8 bit numbers
 	// 8 grand bits are number of legs that got new end positions
 	// 8 lesser bits are number of legs that are currently moving
+	
 	uint16_t retval = 0;
 	for (uint8_t i = 0; i < NUM_LEGS; i++) {
 		if (legs[i].isMoving()) {
 			retval += 1;
 		}
 		else {
+
 			if (!_leg_queues[i].isEmpty()) {
 				Operation * queue_head = _leg_queues[i].head;
 				legWaitSetup(i, queue_head->wait_time_ms);
@@ -422,28 +727,20 @@ uint8_t Hexapod::_inverseKinematics(Position pos, ThreeByOne * results) {
 }
 
 uint8_t Hexapod::_inverseKinematics(Position pos, _Bool active_legs[NUM_LEGS], ThreeByOne * results) {
-	// Just to get something workign assume yaw = 0 
-	// Must rework leg IK or set points align all coordinate systems
-	// Right now we have 6 coordinate systems harder than we want to do
-	// Even if we did like 2 coordinate systems (left / right) would be a big help for this
-	// Discuss with Danny/Dillon best way to accomplish this as there are many confusing effects of either way 
 
 	if (!_preCheckSafePos(pos))
         return 254; // Pre-check fail
 	
+	// Divide rotations by 100 to get radians (stored as hundredths of a radian to put on similar scale as x, y, z)
+	pos.roll *= 0.01;
+	pos.pitch *= 0.01;
+	pos.yaw *= 0.01;
+
 	double potential_results[NUM_LEGS][3];
-	// trig stuff is unique to each leg to can't use loop efficientlys
 	for (uint8_t i = 0; i < NUM_LEGS; i++) {
-		// if (i < 3) {
-		// 	potential_results[i][0] = -1.0 * (pos.X * cos(pos.yaw) - pos.Y * sin(pos.yaw)); // + trig stuff with yaw
-		// 	potential_results[i][1] = -1.0 * (pos.Y * cos(pos.yaw) + pos.X * sin(pos.yaw)); // + trig stuff with yaw
-		// 	potential_results[i][2] = pos.Z + sin(pos.pitch) * _leg_X_offset[i] + sin(pos.roll) * _leg_Y_offset[i];
-		// }
-		// else {
-			potential_results[i][0] = pos.X;
-			potential_results[i][1] = pos.Y;
-			potential_results[i][2] = pos.Z + sin(pos.pitch) * (_leg_X_offset[i] + pos.X) + sin(pos.roll) * (_leg_Y_offset[i] + pos.Y);
-		// }
+		potential_results[i][0] = pos.x;
+		potential_results[i][1] = pos.y;
+		potential_results[i][2] = pos.z + sin(pos.pitch) * (_leg_X_offset[i] + pos.x) + sin(pos.roll) * (_leg_Y_offset[i] + pos.y);
 	}
 
 	for (uint8_t i = 0; i < NUM_LEGS; i++) {
@@ -501,12 +798,18 @@ void Hexapod::runSpeed() {
 }
 
 double Hexapod::getDistance(Position target_pos) {
-  double distance = 0;
-  Position current_pos = _current_pos;
-  double dx = current_pos.X - target_pos.X;
-  double dy = current_pos.Y - target_pos.Y;
-  distance = sqrt(dx * dx + dy * dy); // + dz * dz);
-  return distance;
+	double distance = 0;
+	Position current_pos = _current_pos;
+	double dx = current_pos.x - target_pos.x;
+	double dy = current_pos.y - target_pos.y;
+	distance = sqrt(dx * dx + dy * dy); // + dz * dz);
+	return distance;
+}
+
+double Hexapod::getDistance(const Position& start_pos, const Position& end_pos) {
+	double dx = start_pos.x - end_pos.x;
+	double dy = start_pos.y - end_pos.y;
+	return sqrt(dx * dx + dy * dy); // + dz * dz);
 }
 
 void Hexapod::legEnqueue(uint8_t leg, ThreeByOne op_end_pos, 
