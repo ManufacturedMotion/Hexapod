@@ -7,12 +7,6 @@
 
 	#define STEP_THRESHOLD 40 
 	#define FIFO_IDLE_THRESHOLD 100
-	
-	#if DEBUG
-		#define SERIAL_OUTPUT Serial
-	#else
-		#define SERIAL_OUTPUT Serial4
-	#endif
 
 	#ifdef DANNY	
 		#define PWM_PINS {{2, 3, 4}, {5, 6, 7}, {8, 9, 10},  {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}

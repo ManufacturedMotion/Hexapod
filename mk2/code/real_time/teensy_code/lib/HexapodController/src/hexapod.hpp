@@ -16,6 +16,7 @@
 	#define NUM_STEP_GROUPS 2
 	#define MAX_STEP_MAGNITUDE 60.0
 	#define STEP_TO_NEUTRAL_SPEED 200.0
+<<<<<<< HEAD
 	
 	// TODO: Confirm and refine limits
 	#define Z_MAX_MAGNITUDE 200.0
@@ -25,6 +26,8 @@
 	#define Y_MAX_NO_STEP_MAGNITUDE 20.0
 	#define YAW_MAX_NO_STEP_MAGNITUDE (M_PI / 32.0)
 	#define MAX_STEP_HEIGHT 50.0
+=======
+>>>>>>> origin
 
 	class Hexapod {
 		public:
@@ -115,6 +118,9 @@
 			StepType _next_step_type = StepType::GROUP0;
 			void setMoveLegs(StepType step_type, _Bool * active_legs[NUM_LEGS]);
 			double _getMaxStepMagnitudeInDirection(Position direction_vector, _Bool flipped_step_group);
+			double _current_speed = 100;
+
+			
 	};
 
 #endif

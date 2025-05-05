@@ -10,33 +10,38 @@ Position position;
 commandQueue command_queue;
 
 void setup() {
-  Serial.begin(250000);
-  Serial4.begin(250000);
   hexapod.startUp();
+  #if LOG_LEVEL > 0
+    Serial.begin(250000);
+  #endif
+  Serial4.begin(250000);
 }
 
 void loop() {
 
   String command = "";
   hexapod.voltageSensor.checkVoltage(); 
-
-  if (Serial.available() > 0 || Serial4.available() > 0) {
+  
+  #if LOG_LEVEL > 0
+    if (Serial.available() > 0 || Serial4.available() > 0) {
+      if (Serial4.available() > 0) {
+        command = Serial4.readStringUntil('\n');
+      } else {
+        command = Serial.readStringUntil('\n');
+      }
+      command_queue.enqueue(command);
+    }
+  #else
     if (Serial4.available() > 0) {
       command = Serial4.readStringUntil('\n');
-    } else {
-      command = Serial.readStringUntil('\n');
     }
-    #if DEBUG
-      SERIAL_OUTPUT.print("Teensy Received: " + command + ".\n");
-    #endif
     command_queue.enqueue(command);
-  }
+  #endif 
 
   if (!command_queue.isEmpty()) {
 
-    if (hexapod.isBusy()) {
-    } else {
-      parser.parseCommand(command_queue.dequeue());
+    if (!hexapod.isBusy()) {
+      parser.parseCommand(command_queue.dequeue()); 
     }
   
   }
