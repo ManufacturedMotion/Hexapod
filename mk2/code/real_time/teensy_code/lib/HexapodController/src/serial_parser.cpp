@@ -83,6 +83,9 @@ void SerialParser::performPreset(String preset) {
     else {
         Serial.println("ERROR: JSON parser detected input for a preset that is not yet supported: " + String(preset) + "\n"); 
     }
+    JsonDocument ack;
+    ack["MOVE_TIME"] = 2500;
+    serializeJson(ack, Serial4);
     return;
 }
 
