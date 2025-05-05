@@ -35,10 +35,11 @@ class TeensyGait(Node):
         self.speed_scale_fact = 1
         self.command_list = []
         self.last_append_time = 0
-        self.step_timeout = 1.2
+        self.step_timeout = 0.3
         self.drift_factor = 0.1
         self.cmd_vel_received = False
         self.send_time = 0
+        self.last_cmd = {}
 
     def updateCommandList(self):
 
@@ -46,14 +47,16 @@ class TeensyGait(Node):
         time_since_last_append = current_time - self.last_append_time
         
         #if we have a time acknowledgement from teensy we wait until that time before we publish the next command
-        if self.send_time >= current_time:
+        if self.send_time >= current_time and len(self.command_list) > 0:
             command = self.command_list.pop(0)
             self.publisher.publish(command)
+            self.last_cmd = command
+            self.send_time = -1
         #if we have not yet sent a message we check for the first message in our list. If we have it we send it
-        elif self.send_time == 0:
-            if len(self.command_list) > 0:
-                command = self.command_list.pop(0)
-                self.publisher.publish(command)
+        elif self.send_time == 0 and len(self.command_list) > 0:
+            command = self.command_list.pop(0)
+            self.publisher.publish(command)
+            self.last_cmd = command
         #otherwise update the command queue
         #if timeout has not yet been hit, but a joy command is recieved, we immediately send the joy (no optimization for joy msgs)
         #if the joy command is received while we are optimizing a step command we will send the current step and then the joy command
@@ -79,7 +82,7 @@ class TeensyGait(Node):
                 
                 #make sure we don't send the same joy cmd back to back. It wouldn't do anything
                 prepped_joy_cmd = self.prepCommand(self.joy_cmd)
-                if not self.command_list or self.command_list[-1] != prepped_joy_cmd:
+                if not self.command_list or self.last_cmd != prepped_joy_cmd:
                     self.command_list.append(prepped_joy_cmd)
 
                 self.joy_cmd = {}
@@ -94,7 +97,7 @@ class TeensyGait(Node):
 
             elif self.joy_cmd:
                 prepped_joy_cmd = self.prepCommand(self.joy_cmd)
-                if not self.command_list or self.command_list[-1] != prepped_joy_cmd:
+                if not self.command_list or self.last_cmd != prepped_joy_cmd:
                     self.command_list.append(prepped_joy_cmd)
                 self.joy_cmd = {}
                 self.last_append_time = current_time
@@ -147,7 +150,6 @@ class TeensyGait(Node):
             move_time = json_msg.get("MOVE_TIME", None)
             if move_time:
                 self.send_time = move_time + time.time()
-                self.get_logger().info(f"Movement time is {move_time} ms")
         except json.JSONDecodeError:
             self.get_logger().warn("Failed to decode Json")
 
