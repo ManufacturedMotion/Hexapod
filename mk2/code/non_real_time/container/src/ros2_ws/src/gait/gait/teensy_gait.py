@@ -16,9 +16,9 @@ class TeensyGait(Node):
         super().__init__(name)
         self.cmd_vel_subscriber = self.create_subscription(Twist, "/cmd_vel", self.parseCmdVel, 10)
         self.joy_subscriber = self.create_subscription(Joy, "/joy", self.parseJoy, 10)
-        self.teensy_subscriber = self.create_subscription(String, "/from_teensy", self.parseTeensyMsg, 10)
+        self.teensy_subscriber = self.create_subscription(String, "/from_teensy", self.parseTeensyMsg, 1)
         self.publisher = self.create_publisher(String, '/to_teensy', 10)
-        self.publish_timer = self.create_timer(0.1, self.updateCommandList) 
+        self.publish_timer = self.create_timer(0.4, self.updateCommandList) 
         self.get_logger().info(f"{name} has begun")
         self.joy_cmd = {}
         self.pos = {
@@ -29,15 +29,15 @@ class TeensyGait(Node):
             "pitch": 0,
             "yaw": 0
         }
-        self.walk_scale_fact = 10
-        self.default_speed = 150
+        self.walk_scale_fact = 3
+        self.default_speed = 250
         self.speed = self.default_speed
-        self.speed_scale_fact = 1
         self.command_list = []
         self.last_append_time = 0
         self.step_timeout = 0.3
         self.drift_factor = 0.1
         self.cmd_vel_received = False
+        self.minimum_step_size = 100
         self.send_time = 0
         self.last_cmd = {}
 
@@ -63,6 +63,8 @@ class TeensyGait(Node):
         else:
             step_command = None
             if self.cmd_vel_received:
+                distance = self.getDistance() 
+                self.setSpeed(distance)
                 step_command = {
                     "MV": "WLK",
                     "X": round(self.pos['x'], 3),
@@ -74,8 +76,15 @@ class TeensyGait(Node):
                     "SPD": self.speed
                 }
 
+            #if we meet the distance size, queue the command
+            distance = self.getDistance() 
+            if distance > self.minimum_step_size:
+                self.command_list.append(self.prepCommand(step_command))
+                self.resetPos()
+                self.cmd_vel_received = False
+    
             # If both are ready, send the walk step first 
-            if step_command and self.joy_cmd:
+            elif step_command and self.joy_cmd:
                 self.command_list.append(self.prepCommand(step_command))
                 self.resetPos()
                 self.cmd_vel_received = False
@@ -113,8 +122,7 @@ class TeensyGait(Node):
         self.pos['yaw'] += msg.angular.z
         self.pos['x'] += (msg.linear.y * self.walk_scale_fact)
         self.pos['y'] += (msg.linear.x * self.walk_scale_fact)
-        #$TODO - z value. need an input for height changes? 
-        self.speed = self.getSpeed(msg.linear.x, msg.linear.y)
+        #TODO need to update z somehow
         self.cmd_vel_received = True
 
     def parseJoy(self, msg: Joy):
@@ -169,12 +177,21 @@ class TeensyGait(Node):
             "pitch": 0,
             "yaw": 0
         }
+        self.speed = self.default_speed
     
-    #TODO - this can be improved. do we need to account for roll, pitch, yaw, z?
-    def getSpeed(self, x, y):
-        distance = math.sqrt( x ** 2 + y ** 2)
-        speed = ((distance+1)*self.default_speed*self.speed_scale_fact)
-        return round(speed, 2)
+    def getDistance(self):
+        x = self.pos['x']
+        y = self.pos['y']
+        yaw = self.pos['yaw']
+        distance = math.sqrt(x**2 + y**2 + (yaw*100)**2)
+        return distance 
+
+    def setSpeed(self, distance):
+        speed = ((distance/self.minimum_step_size)*self.default_speed)
+        self.speed = round(speed, 2)
+        if self.speed > 400:
+            self.speed = 400
+        return
 
 def main(args=None):
     rclpy.init(args=args)
