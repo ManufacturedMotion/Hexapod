@@ -31,6 +31,14 @@ void Hexapod::moveLegAxisToPos(uint8_t leg_number, uint8_t axis_number, double t
 	legs[leg_number].axes[axis_number].moveToPos(target_position);
 }
 
+void Hexapod::disengageAllLegs() {
+	for (uint8_t i = 0; i < NUM_LEGS; i++) {
+		for (uint8_t j = 0; j < NUM_AXES_PER_LEG; j++) {
+			legs[i].axes[j].disengageServo();
+		}
+	}
+}
+
 _Bool Hexapod::moveLegToPos(uint8_t leg_number, double x, double y, double z) {
 	return legs[leg_number].rapidMove(x, y, z);
 }
