@@ -6,6 +6,7 @@ from sensor_msgs.msg import Joy
 from std_msgs.msg import String
 import math
 import time
+import re
 import copy
 
 name = "teensyGait"
@@ -18,7 +19,7 @@ class TeensyGait(Node):
         self.joy_subscriber = self.create_subscription(Joy, "/joy", self.parseJoy, 10)
         self.teensy_subscriber = self.create_subscription(String, "/from_teensy", self.parseTeensyMsg, 1)
         self.publisher = self.create_publisher(String, '/to_teensy', 10)
-        self.publish_timer = self.create_timer(0.2, self.updateCommandList) 
+        self.publish_timer = self.create_timer(0.1, self.updateCommandList) 
         self.get_logger().info(f"{name} has begun")
         self.joy_cmd = {}
         self.pos = {
@@ -29,8 +30,8 @@ class TeensyGait(Node):
             "pitch": 0,
             "yaw": 0
         }
-        self.walk_scale_fact = 4
-        self.default_speed = 250
+        self.walk_scale_fact = 7
+        self.default_speed = 270
         self.speed = self.default_speed
         self.max_speed = 400
         self.drift_factor = 0.1
@@ -40,7 +41,7 @@ class TeensyGait(Node):
         self.last_send_time = 0
         self.send_time = 0
         self.last_cmd = {}
-        self.cmd_timeout = 0.5
+        self.cmd_timeout = 0.1
         self.waiting_for_ack = False
 
     def updateCommandList(self):
@@ -96,6 +97,7 @@ class TeensyGait(Node):
         
         #prevent getting stuck.if we send a cmd and then go idle we reset the send time to 0
         elif current_time >= self.send_time + self.cmd_timeout:
+            self.get_logger().info(f"reset move time")
             self.send_time = 0
                 
 
@@ -139,20 +141,25 @@ class TeensyGait(Node):
                 "MV": "RPD",
                 "X": 0,
                 "Y": 0,
-                "Z": 150
+                "Z": 200
             }
         else:
             return
 
     def parseTeensyMsg(self, msg):
-        try:
-            json_msg = json.loads(msg.data)
-            move_time = json_msg.get("MOVE_TIME", None)
-            if move_time:
-                self.send_time = (move_time / 1000) + time.time()
-        except json.JSONDecodeError:
-            self.get_logger().warn("Failed to decode Json")
-            self.send_time = 0
+        json_blobs = re.findall(r'\{.*?\}', msg.data)
+        for json_blob in json_blobs:
+            try:
+                json_msg = json.loads(json_blob)
+                move_time = json_msg.get("MOVE_TIME", None)
+                if move_time:
+                    self.send_time = (move_time / 1000) + time.time()
+                    self.get_logger().info(f"updated move time: {self.send_time}")
+                    self.waiting_for_ack = False
+                    return
+            except json.JSONDecodeError:
+                self.get_logger().warn("Failed to decode portion of Json msg")
+        self.send_time = 0
         self.waiting_for_ack = False
 
     def prepCommand(self, command):
