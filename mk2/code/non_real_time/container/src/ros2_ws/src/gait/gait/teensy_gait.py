@@ -29,16 +29,19 @@ class TeensyGait(Node):
             "pitch": 0,
             "yaw": 0
         }
-        self.walk_scale_fact = 5
+        self.walk_scale_fact = 4
         self.default_speed = 250
         self.speed = self.default_speed
+        self.max_speed = 400
         self.drift_factor = 0.1
         self.cmd_vel_received = False
         self.minimum_step_size = 100
+        self.maximum_step_size = 180
         self.last_send_time = 0
         self.send_time = 0
         self.last_cmd = {}
         self.cmd_timeout = 0.5
+        self.waiting_for_ack = False
 
     def updateCommandList(self):
 
@@ -98,17 +101,19 @@ class TeensyGait(Node):
 
     def parseCmdVel(self, msg: Twist):
 
-        #TODO stop updating if step is too large
-                
         #no update if joystick within drift threshold
         if (abs(msg.linear.x) <= self.drift_factor and abs(msg.linear.y) <= self.drift_factor and abs(msg.linear.z) <= self.drift_factor and abs(msg.angular.x) <= self.drift_factor and abs(msg.angular.y) <= self.drift_factor and abs(msg.angular.z) <= self.drift_factor):
             return
-        
+
+        #if we hit max distance do not update x, y or yaw
+        distance = self.getDistance()
+        if distance < self.maximum_step_size:
+            self.pos['yaw'] += msg.angular.z
+            self.pos['x'] += (msg.linear.y * self.walk_scale_fact)
+            self.pos['y'] += (msg.linear.x * self.walk_scale_fact)
+ 
         self.pos['roll'] += msg.angular.x
         self.pos['pitch'] += msg.angular.y
-        self.pos['yaw'] += msg.angular.z
-        self.pos['x'] += (msg.linear.y * self.walk_scale_fact)
-        self.pos['y'] += (msg.linear.x * self.walk_scale_fact)
         #TODO need to update z somehow
         self.cmd_vel_received = True
 
@@ -148,6 +153,7 @@ class TeensyGait(Node):
         except json.JSONDecodeError:
             self.get_logger().warn("Failed to decode Json")
             self.send_time = 0
+        self.waiting_for_ack = False
 
     def prepCommand(self, command):
         json_string = json.dumps(command)
@@ -175,14 +181,19 @@ class TeensyGait(Node):
         return distance 
 
     def setSpeed(self, distance):
-        speed = ((distance/self.minimum_step_size)*self.default_speed)
-        self.speed = round(speed, 2)
-        if self.speed > 400:
-            self.speed = 400
-        return
-    
+        if distance <= self.minimum_step_size:
+            self.speed = self.default_speed
+        #if we are above minimum step size we can scale the speed up a bit
+        else:
+            sensitivity = 0.02
+            scaled_speed = self.default_speed + (math.exp(distance * sensitivity) - 1)
+            self.speed = round(min(scaled_speed, self.max_speed), 2)
+        
     def sendCommand(self, command):
+        if self.waiting_for_ack:
+            return
         self.publisher.publish(command)
+        self.waiting_for_ack = True
         self.last_cmd = command
         self.resetPos()
         self.joy_cmd = {}
