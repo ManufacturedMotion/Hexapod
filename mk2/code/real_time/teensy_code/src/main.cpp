@@ -41,7 +41,9 @@ void loop() {
   if (!command_queue.isEmpty()) {
 
     if (!hexapod.isBusy()) {
-      parser.parseCommand(command_queue.dequeue()); 
+      String next_command = command_queue.dequeue();
+      if (next_command.length() > 0 && next_command.startsWith("{") && next_command.endsWith("}")) {
+        parser.parseCommand(next_command);
     }
   
   }
