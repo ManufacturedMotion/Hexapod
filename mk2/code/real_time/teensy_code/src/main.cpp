@@ -26,16 +26,17 @@ void loop() {
     if (Serial.available() > 0 || Serial4.available() > 0) {
       if (Serial4.available() > 0) {
         command = Serial4.readStringUntil('\n');
+        command_queue.enqueue(command);
       } else {
         command = Serial.readStringUntil('\n');
-      }
-      command_queue.enqueue(command);
+        command_queue.enqueue(command);
+      }  
     }
   #else
     if (Serial4.available() > 0) {
       command = Serial4.readStringUntil('\n');
+      command_queue.enqueue(command);
     }
-    command_queue.enqueue(command);
   #endif 
 
   if (!command_queue.isEmpty()) {
