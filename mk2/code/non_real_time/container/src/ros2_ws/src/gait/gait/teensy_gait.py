@@ -18,7 +18,7 @@ class TeensyGait(Node):
         self.joy_subscriber = self.create_subscription(Joy, "/joy", self.parseJoy, 10)
         self.teensy_subscriber = self.create_subscription(String, "/from_teensy", self.parseTeensyMsg, 1)
         self.publisher = self.create_publisher(String, '/to_teensy', 10)
-        self.publish_timer = self.create_timer(0.4, self.updateCommandList) 
+        self.publish_timer = self.create_timer(0.2, self.updateCommandList) 
         self.get_logger().info(f"{name} has begun")
         self.joy_cmd = {}
         self.pos = {
@@ -29,90 +29,77 @@ class TeensyGait(Node):
             "pitch": 0,
             "yaw": 0
         }
-        self.walk_scale_fact = 3
+        self.walk_scale_fact = 5
         self.default_speed = 250
         self.speed = self.default_speed
-        self.command_list = []
-        self.last_append_time = 0
-        self.step_timeout = 0.3
         self.drift_factor = 0.1
         self.cmd_vel_received = False
         self.minimum_step_size = 100
+        self.last_send_time = 0
         self.send_time = 0
         self.last_cmd = {}
+        self.cmd_timeout = 0.5
 
     def updateCommandList(self):
 
         current_time = time.time()
-        time_since_last_append = current_time - self.last_append_time
-        
-        #if we have a time acknowledgement from teensy we wait until that time before we publish the next command
-        if self.send_time >= current_time and len(self.command_list) > 0:
-            command = self.command_list.pop(0)
-            self.publisher.publish(command)
-            self.last_cmd = command
-            self.send_time = -1
-        #if we have not yet sent a message we check for the first message in our list. If we have it we send it
-        elif self.send_time == 0 and len(self.command_list) > 0:
-            command = self.command_list.pop(0)
-            self.publisher.publish(command)
-            self.last_cmd = command
-        #otherwise update the command queue
-        #if timeout has not yet been hit, but a joy command is recieved, we immediately send the joy (no optimization for joy msgs)
-        #if the joy command is received while we are optimizing a step command we will send the current step and then the joy command
-        else:
-            step_command = None
-            if self.cmd_vel_received:
-                distance = self.getDistance() 
-                self.setSpeed(distance)
-                step_command = {
-                    "MV": "WLK",
-                    "X": round(self.pos['x'], 3),
-                    "Y": round(self.pos['y'], 3),
-                    "Z": round(self.pos['z'], 3),
-                    "ROLL": round(self.pos['roll'], 3),
-                    "PTCH": round(self.pos['pitch'], 3),
-                    "YAW": round(self.pos['yaw'], 3),
-                    "SPD": self.speed
-                }
-
-            #if we meet the distance size, queue the command
+         
+        step_cmd = None
+        if self.cmd_vel_received:
             distance = self.getDistance() 
-            if distance > self.minimum_step_size:
-                self.command_list.append(self.prepCommand(step_command))
-                self.resetPos()
-                self.cmd_vel_received = False
-    
-            # If both are ready, send the walk step first 
-            elif step_command and self.joy_cmd:
-                self.command_list.append(self.prepCommand(step_command))
-                self.resetPos()
-                self.cmd_vel_received = False
-                
-                #make sure we don't send the same joy cmd back to back. It wouldn't do anything
-                prepped_joy_cmd = self.prepCommand(self.joy_cmd)
-                if not self.command_list or self.last_cmd != prepped_joy_cmd:
-                    self.command_list.append(prepped_joy_cmd)
-
-                self.joy_cmd = {}
-                self.last_append_time = current_time
-
-            # if we started building a step and timeout was reached
-            elif step_command and (time_since_last_append >= self.step_timeout):
-                self.command_list.append(self.prepCommand(step_command))
-                self.resetPos()
-                self.last_append_time = current_time
-                self.cmd_vel_received = False
-
+            self.setSpeed(distance)
+            step_cmd = {
+                "MV": "WLK",
+                "X": round(self.pos['x'], 3),
+                "Y": round(self.pos['y'], 3),
+                "Z": round(self.pos['z'], 3),
+                "ROLL": round(self.pos['roll'], 3),
+                "PTCH": round(self.pos['pitch'], 3),
+                "YAW": round(self.pos['yaw'], 3),
+                "SPD": self.speed
+            }
+        else:
+            distance = 0       
+ 
+        #state for startup - logic for sending first command or command after idle period
+        if self.send_time == 0:
+            if distance >= self.minimum_step_size:
+                prepped_cmd = self.prepCommand(step_cmd)
+                self.sendCommand(prepped_cmd)
+            elif (self.last_send_time + self.cmd_timeout) >= current_time:
+                if step_cmd:
+                    prepped_cmd = self.prepCommand(step_cmd)
+                    self.sendCommand(prepped_cmd)
             elif self.joy_cmd:
-                prepped_joy_cmd = self.prepCommand(self.joy_cmd)
-                if not self.command_list or self.last_cmd != prepped_joy_cmd:
-                    self.command_list.append(prepped_joy_cmd)
+                prepped_cmd = self.prepCommand(self.joy_cmd)
+                if prepped_cmd != self.last_cmd:
+                    self.sendCommand(prepped_cmd)
                 self.joy_cmd = {}
-                self.last_append_time = current_time
+                    
+        #if we have a time acknowledgement from teensy we wait until that time before we publish the next command
+        #when is it time to send a command we check if multiple inputs were received. If a joy command is recieved, we immediately send the joy (no optimization for joy msgs)
+        #if the joy command is received while we are optimizing a step command we will send the joy and forget about the partial step
+        elif self.send_time >= current_time:
+
+            if self.joy_cmd:
+                prepped_cmd = self.prepCommand(self.joy_cmd)
+                if prepped_cmd != self.last_cmd:
+                    self.sendCommand(prepped_cmd)
+                self.joy_cmd = {}
+      
+            elif step_cmd:
+                prepped_cmd = self.prepCommand(step_cmd)
+                self.sendCommand(prepped_cmd)
+        
+        #prevent getting stuck.if we send a cmd and then go idle we reset the send time to 0
+        elif current_time >= self.send_time + self.cmd_timeout:
+            self.send_time = 0
+                
 
     def parseCmdVel(self, msg: Twist):
 
+        #TODO stop updating if step is too large
+                
         #no update if joystick within drift threshold
         if (abs(msg.linear.x) <= self.drift_factor and abs(msg.linear.y) <= self.drift_factor and abs(msg.linear.z) <= self.drift_factor and abs(msg.angular.x) <= self.drift_factor and abs(msg.angular.y) <= self.drift_factor and abs(msg.angular.z) <= self.drift_factor):
             return
@@ -157,9 +144,10 @@ class TeensyGait(Node):
             json_msg = json.loads(msg.data)
             move_time = json_msg.get("MOVE_TIME", None)
             if move_time:
-                self.send_time = move_time + time.time()
+                self.send_time = (move_time / 1000) + time.time()
         except json.JSONDecodeError:
             self.get_logger().warn("Failed to decode Json")
+            self.send_time = 0
 
     def prepCommand(self, command):
         json_string = json.dumps(command)
@@ -192,6 +180,14 @@ class TeensyGait(Node):
         if self.speed > 400:
             self.speed = 400
         return
+    
+    def sendCommand(self, command):
+        self.publisher.publish(command)
+        self.last_cmd = command
+        self.resetPos()
+        self.joy_cmd = {}
+        self.cmd_vel_received = False
+        self.last_send_time = time.time()
 
 def main(args=None):
     rclpy.init(args=args)
