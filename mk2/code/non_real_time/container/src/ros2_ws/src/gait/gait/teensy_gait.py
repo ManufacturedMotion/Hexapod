@@ -6,7 +6,6 @@ from sensor_msgs.msg import Joy
 from std_msgs.msg import String
 import math
 import time
-import re
 import copy
 
 name = "teensyGait"
@@ -15,13 +14,13 @@ class TeensyGait(Node):
 
     def __init__(self):
         super().__init__(name)
-        self.cmd_vel_subscriber = self.create_subscription(Twist, "/cmd_vel", self.parseCmdVel, 10)
-        self.joy_subscriber = self.create_subscription(Joy, "/joy", self.parseJoy, 10)
-        self.teensy_subscriber = self.create_subscription(String, "/from_teensy", self.parseTeensyMsg, 1)
+        self.cmd_vel_subscriber = self.create_subscription(Twist, "/cmd_vel", self.parse_cmd_vel, 10)
+        self.joy_subscriber = self.create_subscription(Joy, "/joy", self.parse_joy, 10)
         self.publisher = self.create_publisher(String, '/to_teensy', 10)
-        self.publish_timer = self.create_timer(0.1, self.updateCommandList) 
+        self.publish_timer = self.create_timer(0.2, self.publishCommand) #publish command every .2 seconds       
         self.get_logger().info(f"{name} has begun")
         self.joy_cmd = {}
+        self.last_joy_cmd = {}
         self.pos = {
             "x": 0,
             "y": 0,
@@ -30,101 +29,74 @@ class TeensyGait(Node):
             "pitch": 0,
             "yaw": 0
         }
-        self.walk_scale_fact = 7
-        self.default_speed = 270
+        self.step = {
+            "x": 0,
+            "y": 0
+        }
+        self.walk_scale_fact = 10
+        self.default_speed = 150
         self.speed = self.default_speed
-        self.max_speed = 400
-        self.drift_factor = 0.1
-        self.cmd_vel_received = False
+        self.speed_scale_fact = 1.3
         self.minimum_step_size = 100
-        self.maximum_step_size = 180
-        self.last_send_time = 0
-        self.send_time = 0
-        self.last_cmd = {}
-        self.cmd_timeout = 0.1
-        self.waiting_for_ack = False
+        self.last_command_time = time.time()
+        self.step_timeout = 1.2
+        self.drift_factor = 0.1
+        self.need_to_move = False
 
-    def updateCommandList(self):
+    def publishCommand(self):
 
         current_time = time.time()
-         
-        step_cmd = None
-        if self.cmd_vel_received:
-            distance = self.getDistance() 
-            self.setSpeed(distance)
-            step_cmd = {
+        time_since_last_publish = current_time - self.last_command_time
+
+        if self.joy_cmd and self.joy_cmd != self.last_joy_cmd:
+            if "MV" in self.joy_cmd.keys() or self.joy_cmd["PRE"] == "STND":
+                self.resetPos(200) #TODO measure z height for stand, if not 200 make new logic here
+            else:
+                self.resetPos()
+            self.publisher.publish(self.prepCommand(self.joy_cmd))
+            self.last_joy_cmd = copy.deepcopy(self.joy_cmd)
+            self.joy_cmd = {}
+            self.last_command_time = current_time
+            
+        elif self.getStepDistance() >= self.minimum_step_size or (time_since_last_publish >= self.step_timeout and self.need_to_move):
+            step_command = {
                 "MV": "WLK",
-                "X": round(self.pos['x'], 3),
-                "Y": round(self.pos['y'], 3),
+                "X": round(self.step['x'], 3),
+                "Y": round(self.step['y'], 3),
                 "Z": round(self.pos['z'], 3),
                 "ROLL": round(self.pos['roll'], 3),
                 "PTCH": round(self.pos['pitch'], 3),
                 "YAW": round(self.pos['yaw'], 3),
                 "SPD": self.speed
             }
-        else:
-            distance = 0       
- 
-        #state for startup - logic for sending first command or command after idle period
-        if self.send_time == 0:
-            if distance >= self.minimum_step_size:
-                prepped_cmd = self.prepCommand(step_cmd)
-                self.sendCommand(prepped_cmd)
-            elif (self.last_send_time + self.cmd_timeout) >= current_time:
-                if step_cmd:
-                    prepped_cmd = self.prepCommand(step_cmd)
-                    self.sendCommand(prepped_cmd)
-            elif self.joy_cmd:
-                prepped_cmd = self.prepCommand(self.joy_cmd)
-                if prepped_cmd != self.last_cmd:
-                    self.sendCommand(prepped_cmd)
-                self.joy_cmd = {}
-                    
-        #if we have a time acknowledgement from teensy we wait until that time before we publish the next command
-        #when is it time to send a command we check if multiple inputs were received. If a joy command is recieved, we immediately send the joy (no optimization for joy msgs)
-        #if the joy command is received while we are optimizing a step command we will send the joy and forget about the partial step
-        elif self.send_time >= current_time:
+            self.publisher.publish(self.prepCommand(step_command))
+            self.pos['x'] += self.step['x']
+            self.pos['y'] += self.step['y']
+            self.step['x'] = 0
+            self.step['y'] = 0
+            self.speed = self.default_speed
+            self.last_command_time = current_time
+            self.need_to_move = False
+            self.last_joy_cmd = {}
 
-            if self.joy_cmd:
-                prepped_cmd = self.prepCommand(self.joy_cmd)
-                if prepped_cmd != self.last_cmd:
-                    self.sendCommand(prepped_cmd)
-                self.joy_cmd = {}
-      
-            elif step_cmd:
-                prepped_cmd = self.prepCommand(step_cmd)
-                self.sendCommand(prepped_cmd)
-        
-        #prevent getting stuck.if we send a cmd and then go idle we reset the send time to 0
-        elif current_time >= self.send_time + self.cmd_timeout:
-            self.get_logger().info(f"reset move time")
-            self.send_time = 0
-                
+    def parse_cmd_vel(self, msg: Twist):
 
-    def parseCmdVel(self, msg: Twist):
-
-        #no update if joystick within drift threshold
         if (abs(msg.linear.x) <= self.drift_factor and abs(msg.linear.y) <= self.drift_factor and abs(msg.linear.z) <= self.drift_factor and abs(msg.angular.x) <= self.drift_factor and abs(msg.angular.y) <= self.drift_factor and abs(msg.angular.z) <= self.drift_factor):
             return
-
-        #if we hit max distance do not update x, y or yaw
-        distance = self.getDistance()
-        if distance < self.maximum_step_size:
-            self.pos['yaw'] += msg.angular.z
-            self.pos['x'] += (msg.linear.y * self.walk_scale_fact)
-            self.pos['y'] += (msg.linear.x * self.walk_scale_fact)
- 
+        
         self.pos['roll'] += msg.angular.x
         self.pos['pitch'] += msg.angular.y
-        #TODO need to update z somehow
-        self.cmd_vel_received = True
+        self.pos['yaw'] += msg.angular.z
+        self.step['x'] += (msg.linear.y * self.walk_scale_fact)
+        self.step['y'] += (msg.linear.x * self.walk_scale_fact)
+        self.speed = self.getSpeed(msg.linear.x, msg.linear.y)
+        self.need_to_move = True
 
-    def parseJoy(self, msg: Joy):
+    def parse_joy(self, msg: Joy):
         stand = msg.buttons[0]
         sit = msg.buttons[1]
         neutral = msg.buttons[3]
         zeros = msg.buttons[4]
-        #if multiple buttons pressed don't accept any input as valid
         if (sum([stand, sit, zeros, neutral]) > 1):
             return
         else:
@@ -146,21 +118,8 @@ class TeensyGait(Node):
         else:
             return
 
-    def parseTeensyMsg(self, msg):
-        json_blobs = re.findall(r'\{.*?\}', msg.data)
-        for json_blob in json_blobs:
-            try:
-                json_msg = json.loads(json_blob)
-                move_time = json_msg.get("MOVE_TIME", None)
-                if move_time:
-                    self.send_time = (move_time / 1000) + time.time()
-                    self.get_logger().info(f"updated move time: {self.send_time}")
-                    self.waiting_for_ack = False
-                    return
-            except json.JSONDecodeError:
-                self.get_logger().warn("Failed to decode portion of Json msg")
-        self.send_time = 0
-        self.waiting_for_ack = False
+        if self.joy_cmd == self.last_joy_cmd:
+            self.joy_cmd = {}
 
     def prepCommand(self, command):
         json_string = json.dumps(command)
@@ -169,43 +128,33 @@ class TeensyGait(Node):
         print(f"CONSTRUCTED COMMAND: {command}")
         return string_msg
     
+    def getStepDistance(self):
+        dx = self.step['x']
+        #dx = self.pos['x'] - self.step['x']
+        dy = self.step['y'] 
+        #dy = self.pos['y'] - self.step['y'] 
+        distance = math.sqrt( dx ** 2 + dy ** 2)
+        return distance
+
     def resetPos(self, z = 0):
+        yaw = self.pos['yaw']
         self.pos = {
             "x": 0,
             "y": 0,
-            "z": 0,
+            "z": z,
             "roll": 0,
             "pitch": 0,
-            "yaw": 0
+            "yaw": yaw
         }
-        self.speed = self.default_speed
+        self.step = {
+            "x": 0,
+            "y": 0
+        }
     
-    def getDistance(self):
-        x = self.pos['x']
-        y = self.pos['y']
-        yaw = self.pos['yaw']
-        distance = math.sqrt(x**2 + y**2 + (yaw*100)**2)
-        return distance 
-
-    def setSpeed(self, distance):
-        if distance <= self.minimum_step_size:
-            self.speed = self.default_speed
-        #if we are above minimum step size we can scale the speed up a bit
-        else:
-            sensitivity = 0.02
-            scaled_speed = self.default_speed + (math.exp(distance * sensitivity) - 1)
-            self.speed = round(min(scaled_speed, self.max_speed), 2)
-        
-    def sendCommand(self, command):
-        if self.waiting_for_ack:
-            return
-        self.publisher.publish(command)
-        self.waiting_for_ack = True
-        self.last_cmd = command
-        self.resetPos()
-        self.joy_cmd = {}
-        self.cmd_vel_received = False
-        self.last_send_time = time.time()
+    def getSpeed(self, x, y):
+        distance = math.sqrt( x ** 2 + y ** 2)
+        speed = ((distance+1)*self.default_speed*self.speed_scale_fact)
+        return round(speed, 2)
 
 def main(args=None):
     rclpy.init(args=args)
