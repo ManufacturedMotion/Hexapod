@@ -22,6 +22,7 @@
 		public:
 			Axis();
 			void initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos);
+			void disengageServo();
 			uint8_t moveToPos(double pos);
 			uint8_t moveToPosAtSpeed(double pos, double target_speed);
 			_Bool setMaxPos(double max_pos);

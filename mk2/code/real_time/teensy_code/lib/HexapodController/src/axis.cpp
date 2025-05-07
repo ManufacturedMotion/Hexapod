@@ -28,6 +28,10 @@ void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_
     _max_pos = max_pos;
 }
 
+void Axis::disengageServo() {
+	_servo.detach();
+}
+
 uint8_t Axis::moveToPos(double pos) {
     if (pos < _min_pos || pos > _max_pos)
         return 255;     //Move out of range

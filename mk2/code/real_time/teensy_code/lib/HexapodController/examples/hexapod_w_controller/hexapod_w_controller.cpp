@@ -216,6 +216,10 @@ void executeCommand(String command) {
       SERIAL_OUTPUT.printf("parsing success; starfish preset selected (move all motors to zero).\n");
       hexapod.moveToZeros();
       return;
+    } else if (buffer[1].equals("9")){
+      SERIAL_OUTPUT.printf("parsing success; disengaging servos.\n");
+      hexapod.disengageAllLegs();
+      return;
     }
     else {
       SERIAL_OUTPUT.printf("parser detected input for a preset that is not yet supported.\n");

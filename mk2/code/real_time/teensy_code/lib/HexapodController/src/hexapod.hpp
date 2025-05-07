@@ -30,6 +30,7 @@
 		public:
 			Hexapod();
 			void moveLegAxisToPos(uint8_t leg_number, uint8_t axis_number, double target_position);
+			void disengageAllLegs();
 			_Bool moveLegToPos(uint8_t leg_number, double x, double y, double z);
 			void moveToZeros();
 			void sit();
