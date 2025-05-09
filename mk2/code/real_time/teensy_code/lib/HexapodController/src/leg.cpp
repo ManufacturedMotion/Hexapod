@@ -29,6 +29,13 @@ void Leg::initializeAxes(uint8_t leg_number) {
     }
 }
 
+void Leg::disengageAxes(uint8_t leg_number) {
+    _leg_number = leg_number;
+    for (uint8_t i = 0; i < NUM_AXES_PER_LEG; i++) {
+        axes[i].disengageServo(pwm_pins[_leg_number][i]);
+    }
+}
+
 _Bool Leg::_inverseKinematics(double x, double y, double z) {
 
     if (!_checkSafeCoords(x,y,z))

@@ -81,7 +81,7 @@ void SerialParser::performPreset(String preset) {
     }
     else if (preset == "HALT"){
         #if LOG_LEVEL >= BASIC_DEBUG
-            Serial.println("JSON parsing success; stand preset selected.\n");
+            Serial.println("JSON parsing success; disengaging motors.\n");
         #endif
         _Hexapod.disengageAllLegs();
     }

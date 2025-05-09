@@ -28,8 +28,8 @@ void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_
     _max_pos = max_pos;
 }
 
-void Axis::disengageServo() {
-	_servo.detach();
+void Axis::disengageServo(uint8_t pwm_pin) {
+    analogWrite(pwm_pin, 0);
 }
 
 uint8_t Axis::moveToPos(double pos) {
