@@ -79,6 +79,12 @@ void SerialParser::performPreset(String preset) {
         #endif
         _Hexapod.stand();
     }
+    else if (preset == "HALT"){
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; stand preset selected.\n");
+        #endif
+        _Hexapod.disengageAllLegs();
+    }
     else {
         Serial.println("ERROR: JSON parser detected input for a preset that is not yet supported: " + String(preset) + "\n"); 
     }
