@@ -22,11 +22,16 @@ Axis::Axis() {
 }
 
 void Axis::disengageServo(){
-    _servo.detach();
+    // _servo.detach();
+    analogWriteFrequency(_servoPin, 0);
+    pinMode(_servoPin, INPUT);
+    digitalWrite(_servoPin, LOW);
+    Serial.println("tried to disable things");
 }
 
 void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos) {
     _servo.attach(pwm_pin);
+    _servoPin = pwm_pin;
     //servo.write(0);
     _min_pos = min_pos;
     _max_pos = max_pos;

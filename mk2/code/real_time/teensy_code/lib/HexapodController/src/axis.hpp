@@ -41,6 +41,7 @@
 			double _min_pos;        //rad
 			double _map_mult;       //unitless
 			double _zero_pos;       //rad
+			uint8_t _servoPin;
 			uint64_t _next_go_time; //milliseconds
 			double _current_pos = 0.0; //rad
 			uint16_t _move_time = 0; //milliseconds
