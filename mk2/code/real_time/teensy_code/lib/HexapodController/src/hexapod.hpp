@@ -34,6 +34,7 @@
 			void moveToZeros();
 			void sit();
 			void stand();
+			void disengageServos();
 			void wait(uint32_t time_ms);
 			Leg legs[NUM_LEGS];
 			void forwardKinematics(double angle0, double angle1, double angle2);
