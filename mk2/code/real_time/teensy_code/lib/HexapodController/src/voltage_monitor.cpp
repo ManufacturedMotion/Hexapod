@@ -60,7 +60,7 @@ float VoltageSensor::takeReading() {
             //overwrite measure time after saving vdd. prevents same reading from being recorded multiple times
             measure_times[measure_index] = 0; 
             #if LOG_LEVEL >= VOLTAGE_DEBUG 
-                Serial.println("raw vdd " + String(measure_index) + " is " + String(raw_vdds[measure_index]) + "\n");
+                // Serial.println("raw vdd " + String(measure_index) + " is " + String(raw_vdds[measure_index]) + "\n");
             #endif
         }
     }

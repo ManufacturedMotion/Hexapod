@@ -74,6 +74,12 @@ void SerialParser::performPreset(String preset) {
         #endif
         _Hexapod.sit();
     }
+    else if (preset == "ESC"){
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; sit preset selected.\n");
+        #endif
+        _Hexapod.disengageServos();
+    }
     else if (preset == "STND"){
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON parsing success; stand preset selected.\n");

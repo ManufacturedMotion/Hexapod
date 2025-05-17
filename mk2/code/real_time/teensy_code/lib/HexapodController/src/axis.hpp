@@ -21,6 +21,7 @@
 	class Axis {
 		public:
 			Axis();
+			void disengageServo();
 			void initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos);
 			uint8_t moveToPos(double pos);
 			uint8_t moveToPosAtSpeed(double pos, double target_speed);
@@ -43,6 +44,7 @@
 			double _min_pos;        //rad
 			double _map_mult;       //unitless
 			double _zero_pos;       //rad
+			uint8_t _servoPin;
 			uint64_t _next_go_time; //milliseconds
 			double _current_pos = 0.0; //rad
 			uint16_t _move_time = 0; //milliseconds

@@ -62,6 +62,19 @@ void Hexapod::stand() {
 	}
 }
 
+void Hexapod::disengageServos() {
+    Serial.println("Disengaging all servos.");
+    for (uint8_t i = 0; i < NUM_LEGS; i++) {
+        for (uint8_t j = 0; j < NUM_AXES_PER_LEG; j++) {
+            Serial.print("Disengaging leg ");
+            Serial.print(i);
+            Serial.print(" axis ");
+            Serial.println(j);
+            legs[i].axes[j].disengageServo();
+        }
+    }
+}
+
 void Hexapod::rapidMove(double x, double y, double z, double roll, double pitch, double yaw) {
 	Position pos;
 	pos.set(x, y, z, roll, pitch, yaw);
