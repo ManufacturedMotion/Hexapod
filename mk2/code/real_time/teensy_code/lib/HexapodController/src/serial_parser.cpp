@@ -92,7 +92,7 @@ void SerialParser::performMovement(String movement) {
             Serial.println("JSON rapid move parsing success; x, y, z is " + String (x) + " " + String (y) + " " + String (z) + "\nroll, pitch, yaw, speed are " + 
                     String (roll) + " " + String (pitch) + " " + String (yaw) + " " + String(speed) + "\n");
         #endif
-        _Hexapod.rapidMove(_position);
+        _Hexapod.enqueueRapidMove(_position);
     }
     else if (movement == "WLK") {
         #if LOG_LEVEL >= BASIC_DEBUG

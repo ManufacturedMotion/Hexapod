@@ -6,10 +6,6 @@
 #ifndef HEXA_SERIAL_PARSE
 #define HEXA_SERIAL_PARSE
 
-    #define BASIC_DEBUG 1 //log json parse status
-    #define CALCULATION_LOGGING 2 //log step calculations
-    #define VOLTAGE_DEBUG 3 //log raw voltage reading and filtering calculations
-
     class SerialParser {
         public:
             SerialParser(Hexapod &hexapod);
