@@ -34,6 +34,9 @@
 			double getMaxPos();
 			double getMinPos();
 
+			void detach();
+
+
 		private:
 			double _max_speed;      //rad/s
 			double _max_pos;        //rad

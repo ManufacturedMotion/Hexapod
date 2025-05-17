@@ -8,6 +8,7 @@
 #include "three_by_matrices.hpp"
 #include <Arduino.h>
 #include "voltage_monitor.hpp"
+#include "log_levels.hpp"
 
 Hexapod::Hexapod() 
 { 
@@ -21,9 +22,6 @@ Hexapod::Hexapod()
 }
 
 void Hexapod::startUp() {
-
-	delay(5000);
-	sit();
 
 }
 
@@ -249,11 +247,8 @@ double Hexapod::_getMaxStepMagnitudeInDirection(Position direction_vector, _Bool
 	// 1. The step must be in the direction of the move
 	// 2. The step should end up in a position that is equal to the max step magnitude
 	// | _step_queue.getCurrentQueueEndPos() + step | = MAX_STEP_MAGNITUDE
-	// _step_queue.getCurrentQueueEndPos() + (magnitude * relative_end_pos) = MAX_STEP_MAGNITUDE^2
-	// 
-	// step = magnitude * relative_end_pos.unit_vector()
-	// 
-	// magnitude = -2 * (_step_queue.getCurrentQueueEndPos() * relative_end_pos.unit_vector()) + sqrt
+	// 3. The step should be in the direction of the move
+	
 	buffer1.setPos(_step_queue.getCurrentQueueEndPos());
 	buffer1.z = 0.00; // For now we don't consider Z, roll, or pitch
 	buffer1.roll = 0.00;
@@ -292,7 +287,7 @@ double Hexapod::_getMaxStepMagnitudeInDirection(Position direction_vector, _Bool
 }
 
 uint32_t Hexapod::walkSetup(Position relative_end_pos, double speed) {
-
+	Serial.println("walkSetup called");
 	/*
 		For every move we must do:
 			1. [x] Check if move magnitude is 0
@@ -344,12 +339,18 @@ uint32_t Hexapod::walkSetup(Position relative_end_pos, double speed) {
 				// Return to neutral IS needed
 				// Enqueue a return to neutral move to move the legs back to the neutral position with out moving the body
 				// Neutral position is 0,0,0 for X, Y, and Yaw; Z, Roll, and Pitch are unaffected
+				Serial.println("Returning to neutral");
 				buffer0.setPos(_step_queue.getCurrentQueueEndPos());
 				buffer0.x = 0.00;
 				buffer0.y = 0.00;
 				buffer0.yaw = 0.00;
 				walk_time += _step_queue.enqueue(buffer0, speed, StepType::RETURN_TO_NEUTRAL);
 				returned_to_neutral = true;
+			}
+			else {
+				Serial.println("Current queue end pos: " + String(_step_queue.getCurrentQueueEndPos().x) + " " + String(_step_queue.getCurrentQueueEndPos().y) + " " + String(_step_queue.getCurrentQueueEndPos().z) + String(_step_queue.getCurrentQueueEndPos().roll) + " " + String(_step_queue.getCurrentQueueEndPos().pitch) + " " + String(_step_queue.getCurrentQueueEndPos().yaw));
+				Serial.printf("No return to neutral, step magnitude: %f; max_step_magnitude: %f\n", step_magnitude, MAX_STEP_MAGNITUDE);
+				Serial.println("No return to neutral");
 			}
 
 			Position traveled_pos;
@@ -556,10 +557,12 @@ uint8_t Hexapod::walkPerform() {
 		_Bool active_legs[NUM_LEGS];
 		double step_progress = static_cast<double>(millis() - _move_start_time) / (_move_time);
 		if (step_progress <= 1.0) {
-			Position next_pos = (_end_pos - _start_pos) * step_progress + _start_pos;
+			Position next_pos;
 			uint8_t step_group;
+			double adjusted_step_progress;
 			switch(_current_step_type) {
 				case StepType::LINEAR_MOVE:
+					next_pos = (_end_pos - _start_pos) * step_progress + _start_pos;
 					// All legs stay together and move to the same position
 					for (uint8_t i = 0; i < NUM_LEGS; i++) {
 						active_legs[i] = true;
@@ -567,19 +570,77 @@ uint8_t Hexapod::walkPerform() {
 					rapidMove(next_pos, active_legs);
 					break;
 				case StepType::RETURN_TO_NEUTRAL:
-					// For first half of the step move step group 0 to neutral
-					// For second half of the step move step group 1 to neutral
-					step_group = step_progress > 0.5 ? 1 : 0;
+					// For first half of the step move one step group to neutral
+					// For second half of the step move the other step group to neutral
+					// Check if passing 0.5 step progress threshold or just starting, if so figure out which step group to move to neutral
+					
+					if ((_last_step_progress < 0.5 && step_progress >= 0.5) || (_last_step_progress >= 0.5 && step_progress < 0.5)) {
+						// Switch step groups
+						if (step_progress < 0.5) {
+							switch(_last_step_type) {
+								case StepType::GROUP0:
+								case StepType::GROUP1:
+									step_group = static_cast<uint8_t>(_last_step_type);
+									break;
+								default:
+									step_group = 0;
+									break;
+							}
+						}
+						else {
+							// Since return to neutral doesn't move the body, we reset the position when moving switching which legs are moving
+							// to neutral as the opposite set of legs is in the reverse position as the other set of legs
+							_start_pos.x *= -1.0;
+							_start_pos.y *= -1.0;
+							_start_pos.yaw *= -1.0;
+							switch(_last_step_type) {
+								case StepType::GROUP0:
+								case StepType::GROUP1:
+									step_group = static_cast<uint8_t>(_last_step_type) ^ 1;
+									break;
+								default:
+									step_group = 1;
+							}
+						}
+					}
+					else {
+						if (step_progress < 0.5) {
+							switch(_last_step_type) {
+								case StepType::GROUP0:
+								case StepType::GROUP1:
+									step_group = static_cast<uint8_t>(_last_step_type);
+									break;
+								default:
+									step_group = 0;
+									break;
+							}
+						}
+						else {
+							// Since return to neutral doesn't move the body, we reset the position when moving switching which legs are moving
+							// to neutral as the opposite set of legs is in the reverse position as the other set of legs
+							switch(_last_step_type) {
+								case StepType::GROUP0:
+								case StepType::GROUP1:
+									step_group = static_cast<uint8_t>(_last_step_type) ^ 1;
+									break;
+								default:
+									step_group = 1;
+							}
+						}
+					}
+					
 					for (uint8_t i = 0; i < NUM_LEGS / NUM_STEP_GROUPS; i++) {
 						active_legs[_step_groups[step_group][i]] = true;
 						active_legs[_step_groups[(step_group^1)][i]] = false;
 					}
-					next_pos = (_end_pos - _start_pos) * _move_progress * 2.0 + _start_pos; // Move twice as fast so there is time to move set of legs back to neutral
-					next_pos.z -= -16 * step_progress * (step_progress - 0.5) * MAX_STEP_HEIGHT;
-					rapidMove(next_pos, active_legs, false);
+					adjusted_step_progress = step_progress < 0.5 ? 2.0 * step_progress : (step_progress - 0.5) * 2.0;
+					next_pos = (_end_pos - _start_pos) * adjusted_step_progress + _start_pos;
+					next_pos.z -= -4 * adjusted_step_progress * (adjusted_step_progress - 1.0) * MAX_STEP_HEIGHT;
+					rapidMove(next_pos, active_legs, true);
 					break;
 				case StepType::GROUP0:
 				case StepType::GROUP1:
+					next_pos = (_end_pos - _start_pos) * step_progress + _start_pos;
 					step_group = static_cast<uint8_t>(_current_step_type);
 					for (uint8_t i = 0; i < NUM_LEGS / NUM_STEP_GROUPS; i++) {
 						active_legs[_step_groups[step_group][i]] = true;
@@ -599,9 +660,11 @@ uint8_t Hexapod::walkPerform() {
 					break;	
 				case StepType::RAPID_MOVE:
 					rapidMove(_end_pos);
+					break;
 			}
+			_last_step_progress = step_progress;
 			
-			#if true 
+			#if DEBUG_LEVEL >= CALCULATION_LOGGING 
 				Serial.printf("Step progress: %f\n", step_progress);
 				Serial.printf("Current position: x:%f, y:%f, z:%f, roll:%f, pitch:%f, yaw:%f\n",
 				_current_pos.x, _current_pos.y, _current_pos.z, _current_pos.roll, _current_pos.pitch, _current_pos.yaw);
