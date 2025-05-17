@@ -3,6 +3,7 @@
 #include "hexapod.hpp"
 #include <stdbool.h>
 #include "position.hpp"
+#include <ArduinoJson.h>
 
 SerialParser::SerialParser(
     Hexapod &hexapod
@@ -82,24 +83,30 @@ void SerialParser::performPreset(String preset) {
     else {
         Serial.println("ERROR: JSON parser detected input for a preset that is not yet supported: " + String(preset) + "\n"); 
     }
+    JsonDocument ack;
+    ack["MOVE_TIME"] = 750;
+    serializeJson(ack, Serial4);
     return;
 }
 
 void SerialParser::performMovement(String movement) {
     
+    JsonDocument ack;
+    uint32_t move_time = 0;
     if (movement == "RPD") {
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON rapid move parsing success; x, y, z is " + String (x) + " " + String (y) + " " + String (z) + "\nroll, pitch, yaw, speed are " + 
                     String (roll) + " " + String (pitch) + " " + String (yaw) + " " + String(speed) + "\n");
         #endif
         _Hexapod.enqueueRapidMove(_position);
+
     }
     else if (movement == "WLK") {
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON walk setup parsing success; x, y, z is " + String (x) + " " + String (y) + " " + String (z) + "\nroll, pitch, yaw, speed are " + 
                     String (roll) + " " + String (pitch) + " " + String (yaw) + " " + String(speed) + "\n");
         #endif
-        _Hexapod.walkSetup(_position, speed);
+        move_time = _Hexapod.walkSetup(_position, speed);
     }
     //NOTE: if not all 18 positions specified, motors who were not explicitly provided will move to where the hexapod has memory of them being. (What is in the parsers _leg_positions array)
     else if (movement == "MTPS") {
@@ -113,6 +120,7 @@ void SerialParser::performMovement(String movement) {
                 Serial.println("JSON move to pos at speed x18 parsing success.\n");
             #endif
             valid_MTPS = false;
+            move_time = 0; //TODO max move time of all motors
         }
     }
     else if (movement == "TUNE") {
@@ -123,6 +131,7 @@ void SerialParser::performMovement(String movement) {
             #endif
             _Hexapod.moveLegAxisToPos(_tune_leg, _tune_axis, _tune_pos);
         }
+        move_time = 0; //TODO above has no time return
     }
     else if (movement == "3B1") {
         if (_movement_time != 0) {
@@ -133,17 +142,21 @@ void SerialParser::performMovement(String movement) {
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON leg enqueue parsing success.\n");
         #endif
+        move_time = 0; //TODO above has no time return
     }
     else if (movement == "LMS") {
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON linear move setup parsing success; x, y, z is " + String (x) + " " + String (y) + " " + String (z) + "\nroll, pitch, yaw, speed are " + 
                     String (roll) + " " + String (pitch) + " " + String (yaw) + " " + String(speed) + "\n");
         #endif
-        _Hexapod.linearMoveSetup(_position, speed);
+        move_time = _Hexapod.linearMoveSetup(_position, speed);
     }
     else {
         Serial.println("ERROR: JSON parser detected input for a movement that is not yet supported: " + String(movement) + "\n");
     }
+
+    ack["MOVE_TIME"] = move_time;
+    serializeJson(ack, Serial4);
     return;
 }
 
