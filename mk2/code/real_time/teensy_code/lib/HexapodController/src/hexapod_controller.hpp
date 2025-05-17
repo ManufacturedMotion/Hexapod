@@ -1,6 +1,7 @@
 #ifndef HEXACONTROLLER_H
 #define HEXACONTROLLER_H
 
+	#include "log_levels.hpp"
 	#include "config.hpp"
 	#include "axis.hpp"
 	#include "leg.hpp"

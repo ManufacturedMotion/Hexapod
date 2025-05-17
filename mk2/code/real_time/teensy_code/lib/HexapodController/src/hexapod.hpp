@@ -78,6 +78,7 @@
 			VoltageSensor voltageSensor;
 
 		private:
+			double _last_step_progress;
 			double _current_speed = 100.0;
 			StepType _current_step_type;
 			StepType _last_step_type;

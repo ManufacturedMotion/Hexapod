@@ -31,7 +31,7 @@ uint32_t StepQueue::enqueue(Position op_end_pos, double op_speed, StepType op_st
             op_time = double((op_end_pos.magnitude() / op_speed) * 1000.0);
         break;
         case StepType::RETURN_TO_NEUTRAL:
-            op_time = double((_end_pos.magnitude() / op_speed) * 1000.0 * 2.0); //Half speed on return to neutral
+            op_time = double(((op_end_pos - getCurrentQueueEndPos()).magnitude() / op_speed) * 1000.0 * 2.0);
             _end_pos.setPos(op_end_pos);
             state = StepQueueState::NEUTRAL;
         break;

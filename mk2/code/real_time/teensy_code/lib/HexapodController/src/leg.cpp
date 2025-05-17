@@ -7,6 +7,8 @@
 #include <math.h>
 #include "three_by_matrices.hpp"
 #include <Arduino.h>
+#include "log_levels.hpp"
+
 
 double zero_points[NUM_LEGS][NUM_AXES_PER_LEG] = ZERO_POINTS;
 int pwm_pins[NUM_LEGS][NUM_AXES_PER_LEG] = PWM_PINS;

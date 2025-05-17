@@ -21,12 +21,9 @@ Axis::Axis() {
     _max_speed = 5;	
 }
 
-void Axis::disengageServo(){
-    // _servo.detach();
-    analogWriteFrequency(_servoPin, 0);
-    pinMode(_servoPin, INPUT);
-    digitalWrite(_servoPin, LOW);
-    Serial.println("tried to disable things");
+
+void Axis::detach() {
+    _servo.detach();
 }
 
 void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos) {
