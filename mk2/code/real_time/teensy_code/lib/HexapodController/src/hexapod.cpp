@@ -664,7 +664,7 @@ uint8_t Hexapod::walkPerform() {
 			}
 			_last_step_progress = step_progress;
 			
-			#if DEBUG_LEVEL >= CALCULATION_LOGGING 
+			#if LOG_LEVEL >= CALCULATION_LOGGING 
 				Serial.printf("Step progress: %f\n", step_progress);
 				Serial.printf("Current position: x:%f, y:%f, z:%f, roll:%f, pitch:%f, yaw:%f\n",
 				_current_pos.x, _current_pos.y, _current_pos.z, _current_pos.roll, _current_pos.pitch, _current_pos.yaw);
