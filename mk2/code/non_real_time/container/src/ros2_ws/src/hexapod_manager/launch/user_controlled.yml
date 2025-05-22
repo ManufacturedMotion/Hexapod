@@ -17,3 +17,7 @@ launch:
       exec: led_controller
       name: led_controller
 
+  - node:
+      pkg: hexapod_manager
+      exec: display
+      name: display
