@@ -49,7 +49,6 @@ class HexapodTouchscreen(Node):
         msg.buttons = [0] * 12
         msg.buttons[button_index] = 1
         self.publisher.publish(msg)
-        self.get_logger().info(f"Published to /joy topic with button {button_index} pressed")
 
     def run(self):
         while self.running:
