@@ -8,6 +8,7 @@ import threading
 import math
 
 LED_COUNT = 60
+PATTERN_COUNT = 5
 LED_PIN = board.SPI()
 DEBOUNCE_DELAY = 0.5
 DEAD_ZONE = 0.1
@@ -81,7 +82,7 @@ class LEDController(Node):
 
         if len(msg.buttons) > 10 and msg.buttons[10] == 1 and current_time - self.last_button_press_time >= DEBOUNCE_DELAY:
             self.last_button_press_time = current_time
-            self.pattern_index = (self.pattern_index + 1) % 5
+            self.pattern_index = (self.pattern_index + 1) % PATTERN_COUNT
             self.reset_pattern_states()
             self.start_animation()
 
@@ -110,7 +111,7 @@ class LEDController(Node):
         if self.animation_thread and self.animation_thread.is_alive():
             self.animation_thread.join()
 
-        if self.pattern_index < 4:
+        if self.pattern_index < (PATTERN_COUNT - 1):
             self.is_running = True
             self.animation_thread = threading.Thread(target=self.run_animation, daemon=True)
             self.animation_thread.start()
@@ -187,9 +188,9 @@ class LEDController(Node):
             self.pixels[idx] = color
 
         if self.pattern_state == 0:
-            off_indices = list(range(0, LED_COUNT, 2))  # even LEDs off
+            off_indices = list(range(0, LED_COUNT, 2))
         else:
-            off_indices = list(range(1, LED_COUNT, 2))  # odd LEDs off
+            off_indices = list(range(1, LED_COUNT, 2))
 
         for idx in off_indices:
             self.pixels[idx] = OFF
