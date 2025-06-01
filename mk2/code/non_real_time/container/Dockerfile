@@ -2,8 +2,7 @@ FROM ros:iron-ros-base
 USER 0
 
 # Get updates
-RUN \
-apt-get update && \
+RUN apt-get update && \
 apt-get upgrade -y
 
 # Setup python and system dependencies
