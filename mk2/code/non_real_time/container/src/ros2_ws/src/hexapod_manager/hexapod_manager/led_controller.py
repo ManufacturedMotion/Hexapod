@@ -28,7 +28,7 @@ COLOR_KEYS = list(COLORS.keys())
 class LEDController(Node):
     def __init__(self):
         super().__init__('led_controller')
-        self.pixels = neopixel.NeoPixel_SPI(LED_PIN, LED_COUNT, pixel_order=neopixel.GRBW, auto_write=False)
+        self.pixels = neopixel.NeoPixel_SPI(LED_PIN, LED_COUNT, pixel_order=neopixel_spi.GRB, auto_write=False)
 
         self.subscription = self.create_subscription(Joy, '/joy', self.joy_callback, 10)
 

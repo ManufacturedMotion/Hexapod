@@ -42,6 +42,7 @@
 			Position operator=(const Position& pos);
 			double magnitude();
 			double scaledMagnitude();
+			void usbSerialize();
 		private:
 	};
   	Position getPosFromCommand(String command);
