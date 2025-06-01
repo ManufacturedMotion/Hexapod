@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "position.hpp"
 #include <ArduinoJson.h>
+#include "log_levels.hpp"
 
 SerialParser::SerialParser(
     Hexapod &hexapod
@@ -107,6 +108,14 @@ void SerialParser::performMovement(String movement) {
                     String (roll) + " " + String (pitch) + " " + String (yaw) + " " + String(speed) + "\n");
         #endif
         move_time = _Hexapod.walkSetup(_position, speed);
+    }
+    else if (movement == "VSET") {
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON VSET parsing successx, y, z is " + String (x) + " " + String (y) + " " + String (z) + "\nroll, pitch, yaw, speed are " + 
+                    String (roll) + " " + String (pitch) + " " + String (yaw) + " " + String(speed) + "\n");
+        #endif
+        _Hexapod.setWalkVelocity(_position);
+        return;
     }
     //NOTE: if not all 18 positions specified, motors who were not explicitly provided will move to where the hexapod has memory of them being. (What is in the parsers _leg_positions array)
     else if (movement == "MTPS") {

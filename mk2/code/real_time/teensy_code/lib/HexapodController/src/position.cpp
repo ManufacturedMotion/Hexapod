@@ -224,3 +224,18 @@ void Position::clear() {
     pitch = 0.00;
     yaw = 0.00;
 }
+
+void Position::usbSerialize() {
+    Serial.print("x: ");
+    Serial.print(x);
+    Serial.print(" y: ");
+    Serial.print(y);
+    Serial.print(" z: ");
+    Serial.print(z);
+    Serial.print(" R: ");
+    Serial.print(roll);
+    Serial.print(" P: ");
+    Serial.print(pitch);
+    Serial.print(" W: ");
+    Serial.println(yaw);
+}

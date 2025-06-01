@@ -71,10 +71,10 @@
 			void legEnqueue(uint8_t leg, ThreeByOne op_end_pos, double op_speed, _Bool op_relative, uint32_t op_wait_time_ms = 0);
 			void legEnqueue(uint8_t leg, ThreeByOne op_end_pos, uint32_t op_time, _Bool op_relative, uint32_t op_wait_time_ms = 0);
 			void startUp();
-			
-			
-
+			void setWalkVelocity(Position velocity);
 			VoltageSensor voltageSensor;
+			uint32_t enqueueMaxStepInDirection(Position direction_vector);
+
 
 		private:
 			double _last_step_progress;
@@ -108,6 +108,7 @@
 			Position _end_pos;
 			Position _start_pos;
 			Position _current_pos;
+			Position _walk_velocity;
 			double _move_time;
 			OperationQueue _leg_queues[NUM_LEGS];
 			ThreeByOne _current_step_permutation[NUM_STEP_GROUPS];
@@ -116,6 +117,7 @@
 			StepType _next_step_type = StepType::GROUP0;
 			void setMoveLegs(StepType step_type, _Bool * active_legs[NUM_LEGS]);
 			double _getMaxStepMagnitudeInDirection(Position direction_vector, _Bool flipped_step_group);
+
 };
 
 #endif
