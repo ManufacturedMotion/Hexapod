@@ -224,6 +224,8 @@ void Hexapod::_moveLegs() {
 	}
 }
 
+
+
 double Hexapod::get_max_step_magnitude() {
 	return _current_step_permutation[_next_step_group % 2].magnitude() + MAX_STEP_MAGNITUDE;
 }
@@ -256,9 +258,8 @@ double Hexapod::_getMaxStepMagnitudeInDirection(Position direction_vector, _Bool
 	if (flipped_step_group) {
 		buffer1 *= -1.0; // If the step group has been flipped, then the previous step was in the opposite direction
 	}
-	// buffer1.yaw *= ROTATION_MAGNITUDE_SCALE; // Scale yaw to have a similar range as x and y
 	
-	buffer2 = direction_vector;
+	buffer2 = direction_vector.unitVector();
 	buffer2.z = 0.00; // For now we don't consider Z, roll, or pitch
 	buffer2.roll = 0.00;
 	buffer2.pitch = 0.00;
@@ -286,8 +287,47 @@ double Hexapod::_getMaxStepMagnitudeInDirection(Position direction_vector, _Bool
 	return step_magnitude;
 }
 
+void Hexapod::setWalkVelocity(Position velocity) {
+	_walk_velocity.setPos(velocity);
+}
+
+uint32_t Hexapod::enqueueMaxStepInDirection(Position direction_vector) {
+	direction_vector.z = 0.00; // For now we don't consider Z, roll, or pitch
+	direction_vector.roll = 0.00;
+	direction_vector.pitch = 0.00;
+	if (direction_vector.magnitude() < 0.001) {
+		return 0; // No step to take
+	}
+
+	double speed = _walk_velocity.magnitude();
+	uint32_t walk_time = 0;
+	double max_step_magnitude_with_flip = _getMaxStepMagnitudeInDirection(direction_vector, true);
+	double max_step_magnitude_without_flip = _getMaxStepMagnitudeInDirection(direction_vector, false);
+	double max_step_magnitude = max_step_magnitude_without_flip;
+	if (max_step_magnitude_with_flip > max_step_magnitude_without_flip) {
+		_next_step_type = static_cast<decltype(_next_step_type)>(static_cast<uint8_t>(_next_step_type) ^ 1);
+		max_step_magnitude = max_step_magnitude_with_flip;
+	}
+
+	if (max_step_magnitude < MAX_STEP_MAGNITUDE * 1.50) {
+		Position buffer0;
+		buffer0.setPos(_step_queue.getCurrentQueueEndPos());
+		buffer0.x = 0.00;
+		buffer0.y = 0.00;
+		buffer0.yaw = 0.00;
+		walk_time += _step_queue.enqueue(buffer0, speed, StepType::RETURN_TO_NEUTRAL);
+		// Serial.println("Returning to neutral before step");
+	}
+	
+	Position step_vector = direction_vector.unitVector() * max_step_magnitude;
+	walk_time += _step_queue.enqueue(step_vector, speed, _next_step_type);
+	// Serial.print("Enqueued step: ");
+	// step_vector.usbSerialize();
+	// Serial.printf("Step group: %d\n", _next_step_type);
+	return walk_time;
+}
+
 uint32_t Hexapod::walkSetup(Position relative_end_pos, double speed) {
-	Serial.println("walkSetup called");
 	/*
 		For every move we must do:
 			1. [x] Check if move magnitude is 0
@@ -339,18 +379,12 @@ uint32_t Hexapod::walkSetup(Position relative_end_pos, double speed) {
 				// Return to neutral IS needed
 				// Enqueue a return to neutral move to move the legs back to the neutral position with out moving the body
 				// Neutral position is 0,0,0 for X, Y, and Yaw; Z, Roll, and Pitch are unaffected
-				Serial.println("Returning to neutral");
 				buffer0.setPos(_step_queue.getCurrentQueueEndPos());
 				buffer0.x = 0.00;
 				buffer0.y = 0.00;
 				buffer0.yaw = 0.00;
 				walk_time += _step_queue.enqueue(buffer0, speed, StepType::RETURN_TO_NEUTRAL);
 				returned_to_neutral = true;
-			}
-			else {
-				Serial.println("Current queue end pos: " + String(_step_queue.getCurrentQueueEndPos().x) + " " + String(_step_queue.getCurrentQueueEndPos().y) + " " + String(_step_queue.getCurrentQueueEndPos().z) + String(_step_queue.getCurrentQueueEndPos().roll) + " " + String(_step_queue.getCurrentQueueEndPos().pitch) + " " + String(_step_queue.getCurrentQueueEndPos().yaw));
-				Serial.printf("No return to neutral, step magnitude: %f; max_step_magnitude: %f\n", step_magnitude, MAX_STEP_MAGNITUDE);
-				Serial.println("No return to neutral");
 			}
 
 			Position traveled_pos;
@@ -362,10 +396,12 @@ uint32_t Hexapod::walkSetup(Position relative_end_pos, double speed) {
 			if (returned_to_neutral) {
 				step_magnitude = _getMaxStepMagnitudeInDirection(move_direction, false);
 			}
-			// Adjust step group if the first step should be flipped
-			if (flip_first_step) {
-				// Change step group for the first step
-				_next_step_type = static_cast<decltype(_next_step_type)>(static_cast<uint8_t>(_next_step_type) ^ 1);
+			else {
+				// Adjust step group if the first step should be flipped
+				if (flip_first_step) {
+					// Change step group for the first step
+					_next_step_type = static_cast<decltype(_next_step_type)>(static_cast<uint8_t>(_next_step_type) ^ 1);
+				}
 			}
 
 			// Check if move can be completed outright
@@ -493,7 +529,7 @@ uint8_t Hexapod::stepSetup(ThreeByOne relative_end_coord, double speed) {
 	_neutral_position_flag = false;
 	double linear_path_length = relative_end_coord.magnitude();
 	if (linear_path_length > get_max_step_magnitude()) {
-		Serial.println("Step size too big, try again with a smaller step");
+		// Serial.println("Step size too big, try again with a smaller step");
 		return 255; //Error code for too big step size
 	}
 	uint8_t num_step_segments = 5;
@@ -677,7 +713,8 @@ uint8_t Hexapod::walkPerform() {
 	}
 	else {
 		if (_step_queue.isEmpty()) {
-			return 0;
+			// Nothing will be done if _walk_velocity magnitude is 0, otherwise a new step will be enqueued
+			enqueueMaxStepInDirection(_walk_velocity);
 		}
 		else {
 			_last_step_type = _current_step_type;
