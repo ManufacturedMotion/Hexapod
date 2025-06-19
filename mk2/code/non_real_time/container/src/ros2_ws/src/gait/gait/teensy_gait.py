@@ -53,35 +53,48 @@ class TeensyGait(Node):
         self.drift_factor = 0.25
 
     def parseCmdVel(self, msg: Twist):
+        # Only allow one dominant direction for the left joystick
+        lx = msg.linear.x
+        ly = msg.linear.y
 
-        if (abs(msg.linear.x) <= self.drift_factor and abs(msg.linear.y) <= self.drift_factor and abs(msg.linear.z) <= self.drift_factor and abs(msg.angular.x) <= self.drift_factor and abs(msg.angular.y) <= self.drift_factor and abs(msg.angular.z) <= self.drift_factor):
+        # Zero out the smaller component
+        if abs(lx) > abs(ly):
+            ly = 0.0
+        else:
+            lx = 0.0
+
+        if (abs(lx) <= self.drift_factor and abs(ly) <= self.drift_factor and
+            abs(msg.linear.z) <= self.drift_factor and
+            abs(msg.angular.x) <= self.drift_factor and
+            abs(msg.angular.y) <= self.drift_factor and
+            abs(msg.angular.z) <= self.drift_factor):
             step_cmd = {
-                    "MV": "VSET",
-                    "X": 0.0,
-                    "Y": 0.0,
-                    "Z": 0.0,
-                    "ROLL": 0.0,
-                    "PTCH": 0.0,
-                    "YAW": 0.0,
-                }
+                "MV": "VSET",
+                "X": 0.0,
+                "Y": 0.0,
+                "Z": 0.0,
+                "ROLL": 0.0,
+                "PTCH": 0.0,
+                "YAW": 0.0,
+            }
         else:
             self.pos['yaw'] = msg.angular.z * self.yaw_scale_fact
-            self.pos['x'] = (msg.linear.y * self.walk_scale_fact)
-            self.pos['y'] = (msg.linear.x * self.walk_scale_fact)
+            self.pos['x'] = (lx * self.walk_scale_fact)
+            self.pos['y'] = (ly * self.walk_scale_fact)
 
             self.pos['z'] += msg.linear.z * self.z_scale_fact
             self.pos['roll'] += msg.angular.x * self.roll_scale_fact
             self.pos['pitch'] += msg.angular.y * self.pitch_scale_fact
             
             step_cmd = {
-                    "MV": "VSET",
-                    "X": round(self.pos['x'], 1),
-                    "Y": round(self.pos['y'], 1),
-                    "Z": 0.0,
-                    "ROLL": 0.0,
-                    "PTCH": 0.0,
-                    "YAW": round(self.pos['yaw'], 1),
-                }
+                "MV": "VSET",
+                "X": round(self.pos['x'], 1),
+                "Y": round(self.pos['y'], 1),
+                "Z": 0.0,
+                "ROLL": 0.0,
+                "PTCH": 0.0,
+                "YAW": round(self.pos['yaw'], 1),
+            }
         if step_cmd != self.old_step_cmd:
             self.old_step_cmd = step_cmd
             command = self.prepCommand(step_cmd)

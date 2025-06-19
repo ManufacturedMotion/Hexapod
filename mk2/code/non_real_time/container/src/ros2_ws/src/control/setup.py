@@ -24,6 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'joy_priority_node = control.joy_priority_node:main',
         ],
     },
 )
