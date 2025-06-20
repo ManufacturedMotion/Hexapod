@@ -1,7 +1,7 @@
 # Custom node for xbox controller as default config does not allow
 # both joysticks to both control linear.y
-
 import math
+import time
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
@@ -12,11 +12,16 @@ class XboxJoyNode(Node):
         super().__init__('xbox_joy_config')
         self.joy_sub = self.create_subscription(Joy, '/joy', self.joy_callback, 10)
         self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
+        self.last_twist = Twist()
+        self.last_joy_time = self.get_clock().now()
+        self.timeout_sec = 0.5
+        self.poll_rate = 20.0
+        self.poll_timer = self.create_timer(1.0 / self.poll_rate, self.poll_callback)
 
     def joy_callback(self, msg):
         left_y = msg.axes[1]
         left_x = msg.axes[0]
-        right_x = -msg.axes[2]
+        right_x = msg.axes[2]
         right_y = msg.axes[3]
         dpad_horiz = msg.axes[6]
         dpad_vert = msg.axes[7]
@@ -51,18 +56,30 @@ class XboxJoyNode(Node):
         lin_y, ang_z = 0.0, 0.0
         if abs(left_y) > threshold or abs(left_x) > threshold:
             if abs(left_y) > abs(left_x):
-                lin_y, ang_z = math.copysign(1.0, left_y), 0.0
+                lin_y = math.copysign(1.0, left_y)
+                ang_z = 0.0
             else:
-                lin_y, ang_z = 0.0, math.copysign(1.0, left_x)
+                ang_z = math.copysign(1.0, left_x)
+                lin_y = 0.0
 
         twist = Twist()
         twist.linear.x = discrete_x
         twist.linear.y = discrete_y if mag > threshold else lin_y
         twist.angular.z = ang_z
-        twist.angular.y = dpad_horiz   # D-Pad horizontal (pitch)
-        twist.angular.x = dpad_vert    # D-Pad vertical (roll)
+        twist.angular.y = dpad_horiz
+        twist.angular.x = dpad_vert
 
-        self.cmd_pub.publish(twist)
+        self.last_twist = twist
+        self.last_joy_time = self.get_clock().now()
+
+    def poll_callback(self):
+        # If timeout, publish zero Twist
+        now = self.get_clock().now()
+        if (now - self.last_joy_time).nanoseconds * 1e-9 > self.timeout_sec:
+            zero_twist = Twist()
+            self.cmd_pub.publish(zero_twist)
+        else:
+            self.cmd_pub.publish(self.last_twist)
 
 def main(args=None):
     rclpy.init(args=args)
