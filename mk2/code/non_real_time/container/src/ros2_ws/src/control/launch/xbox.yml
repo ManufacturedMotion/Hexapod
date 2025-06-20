@@ -5,4 +5,4 @@ launch:
 
   - node:
       pkg: control
-      exec: joy_priority_node
+      exec: xbox_joy_config

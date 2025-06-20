@@ -1,0 +1,75 @@
+# Custom node for xbox controller as default config does not allow
+# both joysticks to both control linear.y
+
+import math
+import rclpy
+from rclpy.node import Node
+from sensor_msgs.msg import Joy
+from geometry_msgs.msg import Twist
+
+class XboxJoyNode(Node):
+    def __init__(self):
+        super().__init__('xbox_joy_config')
+        self.joy_sub = self.create_subscription(Joy, '/joy', self.joy_callback, 10)
+        self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
+
+    def joy_callback(self, msg):
+        left_y = msg.axes[1]
+        left_x = msg.axes[0]
+        right_x = -msg.axes[2]
+        right_y = msg.axes[3]
+        dpad_horiz = msg.axes[6]
+        dpad_vert = msg.axes[7]
+
+        threshold = 0.3
+
+        # --- RIGHT STICK: 8-way snap, only 0, ±0.5, ±1 ---
+        mag = math.hypot(right_x, right_y)
+        discrete_x, discrete_y = 0.0, 0.0
+        if mag > threshold:
+            angle = math.atan2(right_y, right_x)
+            direction = int(((math.degrees(angle) + 360 + 22.5) % 360) // 45)
+            match direction:
+                case 0:      # Right
+                    discrete_x, discrete_y = 1.0, 0.0
+                case 1:      # Up-Right
+                    discrete_x, discrete_y = 0.5, 0.5
+                case 2:      # Up
+                    discrete_x, discrete_y = 0.0, 1.0
+                case 3:      # Up-Left
+                    discrete_x, discrete_y = -0.5, 0.5
+                case 4:      # Left
+                    discrete_x, discrete_y = -1.0, 0.0
+                case 5:      # Down-Left
+                    discrete_x, discrete_y = -0.5, -0.5
+                case 6:      # Down
+                    discrete_x, discrete_y = 0.0, -1.0
+                case 7:      # Down-Right
+                    discrete_x, discrete_y = 0.5, -0.5
+
+        # --- LEFT STICK: Only one dominant direction, never both ---
+        lin_y, ang_z = 0.0, 0.0
+        if abs(left_y) > threshold or abs(left_x) > threshold:
+            if abs(left_y) > abs(left_x):
+                lin_y, ang_z = math.copysign(1.0, left_y), 0.0
+            else:
+                lin_y, ang_z = 0.0, math.copysign(1.0, left_x)
+
+        twist = Twist()
+        twist.linear.x = discrete_x
+        twist.linear.y = discrete_y if mag > threshold else lin_y
+        twist.angular.z = ang_z
+        twist.angular.y = dpad_horiz   # D-Pad horizontal (pitch)
+        twist.angular.x = dpad_vert    # D-Pad vertical (roll)
+
+        self.cmd_pub.publish(twist)
+
+def main(args=None):
+    rclpy.init(args=args)
+    node = XboxJoyNode()
+    rclpy.spin(node)
+    node.destroy_node()
+    rclpy.shutdown()
+
+if __name__ == '__main__':
+    main()
