@@ -29,9 +29,9 @@ class XboxJoyNode(Node):
         threshold = 0.3
 
         # --- RIGHT STICK: 8-way snap, only 0, ±0.5, ±1 ---
-        mag = math.hypot(right_x, right_y)
+        mag_right = math.hypot(right_x, right_y)
         discrete_x, discrete_y = 0.0, 0.0
-        if mag > threshold:
+        if mag_right > threshold:
             angle = math.atan2(right_y, right_x)
             direction = int(((math.degrees(angle) + 360 + 22.5) % 360) // 45)
             match direction:
@@ -52,7 +52,11 @@ class XboxJoyNode(Node):
                 case 7:      # Down-Right
                     discrete_x, discrete_y = 0.5, -0.5
 
+            discrete_x *= mag_right
+            discrete_y *= mag_right
+
         # --- LEFT STICK: Only one dominant direction, never both ---
+        mag_left = math.hypot(left_x, left_y)
         lin_y, ang_z = 0.0, 0.0
         if abs(left_y) > threshold or abs(left_x) > threshold:
             if abs(left_y) > abs(left_x):
@@ -61,10 +65,13 @@ class XboxJoyNode(Node):
             else:
                 ang_z = math.copysign(1.0, left_x)
                 lin_y = 0.0
+        
+            ang_z *= mag_left
+            lin_y *= mag_left
 
         twist = Twist()
         twist.linear.x = discrete_x
-        twist.linear.y = discrete_y if mag > threshold else lin_y
+        twist.linear.y = discrete_y if mag_right > threshold else lin_y
         twist.angular.z = ang_z
         twist.angular.y = dpad_horiz
         twist.angular.x = dpad_vert
