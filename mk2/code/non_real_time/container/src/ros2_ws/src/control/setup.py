@@ -24,6 +24,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'xbox_joy_config = control.xbox_joy_config:main',
         ],
     },
 )

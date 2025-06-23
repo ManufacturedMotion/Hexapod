@@ -53,7 +53,7 @@ class TeensyGait(Node):
         self.drift_factor = 0.25
 
     def parseCmdVel(self, msg: Twist):
-
+        
         if (abs(msg.linear.x) <= self.drift_factor and abs(msg.linear.y) <= self.drift_factor and abs(msg.linear.z) <= self.drift_factor and abs(msg.angular.x) <= self.drift_factor and abs(msg.angular.y) <= self.drift_factor and abs(msg.angular.z) <= self.drift_factor):
             step_cmd = {
                     "MV": "VSET",
