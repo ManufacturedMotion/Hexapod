@@ -13,7 +13,8 @@ setup(
             ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),
         # Ensure launch files are installed
-        (os.path.join('share', package_name), glob('launch/**'))
+        (os.path.join('share', package_name), glob('launch/**')),
+        ('share/hexapod_manager/resource', ['resource/battery_table.json'])
     ],
     install_requires=['setuptools'],
     zip_safe=True,
