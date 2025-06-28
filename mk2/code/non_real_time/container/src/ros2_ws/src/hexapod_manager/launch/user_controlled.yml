@@ -21,3 +21,8 @@ launch:
       pkg: hexapod_manager
       exec: display
       name: display
+
+  - node:
+      pkg: hexapod_manager
+      exec: status_reporter
+      name: status_reporter

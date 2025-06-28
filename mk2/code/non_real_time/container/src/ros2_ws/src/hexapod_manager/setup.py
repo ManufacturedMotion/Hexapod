@@ -26,6 +26,7 @@ setup(
         'console_scripts': [
             'led_controller = hexapod_manager.led_controller:main',
             'display = hexapod_manager.display:main',
+            'status_reporter = hexapod_manager.status_reporter:main',
         ],
     },
 )
