@@ -26,6 +26,8 @@
 	#define YAW_MAX_NO_STEP_MAGNITUDE (M_PI / 32.0)
 	#define MAX_STEP_HEIGHT 50.0
 
+	#define MAX_STEP_SPEED 400.0
+
 	class Hexapod {
 		public:
 			Hexapod();
@@ -73,7 +75,7 @@
 			void startUp();
 			void setWalkVelocity(Position velocity);
 			VoltageSensor voltageSensor;
-			uint32_t enqueueMaxStepInDirection(Position direction_vector);
+			uint32_t enqueueMaxStepInDirection(Position direction_vector, double scalar);
 
 
 		private:
