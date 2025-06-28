@@ -26,7 +26,7 @@ class HexapodTouchscreen(Node):
         
         self.status_text = "Waiting for voltage update..."
         self.battery_txt_color = (255, 255, 255)
-        self.create_subscription(String, 'hexapod_status', self.status_callback, 10)
+        self.create_subscription(String, 'hexapod_status', self.status_callback, 1)
 
         self.scroll_text = "Manufactured Motion"
         self.scroll_pos = self.screen.get_width()
@@ -59,7 +59,9 @@ class HexapodTouchscreen(Node):
         self.publisher.publish(msg)
 
     def run(self):
+        clock = pygame.time.Clock()
         while self.running:
+            rclpy.spin_once(self, timeout_sec=0)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
@@ -76,12 +78,14 @@ class HexapodTouchscreen(Node):
             self.screen.fill((0, 0, 0))
             self.draw_buttons()
             pygame.display.flip()
+            clock.tick(30)
 
         pygame.quit()
 
     def status_callback(self, msg):
         self.status_text = msg.data
-        voltage_percentage = self.status_text.split(":")[1].strip()
+        percent_str = self.status_text.split(":")[1].strip().replace('%', '')
+        voltage_percent = int(percent_str)
         if voltage_percentage > 20:
             self.battery_txt_color = (0, 255, 0)
         else:
