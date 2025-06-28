@@ -2,6 +2,7 @@ import pygame
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
+from std_msgs.msg import String
 
 class HexapodTouchscreen(Node):
     def __init__(self):
@@ -23,6 +24,10 @@ class HexapodTouchscreen(Node):
         self.mode_button_rect = pygame.Rect((screen_width // 2 - button_width - 20, screen_height // 2 - button_height // 2), (button_width, button_height))
         self.color_button_rect = pygame.Rect((screen_width // 2 + 20, screen_height // 2 - button_height // 2), (button_width, button_height))
         
+        self.status_text = "Waiting for voltage update..."
+        self.battery_txt_color = (255, 255, 255)
+        self.create_subscription(String, 'hexapod_status', self.status_callback, 10)
+
         self.scroll_text = "Manufactured Motion"
         self.scroll_pos = self.screen.get_width()
         self.running = True
@@ -43,6 +48,9 @@ class HexapodTouchscreen(Node):
 
         scroll_text_surface = self.scroll_font.render(self.scroll_text, True, (255, 255, 255))
         self.screen.blit(scroll_text_surface, (self.scroll_pos, self.screen.get_height() - 50))
+
+        battery_txt_surface = self.font.render(self.status_text, True, self.battery_txt_color)
+        self.screen.blit(battery_txt_surface, (self.screen.get_width() // 2 - battery_txt_surface.get_width() // 2, self.screen.get_height() // 2 + 150))
 
     def send_joy_message(self, button_index):
         msg = Joy()
@@ -71,6 +79,14 @@ class HexapodTouchscreen(Node):
 
         pygame.quit()
 
+    def status_callback(self, msg):
+        self.status_text = msg.data
+        voltage_percentage = self.status_text.split(":")[1].strip()
+        if voltage_percentage > 20:
+            self.battery_txt_color = (0, 255, 0)
+        else:
+            self.battery_txt_color = (255, 0, 0)
+        
 
 def main(args=None):
     rclpy.init(args=args)
