@@ -7,7 +7,6 @@
 #include <math.h>
 #include "three_by_matrices.hpp"
 #include <Arduino.h>
-#include "voltage_monitor.hpp"
 #include "log_levels.hpp"
 
 Hexapod::Hexapod() 
@@ -16,9 +15,6 @@ Hexapod::Hexapod()
         legs[i].initializeAxes(i);
 		_leg_queues[i].setLeg(&legs[i]);
     }
-
-	voltageSensor = VoltageSensor();
-
 }
 
 void Hexapod::startUp() {

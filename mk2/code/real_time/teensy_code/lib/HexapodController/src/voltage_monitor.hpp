@@ -4,32 +4,25 @@
 #include <ArduinoJson.h>
 
 #define VSENSE_PIN 38 
-#define VSENSE_FACTOR 0.016113 
+#define VSENSE_FACTOR 0.01612903225 // 5.0 * (3.3 / 1023.0)
 
 #ifndef VOLT_SENSE
 #define VOLT_SENSE
 
-    #define NUM_MEASUREMENTS 7
+    #define NUM_MEASUREMENTS 10
 
     class VoltageSensor {
         public:
-            VoltageSensor();
-            void checkVoltage();
-            _Bool canRead();
-            float takeReading();
-            _Bool canSend(float voltage);
-            float getMode(float raw_vdds[], const uint8_t num_measurements);
-            JsonDocument json_voltage;
-            
+            VoltageSensor(uint8_t sense_pin=VSENSE_PIN, double voltage_divider_factor=VSENSE_FACTOR);
+            double filteredRead();
+            double directRead();
+
         private:
-            uint16_t _measure_interval = 0;
-            uint16_t _report_interval = 0;
-            float _change_threshold = 0;
-            uint32_t _last_measure_time = 0;
-            float _last_reported_vdd = 0;
-            float _current_vdd = 0;
-            float _last_raw_vdd = 0;
-            static uint32_t _voltage_sensor_timer;
+            uint32_t _last_read_time = 0;
+            double _voltage = -1.0; // Initialize to -1.0 to indicate uninitialized
+            uint8_t _sense_pin;
+            double _voltage_divider_factor;
+            double round2(double value);
     };
 
 #endif
