@@ -46,20 +46,15 @@ void Hexapod::moveToZeros() {
 } 
 
 void Hexapod::sit() {
-	for (uint8_t i = 0; i < NUM_LEGS; i++) {
-		//slow speed to not slam into the ground
-		legs[i].axes[0].moveToPosAtSpeed(0, 2);
-		legs[i].axes[1].moveToPosAtSpeed(-2, 2);
-		legs[i].axes[2].moveToPosAtSpeed(3, 2);
-	}
+	Position sit_pos;
+	sit_pos.set(0.0, 0.0, 75.0, 0.0, 0.0, 0.0);
+	enqueueRapidMove(sit_pos);
 }
             
 void Hexapod::stand() {
-	for (uint8_t i = 0; i < NUM_LEGS; i++) {
-		legs[i].axes[0].moveToPos(0);
-		legs[i].axes[1].moveToPos(1);
-		legs[i].axes[2].moveToPos(0.75);
-	}
+	Position stand_pos;
+	stand_pos.set(0.0, 0.0, 150.0, 0.0, 0.0, 0.0);
+	enqueueRapidMove(stand_pos);
 }
 
 void Hexapod::rapidMove(double x, double y, double z, double roll, double pitch, double yaw) {
