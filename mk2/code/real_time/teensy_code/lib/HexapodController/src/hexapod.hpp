@@ -72,7 +72,6 @@
 			void legEnqueue(uint8_t leg, ThreeByOne op_end_pos, uint32_t op_time, _Bool op_relative, uint32_t op_wait_time_ms = 0);
 			void startUp();
 			void setWalkVelocity(Position velocity);
-			VoltageSensor voltageSensor;
 			uint32_t enqueueMaxStepInDirection(Position direction_vector);
 
 
