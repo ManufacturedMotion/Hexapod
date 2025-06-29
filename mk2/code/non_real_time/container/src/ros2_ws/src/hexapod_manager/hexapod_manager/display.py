@@ -1,7 +1,9 @@
 import pygame
 import rclpy
+import threading
 from rclpy.node import Node
 from sensor_msgs.msg import Joy
+from std_msgs.msg import String
 
 class HexapodTouchscreen(Node):
     def __init__(self):
@@ -23,6 +25,12 @@ class HexapodTouchscreen(Node):
         self.mode_button_rect = pygame.Rect((screen_width // 2 - button_width - 20, screen_height // 2 - button_height // 2), (button_width, button_height))
         self.color_button_rect = pygame.Rect((screen_width // 2 + 20, screen_height // 2 - button_height // 2), (button_width, button_height))
         
+        self.status_text = "Waiting for voltage update..."
+        self.battery_txt_color = (255, 255, 255)
+        self.create_subscription(String, 'hexapod_status', self.status_callback, 1)
+        self.spin_thread = threading.Thread(target=rclpy.spin, args=(self,), daemon=True)
+        self.spin_thread.start()
+
         self.scroll_text = "Manufactured Motion"
         self.scroll_pos = self.screen.get_width()
         self.running = True
@@ -44,6 +52,9 @@ class HexapodTouchscreen(Node):
         scroll_text_surface = self.scroll_font.render(self.scroll_text, True, (255, 255, 255))
         self.screen.blit(scroll_text_surface, (self.scroll_pos, self.screen.get_height() - 50))
 
+        battery_txt_surface = self.font.render(self.status_text, True, self.battery_txt_color)
+        self.screen.blit(battery_txt_surface, (self.screen.get_width() // 2 - battery_txt_surface.get_width() // 2, self.screen.get_height() // 2 + 150))
+
     def send_joy_message(self, button_index):
         msg = Joy()
         msg.buttons = [0] * 12
@@ -51,6 +62,7 @@ class HexapodTouchscreen(Node):
         self.publisher.publish(msg)
 
     def run(self):
+        clock = pygame.time.Clock()
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -71,6 +83,16 @@ class HexapodTouchscreen(Node):
 
         pygame.quit()
 
+    def status_callback(self, msg):
+        self.status_text = msg.data
+        percent_str = self.status_text.split(":")[1].strip().replace('%', '')
+        voltage_percent = int(percent_str)
+        self.get_logger().info(f"got msg, {self.status_text}")
+        if voltage_percent > 20:
+            self.battery_txt_color = (0, 255, 0)
+        else:
+            self.battery_txt_color = (255, 0, 0)
+        
 
 def main(args=None):
     rclpy.init(args=args)
