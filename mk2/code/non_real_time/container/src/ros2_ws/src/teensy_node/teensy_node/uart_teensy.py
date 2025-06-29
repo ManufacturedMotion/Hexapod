@@ -7,7 +7,7 @@ import serial
 name = "TeensyNode"
 teensy_port = "/dev/ttyAMA0" 
 teensy_baudrate = 250000
-serial_checking_period = 0.01
+serial_checking_period = 0.1
 
 class TeensyNode(Node):
 
