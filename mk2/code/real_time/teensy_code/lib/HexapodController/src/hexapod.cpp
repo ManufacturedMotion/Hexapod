@@ -42,20 +42,15 @@ void Hexapod::moveToZeros() {
 } 
 
 void Hexapod::sit() {
-	for (uint8_t i = 0; i < NUM_LEGS; i++) {
-		//slow speed to not slam into the ground
-		legs[i].axes[0].moveToPosAtSpeed(0, 2);
-		legs[i].axes[1].moveToPosAtSpeed(-2, 2);
-		legs[i].axes[2].moveToPosAtSpeed(3, 2);
-	}
+	Position sit_pos;
+	sit_pos.set(0.0, 0.0, 75.0, 0.0, 0.0, 0.0);
+	enqueueRapidMove(sit_pos);
 }
             
 void Hexapod::stand() {
-	for (uint8_t i = 0; i < NUM_LEGS; i++) {
-		legs[i].axes[0].moveToPos(0);
-		legs[i].axes[1].moveToPos(1);
-		legs[i].axes[2].moveToPos(0.75);
-	}
+	Position stand_pos;
+	stand_pos.set(0.0, 0.0, 150.0, 0.0, 0.0, 0.0);
+	enqueueRapidMove(stand_pos);
 }
 
 void Hexapod::rapidMove(double x, double y, double z, double roll, double pitch, double yaw) {
@@ -287,7 +282,7 @@ void Hexapod::setWalkVelocity(Position velocity) {
 	_walk_velocity.setPos(velocity);
 }
 
-uint32_t Hexapod::enqueueMaxStepInDirection(Position direction_vector) {
+uint32_t Hexapod::enqueueMaxStepInDirection(Position direction_vector, double scalar) {
 	direction_vector.z = 0.00; // For now we don't consider Z, roll, or pitch
 	direction_vector.roll = 0.00;
 	direction_vector.pitch = 0.00;
@@ -305,7 +300,7 @@ uint32_t Hexapod::enqueueMaxStepInDirection(Position direction_vector) {
 		max_step_magnitude = max_step_magnitude_with_flip;
 	}
 
-	if (max_step_magnitude < MAX_STEP_MAGNITUDE * 1.50) {
+	if (max_step_magnitude < MAX_STEP_MAGNITUDE) {
 		Position buffer0;
 		buffer0.setPos(_step_queue.getCurrentQueueEndPos());
 		buffer0.x = 0.00;
@@ -316,7 +311,7 @@ uint32_t Hexapod::enqueueMaxStepInDirection(Position direction_vector) {
 	}
 	
 	Position step_vector = direction_vector.unitVector() * max_step_magnitude;
-	walk_time += _step_queue.enqueue(step_vector, speed, _next_step_type);
+	walk_time += _step_queue.enqueue(step_vector * fabs(scalar), speed, _next_step_type);
 	// Serial.print("Enqueued step: ");
 	// step_vector.usbSerialize();
 	// Serial.printf("Step group: %d\n", _next_step_type);
@@ -710,7 +705,7 @@ uint8_t Hexapod::walkPerform() {
 	else {
 		if (_step_queue.isEmpty()) {
 			// Nothing will be done if _walk_velocity magnitude is 0, otherwise a new step will be enqueued
-			enqueueMaxStepInDirection(_walk_velocity);
+			enqueueMaxStepInDirection(_walk_velocity, max(fabs(_walk_velocity.magnitude() / MAX_STEP_SPEED), 0.25));
 		}
 		else {
 			_last_step_type = _current_step_type;
