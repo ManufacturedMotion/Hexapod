@@ -21,13 +21,8 @@ Axis::Axis() {
     _max_speed = 5;	
 }
 
-void Axis::detach() {
-    _servo.detach();
-}
-
 void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos) {
     _servo.attach(pwm_pin);
-    //servo.write(0);
     _min_pos = min_pos;
     _max_pos = max_pos;
 }

@@ -5,11 +5,15 @@
 
 Hexapod hexapod;
 SerialParser parser(hexapod);
-float voltage_measurement = 0;
+double last_voltage_measurement = 0;
 Position position;
 commandQueue command_queue;
 
+VoltageSensor * voltage_sensor;
+JsonDocument voltage_json;
+
 void setup() {
+  voltage_sensor = new VoltageSensor();
   hexapod.startUp();
   #if LOG_LEVEL > 0
     Serial.begin(250000);
@@ -20,8 +24,17 @@ void setup() {
 void loop() {
 
   String command = "";
-  hexapod.voltageSensor.checkVoltage(); 
-  
+  double voltage_measurement = voltage_sensor->filteredRead();
+  if (fabs(voltage_measurement - last_voltage_measurement) > 0.01) {
+    last_voltage_measurement = voltage_measurement;
+    #if LOG_LEVEL > 0
+      Serial.printf("Voltage: %.2f V\n", last_voltage_measurement);
+    #endif
+    voltage_json.clear();
+    voltage_json["VDD"] = last_voltage_measurement;
+    serializeJson(voltage_json, Serial4);
+  }
+
   #if LOG_LEVEL > 0
     if (Serial.available() > 0 || Serial4.available() > 0) {
       if (Serial4.available() > 0) {
