@@ -9,7 +9,7 @@
 #ifndef VOLT_SENSE
 #define VOLT_SENSE
 
-    #define NUM_MEASUREMENTS 10
+    #define NUM_MEASUREMENTS 50
 
     class VoltageSensor {
         public:
