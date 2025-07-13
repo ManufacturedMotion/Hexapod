@@ -7,7 +7,7 @@ StepQueue::StepQueue() {
     length = 0;
 }
 
-uint32_t StepQueue::enqueue(Position op_end_pos, double op_speed, StepType op_step_type) { // steps are ALWAYS relative
+uint32_t StepQueue::enqueue(Position op_end_pos, double op_speed, StepType op_step_type) { // steps are ALWAYS relative, linear moves can be either relative or absolute, rapid moves are always absolute
     #ifdef STEP_QUEUE_DEBUG
         Serial.printf("Enqueueing step with end pos: %f, %f, %f, %f, %f, %f and of type %d\n", op_end_pos.x, op_end_pos.y, op_end_pos.z, op_end_pos.roll, op_end_pos.pitch, op_end_pos.yaw, op_step_type);
     #endif
@@ -26,11 +26,23 @@ uint32_t StepQueue::enqueue(Position op_end_pos, double op_speed, StepType op_st
             op_time = double((op_end_pos.magnitude() / op_speed) * 1000.0);
             state = StepQueueState::STEPPED;
         break;
-        case StepType::LINEAR_MOVE:
+        case StepType::LINEAR_MOVE_RELATIVE:
             _end_pos += op_end_pos;
             op_time = double((op_end_pos.magnitude() / op_speed) * 1000.0);
         break;
+        case StepType::LINEAR_MOVE_ABSOLUTE:
+            op_time = double(((op_end_pos - getCurrentQueueEndPos()).magnitude() / op_speed) * 1000.0);
+            _end_pos.setPos(op_end_pos);
+            if (op_time < 0.0001) {
+                // If the move is too small, then don't enqueue it
+                return 0;
+            } 
+        break;
         case StepType::RETURN_TO_NEUTRAL:
+            if (state == StepQueueState::NEUTRAL) {
+                // If already in neutral, no need to enqueue a step
+                return 0;
+            }
             op_time = double(((op_end_pos - getCurrentQueueEndPos()).magnitude() / op_speed) * 1000.0 * 2.0);
             _end_pos.setPos(op_end_pos);
             state = StepQueueState::NEUTRAL;

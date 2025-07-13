@@ -8,9 +8,10 @@
 enum class StepType {
     GROUP0 = 0,
     GROUP1 = 1,
-    LINEAR_MOVE = 255,
-    RETURN_TO_NEUTRAL = 254,
-    RAPID_MOVE = 253,
+    LINEAR_MOVE_RELATIVE = 255,
+    LINEAR_MOVE_ABSOLUTE = 254,
+    RETURN_TO_NEUTRAL = 253,
+    RAPID_MOVE = 252,
 };
 
 enum class StepQueueState {
