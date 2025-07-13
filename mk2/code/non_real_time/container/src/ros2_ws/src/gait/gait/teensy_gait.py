@@ -22,8 +22,8 @@ class TeensyGait(Node):
         self.get_logger().info(f"{name} has begun")
         self.old_joy_cmd = {}
 
-        self.walk_scale_fact = 400
-        self.yaw_scale_fact = 400
+        self.walk_scale_fact = 300
+        self.yaw_scale_fact = 300
         self.z_scale_fact = 100
         self.roll_scale_fact = 100
         self.pitch_scale_fact = 100
@@ -89,15 +89,17 @@ class TeensyGait(Node):
             self.get_logger().info(f"Published command: {command.data}")
 
     def parseJoy(self, msg: Joy):
-        stand = msg.buttons[0]
+        dance = msg.buttons[0]
         sit = msg.buttons[1]
         neutral = msg.buttons[3]
-        # zeros = msg.buttons[4]
+        fast_dance = msg.buttons[4]
         #if multiple buttons pressed don't accept any input as valid
-        if (sum([stand, sit, neutral]) > 1):
+        if (sum([dance, sit, neutral, fast_dance]) > 1):
             joy_cmd = {}
-        elif stand:
-            joy_cmd = {"PRE": "STND"}
+        elif dance:
+            joy_cmd = {"PRE": "DNCE"}
+        elif fast_dance:
+            joy_cmd = {"PRE": "FDNC"}
         elif sit:
             joy_cmd = {"PRE": "SIT"}
         # elif zeros: Removed for now as it's pretty much hexapod.kill(self)
@@ -107,7 +109,7 @@ class TeensyGait(Node):
                 "MV": "RPD",
                 "X": 0,
                 "Y": 0,
-                "Z": 150,
+                "Z": 200,
                 "ROLL": 0,
                 "PTCH": 0,
                 "YAW": 0
