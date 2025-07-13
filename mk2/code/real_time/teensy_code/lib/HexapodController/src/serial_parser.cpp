@@ -81,18 +81,31 @@ void SerialParser::performPreset(String preset) {
         #endif
         _Hexapod.stand();
     }
+    else if (preset == "DNCE") {
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; dance preset selected.\n");
+        #endif
+        _Hexapod.slowDance();
+    }
+    else if (preset == "FDNC") {
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; dance preset selected.\n");
+        #endif
+        _Hexapod.fastDance();
+    }
+
     else {
         Serial.println("ERROR: JSON parser detected input for a preset that is not yet supported: " + String(preset) + "\n"); 
     }
-    JsonDocument ack;
-    ack["MOVE_TIME"] = 750;
-    serializeJson(ack, Serial4);
+    // JsonDocument ack;
+    // ack["MOVE_TIME"] = 750;
+    // serializeJson(ack, Serial4);
     return;
 }
 
 void SerialParser::performMovement(String movement) {
     
-    JsonDocument ack;
+    // JsonDocument ack;
     uint32_t move_time = 0;
     if (movement == "RPD") {
         #if LOG_LEVEL >= BASIC_DEBUG
@@ -164,8 +177,8 @@ void SerialParser::performMovement(String movement) {
         Serial.println("ERROR: JSON parser detected input for a movement that is not yet supported: " + String(movement) + "\n");
     }
 
-    ack["MOVE_TIME"] = move_time;
-    serializeJson(ack, Serial4);
+    // ack["MOVE_TIME"] = move_time;
+    // serializeJson(ack, Serial4);
     return;
 }
 

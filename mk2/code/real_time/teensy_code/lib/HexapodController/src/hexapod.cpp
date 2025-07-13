@@ -44,7 +44,64 @@ void Hexapod::moveToZeros() {
 void Hexapod::sit() {
 	Position sit_pos;
 	sit_pos.set(0.0, 0.0, 75.0, 0.0, 0.0, 0.0);
-	enqueueRapidMove(sit_pos);
+	enqueueLinearMove(sit_pos, 100.0);
+}
+
+void Hexapod::fastDance() {
+	dance(200.0);
+}
+
+void Hexapod::slowDance() {
+	dance(100.0);
+}
+
+void Hexapod::dance(double dance_speed) {
+	uint32_t dance_time = 0;
+	Position buffer0;
+	buffer0.setPos(_step_queue.getCurrentQueueEndPos());
+	buffer0.x = 0.00;
+	buffer0.y = 0.00;
+	buffer0.yaw = 0.00;
+	dance_time += _step_queue.enqueue(buffer0, dance_speed, StepType::RETURN_TO_NEUTRAL);
+	
+	buffer0.set(0.00, 0.00, 200.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+	
+	buffer0.set(0.00, 0.00, 100.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+	
+	buffer0.set(0.00, 100.0, 100.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+	
+	buffer0.set(100.00, 0.0, 100.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(0.00, -100.00, 100.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(-100.00, 00.00, 100.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(0.00, 0.00, 150.00, 50.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(0.00, 0.00, 150.00, -50.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, 50.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, -50.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, dance_speed);
 }
             
 void Hexapod::stand() {
@@ -218,7 +275,8 @@ void Hexapod::_moveLegs() {
 
 
 double Hexapod::get_max_step_magnitude() {
-	return _current_step_permutation[_next_step_group % 2].magnitude() + MAX_STEP_MAGNITUDE;
+	Position current_pos = _step_queue.getCurrentQueueEndPos();
+	return MAX_STEP_MAGNITUDE - sqrt(pow((current_pos.z - 100.0) / 2.0, 2) + pow(current_pos.roll, 2) + pow(current_pos.pitch, 2)) / 2.0;
 }
 
 uint8_t Hexapod::walkSetup(double x, double y, double speed, _Bool return_to_neutral) {
@@ -228,6 +286,12 @@ uint8_t Hexapod::walkSetup(double x, double y, double speed, _Bool return_to_neu
 
 uint8_t Hexapod::enqueueRapidMove(Position pos) {
 	return _step_queue.enqueue(pos, 0.0, StepType::RAPID_MOVE);
+}
+
+uint32_t Hexapod::enqueueLinearMove(Position next_pos, double target_speed, bool relative) {
+	// Enqueue a linear move to the step queue
+	// This will be performed by the low-level controller
+	return _step_queue.enqueue(next_pos, target_speed, relative ? StepType::LINEAR_MOVE_RELATIVE : StepType::LINEAR_MOVE_ABSOLUTE);
 }
 
 double Hexapod::_getMaxStepMagnitudeInDirection(Position direction_vector, _Bool flipped_step_group) {	
@@ -256,7 +320,7 @@ double Hexapod::_getMaxStepMagnitudeInDirection(Position direction_vector, _Bool
 	buffer2.pitch = 0.00;
 	// buffer2.yaw *= ROTATION_MAGNITUDE_SCALE; // Scale yaw to have a similar range as x and y
 
-	double c = pow(buffer1.x, 2) + pow(buffer1.y, 2) + pow(buffer1.yaw, 2) - pow(MAX_STEP_MAGNITUDE, 2);
+	double c = pow(buffer1.x, 2) + pow(buffer1.y, 2) + pow(buffer1.yaw, 2) - pow(get_max_step_magnitude(), 2);
 	double b = 2.0 * (buffer1.x * buffer2.x + buffer1.y * buffer2.y + buffer1.yaw * buffer2.yaw);
 	double a = pow(buffer2.x, 2) + pow(buffer2.y, 2) + pow(buffer2.yaw, 2);
 
@@ -300,7 +364,7 @@ uint32_t Hexapod::enqueueMaxStepInDirection(Position direction_vector, double sc
 		max_step_magnitude = max_step_magnitude_with_flip;
 	}
 
-	if (max_step_magnitude < MAX_STEP_MAGNITUDE) {
+	if (max_step_magnitude < get_max_step_magnitude()) {
 		Position buffer0;
 		buffer0.setPos(_step_queue.getCurrentQueueEndPos());
 		buffer0.x = 0.00;
@@ -366,7 +430,7 @@ uint32_t Hexapod::walkSetup(Position relative_end_pos, double speed) {
 			_Bool flip_first_step = max_step_magnitude_with_flip >= max_step_magnitude_without_flip ? true : false;
 			double step_magnitude = flip_first_step ? max_step_magnitude_with_flip : max_step_magnitude_without_flip;
 			_Bool returned_to_neutral = false;
-			if (step_magnitude < MAX_STEP_MAGNITUDE) { // If the biggest step in the right direction is less than the max step magnitude, then we need to return to neutral
+			if (step_magnitude < get_max_step_magnitude()) { // If the biggest step in the right direction is less than the max step magnitude, then we need to return to neutral
 				// Return to neutral IS needed
 				// Enqueue a return to neutral move to move the legs back to the neutral position with out moving the body
 				// Neutral position is 0,0,0 for X, Y, and Yaw; Z, Roll, and Pitch are unaffected
@@ -427,7 +491,7 @@ uint32_t Hexapod::walkSetup(Position relative_end_pos, double speed) {
 			return walk_time;
 		}
 		else {
-			return _step_queue.enqueue(relative_end_pos, speed, StepType::LINEAR_MOVE);
+			return _step_queue.enqueue(relative_end_pos, speed, StepType::LINEAR_MOVE_RELATIVE);
 		}
 	}
 	else {
@@ -588,7 +652,8 @@ uint8_t Hexapod::walkPerform() {
 			uint8_t step_group;
 			double adjusted_step_progress;
 			switch(_current_step_type) {
-				case StepType::LINEAR_MOVE:
+				case StepType::LINEAR_MOVE_RELATIVE:
+				case StepType::LINEAR_MOVE_ABSOLUTE:
 					next_pos = (_end_pos - _start_pos) * step_progress + _start_pos;
 					// All legs stay together and move to the same position
 					for (uint8_t i = 0; i < NUM_LEGS; i++) {
@@ -728,11 +793,12 @@ uint8_t Hexapod::walkPerform() {
 			switch(_current_step_type) {
 				case StepType::RETURN_TO_NEUTRAL:
 				case StepType::RAPID_MOVE:
+				case StepType::LINEAR_MOVE_ABSOLUTE:
 					_end_pos = _step_queue.head->end_pos;
 					break;
 				case StepType::GROUP0:
 				case StepType::GROUP1:
-				case StepType::LINEAR_MOVE:
+				case StepType::LINEAR_MOVE_RELATIVE:
 				default:
 					_end_pos = _current_pos + _step_queue.head->end_pos;
 					break;
