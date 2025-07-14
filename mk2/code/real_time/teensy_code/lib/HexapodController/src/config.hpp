@@ -10,11 +10,11 @@
 
 	#ifdef DANNY	
 		#define PWM_PINS {{2, 3, 4}, {5, 6, 7}, {8, 9, 10},  {11, 12, 13}, {14, 15, 18}, {19, 22, 23}}
-		#define ZERO_POINTS {{2.05, 2.3, 2.85}, {1.87, 2.30, 2.8}, {1.75, 2.2, 2.75}, {2.25, 2.15, 2.6}, {2.1, 2.4, 2.8}, {2.15, 2.35, 2.53}}
-		#define MAX_POS {{PI/8.00, PI, PI}, {PI/8.00, PI, PI}, {PI/8.00, PI, PI}, {PI/8.00, PI, PI}, {PI/8.00, PI, PI}, {PI/8.00, PI, PI}}
-		#define MIN_POS {{-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}, {-PI/8.00, -PI, -PI}}
-		#define SCALE_FACT {{0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}, {0.75, 0.75, 0.75}}
-		#define REVERSE_AXIS {{false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}, {false, false, false}}
+		#define ZERO_POINTS {{2.238, 2.168, 2.188}, {2.248, 2.298, 2.318}, {2.188, 2.188, 2.188}, {2.238, 2.298, 2.208}, {2.197, 2.258, 2.218}, {2.288, 2.208, 2.238}}
+		#define MAX_POS {{PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}, {PI, PI, PI}}
+		#define MIN_POS {{-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}, {-PI, -PI, -PI}}
+		#define SCALE_FACT {{0.638, 0.638, 0.638}, {0.638, 0.638, 0.638}, {0.638, 0.638, 0.638}, {0.638, 0.638, 0.638}, {0.638, 0.638, 0.638}, {0.638, 0.638, 0.638}}
+		#define REVERSE_AXIS {{true, true, true}, {true, true, true}, {true, true, true}, {true, true, true}, {true, true, true}, {true, true, true}}
 
 	#endif
 
