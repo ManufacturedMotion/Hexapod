@@ -1,0 +1,23 @@
+#!/bin/bash
+[ -z "$HEX_NON_REALTIME" ] && [ -f /etc/profile.d/hexapod_env.sh ] && source /etc/profile.d/hexapod_env.sh 
+
+
+# Wait up to 60 seconds for any file matching the pattern to exist
+for i in {1..60}; do
+    FILE=$(ls /run/user/1002/.mutter-Xwaylandauth.* 2>/dev/null | head -n 1)
+    if [ -n "$FILE" ]; then
+        break
+    fi
+    sleep 1
+done
+
+# Only proceed if the file was found
+if [ -n "$FILE" ]; then
+    export XAUTH_FILE="$FILE"
+    cd "$HEX_NON_REALTIME/container" || { echo "Cannot cd to $HEX_NON_REALTIME/container"; exit 1; }
+    docker compose -f docker-compose-prod.yml up -d
+else
+    echo "XWayland auth file not found after 60 seconds" >&2
+    exit 1
+fi
+
