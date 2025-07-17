@@ -11,13 +11,16 @@ button = Button(17, pull_up=True)
 def on_button_press():
     print("Button pressed")
 
-    subprocess.run([
-        "docker", "exec", "-i", "hexapod_latest",
-        "bash", "-c",
-        "source /app/src/ros2_ws/install/setup.bash && "
-        "python3 /app/src/ros2_ws/src/hexapod_manager/hexapod_manager/run_from_file.py "
-        "/app/src/ros2_ws/resources/sit.txt"
-    ])
+    try:
+        subprocess.run([
+            "docker", "exec", "-i", "hexapod_latest",
+            "bash", "-c",
+            "source /app/src/ros2_ws/install/setup.bash && "
+            "python3 /app/src/ros2_ws/src/hexapod_manager/hexapod_manager/run_from_file.py "
+            "/app/src/ros2_ws/resources/sit.txt"
+        ])
+    except Exception as e:
+        print(f"Exception with sit script! {e}")
 
     subprocess.call(["shutdown", "now"])
 
