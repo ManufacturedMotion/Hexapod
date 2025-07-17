@@ -12,11 +12,13 @@ enum class StepType {
     LINEAR_MOVE_ABSOLUTE = 254,
     RETURN_TO_NEUTRAL = 253,
     RAPID_MOVE = 252,
+   
 };
 
 enum class StepQueueState {
     NEUTRAL = 0,
     STEPPED = 1,
+    UNINITIALIZED = 2,
 };
 
 class Step {

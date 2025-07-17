@@ -12,6 +12,12 @@ uint32_t StepQueue::enqueue(Position op_end_pos, double op_speed, StepType op_st
         Serial.printf("Enqueueing step with end pos: %f, %f, %f, %f, %f, %f and of type %d\n", op_end_pos.x, op_end_pos.y, op_end_pos.z, op_end_pos.roll, op_end_pos.pitch, op_end_pos.yaw, op_step_type);
     #endif
 
+    if (state == StepQueueState::UNINITIALIZED) {
+        if (op_step_type != StepType::RAPID_MOVE) {
+            return 0;
+        }
+    }
+
     double op_time;
     switch(op_step_type) {
         case StepType::GROUP0:
@@ -50,6 +56,7 @@ uint32_t StepQueue::enqueue(Position op_end_pos, double op_speed, StepType op_st
         case StepType::RAPID_MOVE:
             op_time = double(100.0); // 100ms for rapid move
             _end_pos.setPos(op_end_pos);
+            state = StepQueueState::NEUTRAL;
         break;
         default:
             op_time = 0.0;

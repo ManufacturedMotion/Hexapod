@@ -13,12 +13,13 @@ Teensy
 #include <stdbool.h>
 #include <math.h>
 #include <PWMServo.h>
+// #include <Servo.h>
 #include <Arduino.h>
 
 Axis::Axis() {
     _max_pos = 0;
     _min_pos = 0;
-    _max_speed = 5;	
+    _max_speed = 9999.0; // initialize to a very high speed as if there were no limit	
 }
 
 void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_pos) {
@@ -28,10 +29,14 @@ void Axis::initializePositionLimits(uint8_t pwm_pin, double min_pos, double max_
 }
 
 uint8_t Axis::moveToPos(double pos) {
+    if (millis() - _last_write_time < 40) { // 40ms is the minimum time between writes
+        return 253; //Too soon to write again
+    }
     if (pos < _min_pos || pos > _max_pos)
         return 255;     //Move out of range
     if (_next_go_time > millis())
         return 254;     //Moving too quickly
+    _last_write_time = millis();
     uint32_t millis_to_pos = (fabs(getCurrentPos() - pos) / _max_speed) * 1000;
     _next_go_time = millis() + millis_to_pos;
     uint8_t motor_pos = _motorMap(pos); 
