@@ -43,7 +43,7 @@ void Hexapod::moveToZeros() {
 
 void Hexapod::sit() {
 	Position sit_pos;
-	sit_pos.set(0.0, 0.0, 75.0, 0.0, 0.0, 0.0);
+	sit_pos.set(0.0, 0.0, 100.0, 0.0, 0.0, 0.0);
 	enqueueLinearMove(sit_pos, 100.0);
 }
 
