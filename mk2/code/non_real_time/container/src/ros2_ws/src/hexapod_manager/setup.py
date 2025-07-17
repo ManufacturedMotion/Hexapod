@@ -14,7 +14,7 @@ setup(
         ('share/' + package_name, ['package.xml']),
         # Ensure launch files are installed
         (os.path.join('share', package_name), glob('launch/**')),
-        ('share/hexapod_manager/resource', ['resource/battery_table.json'])
+        ('share/hexapod_manager/resource', ['resource/battery_table.json', 'resource/manufactured_motion_arrow.png', 'resource/mokoto.regular.ttf']),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
