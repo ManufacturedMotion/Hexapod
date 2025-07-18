@@ -47,7 +47,7 @@ void Hexapod::sit() {
 	enqueueLinearMove(sit_pos, 100.0);
 }
 
-void Hexapod::fastDance() {
+void Hexapod::dance0() {
 
 	uint32_t dance_time = 0;
 	Position buffer0;
@@ -83,11 +83,7 @@ void Hexapod::fastDance() {
 	dance_time += enqueueLinearMove(buffer0, 150.0);
 }
 
-void Hexapod::slowDance() {
-	dance(150.0);
-}
-
-void Hexapod::dance(double dance_speed) {
+void Hexapod::dance1(double dance_speed) {
 	uint32_t dance_time = 0;
 	Position buffer0;
 	buffer0.setPos(_step_queue.getCurrentQueueEndPos());
@@ -134,6 +130,34 @@ void Hexapod::dance(double dance_speed) {
 
 	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, dance_speed);
+}
+
+void Hexapod::dance2() {
+    
+    //NOT IMPLEMENTED YET
+    return;
+
+}
+
+void Hexapod::dance3() {
+    
+    //NOT IMPLEMENTED YET
+    return;
+
+}
+
+void Hexapod::dance4() {
+    
+    //NOT IMPLEMENTED YET
+    return;
+
+}
+
+void Hexapod::dance5() {
+    
+    //NOT IMPLEMENTED YET
+    return;
+
 }
             
 void Hexapod::stand() {

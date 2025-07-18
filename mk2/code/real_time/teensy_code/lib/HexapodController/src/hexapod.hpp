@@ -75,9 +75,12 @@
 			void startUp();
 			void setWalkVelocity(Position velocity);
 			uint32_t enqueueMaxStepInDirection(Position direction_vector, double scalar);
-			void dance(double dance_speed = 100.0);
-			void fastDance();
-			void slowDance();
+			void dance0();
+			void dance1();
+			void dance2();
+			void dance3();
+			void dance4();
+			void dance5();
 			uint32_t enqueueLinearMove(Position next_pos, double target_speed, bool relative=false);
 
 
