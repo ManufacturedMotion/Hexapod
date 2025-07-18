@@ -48,11 +48,43 @@ void Hexapod::sit() {
 }
 
 void Hexapod::fastDance() {
-	dance(200.0);
+
+	uint32_t dance_time = 0;
+	Position buffer0;
+	buffer0.setPos(_step_queue.getCurrentQueueEndPos());
+	buffer0.x = 0.00;
+	buffer0.y = 0.00;
+	buffer0.yaw = 0.00;
+	dance_time += _step_queue.enqueue(buffer0, 100, StepType::RETURN_TO_NEUTRAL);
+
+	buffer0.setPos(_step_queue.getCurrentQueueEndPos());
+	buffer0.z = 150.00;
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+	
+	buffer0.set(0.00, 0.00, 150.00, 50.0, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+	
+	buffer0.set(0.00, 0.00, 150.00, 0.00, 50.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+	
+	buffer0.set(0.00, 0.00, 150.00, -50.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, -50.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+
+	buffer0.set(0.00, 0.00, 150.00, -50.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, 50.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+
+	buffer0.set(0.00, 0.00, 150.00, 50.0, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
 }
 
 void Hexapod::slowDance() {
-	dance(100.0);
+	dance(150.0);
 }
 
 void Hexapod::dance(double dance_speed) {
@@ -70,16 +102,16 @@ void Hexapod::dance(double dance_speed) {
 	buffer0.set(0.00, 0.00, 100.00, 0.00, 0.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, dance_speed);
 	
-	buffer0.set(0.00, 100.0, 100.00, 0.00, 0.00, 0.00);
+	buffer0.set(0.00, 75.0, 150.00, 0.00, 0.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, dance_speed);
 	
-	buffer0.set(100.00, 0.0, 100.00, 0.00, 0.00, 0.00);
+	buffer0.set(75.00, 0.0, 150.00, 0.00, 0.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, dance_speed);
 
-	buffer0.set(0.00, -100.00, 100.00, 0.00, 0.00, 0.00);
+	buffer0.set(0.00, -75.00, 150.00, 0.00, 0.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, dance_speed);
 
-	buffer0.set(-100.00, 00.00, 100.00, 0.00, 0.00, 0.00);
+	buffer0.set(-75.00, 00.00, 150.00, 0.00, 0.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, dance_speed);
 
 	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
