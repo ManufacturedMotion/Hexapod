@@ -36,7 +36,6 @@
 			double getMinPos();
 
 		private:
-			uint32_t _last_write_time = 0;
 			double _max_speed;      //rad/s
 			double _max_pos;        //rad
 			double _min_pos;        //rad
