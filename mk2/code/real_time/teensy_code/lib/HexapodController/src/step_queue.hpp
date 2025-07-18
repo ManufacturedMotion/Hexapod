@@ -37,7 +37,7 @@ class Step {
 class StepQueue {
     public: 
         StepQueue();
-        StepQueueState state = StepQueueState::NEUTRAL;
+        StepQueueState state = StepQueueState::UNINITIALIZED;
 		Step * head = NULL;
         Step * tail = NULL;
         uint32_t enqueue(Position op_end_pos, double op_speed, StepType op_step_type);
