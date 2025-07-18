@@ -81,19 +81,42 @@ void SerialParser::performPreset(String preset) {
         #endif
         _Hexapod.stand();
     }
-    else if (preset == "DNCE") {
+    else if (preset == "DNC0") {
         #if LOG_LEVEL >= BASIC_DEBUG
-            Serial.println("JSON parsing success; dance preset selected.\n");
+            Serial.println("JSON parsing success; dance0 preset selected.\n");
         #endif
-        _Hexapod.slowDance();
+        _Hexapod.dance0();
     }
-    else if (preset == "FDNC") {
+    else if (preset == "DNC1") {
         #if LOG_LEVEL >= BASIC_DEBUG
-            Serial.println("JSON parsing success; dance preset selected.\n");
+            Serial.println("JSON parsing success; dance1 preset selected.\n");
         #endif
-        _Hexapod.fastDance();
+        _Hexapod.dance1();
     }
-
+    else if (preset == "DNC2") {
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; dance2 preset selected.\n");
+        #endif
+        _Hexapod.dance2();
+    }
+    else if (preset == "DNC3") {
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; dance3 preset selected.\n");
+        #endif
+        _Hexapod.dance3();
+    }
+    else if (preset == "DNC4") {
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; dance4 preset selected.\n");
+        #endif
+        _Hexapod.dance4();
+    }
+    else if (preset == "DNC5") {
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; dance5 preset selected.\n");
+        #endif
+        _Hexapod.dance5();
+    }
     else {
         Serial.println("ERROR: JSON parser detected input for a preset that is not yet supported: " + String(preset) + "\n"); 
     }
