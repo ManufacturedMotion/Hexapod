@@ -93,11 +93,11 @@ class TeensyGait(Node):
         neutral = msg.buttons[0] #A
         sit = msg.buttons[1] #B
         dance0 = msg.buttons[2] #X
-        dance1 = msg.buttons[3] #Y
-        dance2 = msg.buttons[4] #LB
-        dance3 = msg.buttons[5] #RB
-        dance4 = msg.buttons[8] #Left stick
-        dance5 = msg.buttons[9] #Right stick
+        dance1 = msg.buttons[4] #Y
+        dance2 = msg.buttons[6] #LB
+        dance3 = msg.buttons[7] #RB
+        dance4 = msg.buttons[13] #Left stick
+        dance5 = msg.buttons[14] #Right stick
 
         #if multiple buttons pressed don't accept any input as valid
         if (sum([sit, neutral, dance0, dance1, dance2, dance3, dance4, dance5]) > 1):
