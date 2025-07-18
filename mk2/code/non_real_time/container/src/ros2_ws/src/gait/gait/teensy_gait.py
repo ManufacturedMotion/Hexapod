@@ -92,7 +92,7 @@ class TeensyGait(Node):
         
         neutral = msg.buttons[0] #A
         sit = msg.buttons[1] #B
-        dance0 = msg.buttons[2] #X
+        dance0 = msg.buttons[3] #X
         dance1 = msg.buttons[4] #Y
         dance2 = msg.buttons[6] #LB
         dance3 = msg.buttons[7] #RB
