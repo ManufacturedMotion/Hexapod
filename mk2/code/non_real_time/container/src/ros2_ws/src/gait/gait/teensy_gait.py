@@ -100,7 +100,7 @@ class TeensyGait(Node):
         dance5 = msg.buttons[9] #Right stick
 
         #if multiple buttons pressed don't accept any input as valid
-        if (sum([dance, sit, neutral, fast_dance]) > 1):
+        if (sum([sit, neutral, dance0, dance1, dance2, dance3, dance4, dance5]) > 1):
             joy_cmd = {}
         elif dance0:
             joy_cmd = {"PRE": "DNC0"}
