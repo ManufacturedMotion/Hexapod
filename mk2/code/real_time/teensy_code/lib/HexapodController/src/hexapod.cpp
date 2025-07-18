@@ -83,7 +83,9 @@ void Hexapod::dance0() {
 	dance_time += enqueueLinearMove(buffer0, 150.0);
 }
 
-void Hexapod::dance1(double dance_speed) {
+void Hexapod::dance1() {
+
+	double dance_speed = 150;
 	uint32_t dance_time = 0;
 	Position buffer0;
 	buffer0.setPos(_step_queue.getCurrentQueueEndPos());
