@@ -41,6 +41,14 @@ void Hexapod::moveToZeros() {
     }
 } 
 
+void Hexapod::detachAllServos() {
+	for (uint8_t i = 0; i < NUM_LEGS; i++) {
+		for (uint8_t j = 0; j < NUM_AXES_PER_LEG; j++) {
+			legs[i].axes[j].detachServo();
+		}        
+    }
+}
+
 void Hexapod::sit() {
 	Position sit_pos;
 	sit_pos.set(0.0, 0.0, 100.0, 0.0, 0.0, 0.0);

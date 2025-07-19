@@ -69,6 +69,12 @@ void SerialParser::performPreset(String preset) {
         #endif
         _Hexapod.moveToZeros();
     }
+    else if (preset == "DTCH"){
+        #if LOG_LEVEL >= BASIC_DEBUG
+            Serial.println("JSON parsing success; detach all servos preset selected.\n");
+        #endif
+        _Hexapod.detachAllServos();
+    }
     else if (preset == "SIT"){
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON parsing success; sit preset selected.\n");

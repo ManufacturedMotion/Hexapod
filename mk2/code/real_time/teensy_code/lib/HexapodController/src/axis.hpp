@@ -34,6 +34,7 @@
 			uint8_t runSpeed();
 			double getMaxPos();
 			double getMinPos();
+			void detachServo();
 
 		private:
 			double _max_speed;      //rad/s
@@ -49,6 +50,7 @@
 			double _move_progress;
 			uint32_t _move_start_time;
 			_Bool _reverse_axis;
+			uint8_t _servo_pin;     //pin number for servo
 			PWMServo _servo;
 			uint8_t _motorMap(double x);
 			double _radsToDegrees(double rads);

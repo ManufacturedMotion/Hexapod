@@ -82,6 +82,7 @@
 			void dance4();
 			void dance5();
 			uint32_t enqueueLinearMove(Position next_pos, double target_speed, bool relative=false);
+			void detachAllServos();
 
 
 
