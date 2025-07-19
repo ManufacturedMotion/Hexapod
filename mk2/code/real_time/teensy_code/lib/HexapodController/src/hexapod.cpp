@@ -73,6 +73,12 @@ void Hexapod::dance0() {
 	buffer0.set(0.00, 0.00, 150.00, 0.00, -50.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, 150.0);
 
+	buffer0.set(0.00, 0.00, 150.00, 50.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, -50.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+
 	buffer0.set(0.00, 0.00, 150.00, -50.00, 0.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, 150.0);
 
@@ -81,6 +87,10 @@ void Hexapod::dance0() {
 
 	buffer0.set(0.00, 0.00, 150.00, 50.0, 0.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, 150.0);
+
+	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
+	dance_time += enqueueLinearMove(buffer0, 150.0);
+
 }
 
 void Hexapod::dance1() {
@@ -113,21 +123,6 @@ void Hexapod::dance1() {
 	dance_time += enqueueLinearMove(buffer0, dance_speed);
 
 	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
-	dance_time += enqueueLinearMove(buffer0, dance_speed);
-
-	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
-	dance_time += enqueueLinearMove(buffer0, dance_speed);
-
-	buffer0.set(0.00, 0.00, 150.00, 50.00, 0.00, 0.00);
-	dance_time += enqueueLinearMove(buffer0, dance_speed);
-
-	buffer0.set(0.00, 0.00, 150.00, -50.00, 0.00, 0.00);
-	dance_time += enqueueLinearMove(buffer0, dance_speed);
-
-	buffer0.set(0.00, 0.00, 150.00, 0.00, 50.00, 0.00);
-	dance_time += enqueueLinearMove(buffer0, dance_speed);
-
-	buffer0.set(0.00, 0.00, 150.00, 0.00, -50.00, 0.00);
 	dance_time += enqueueLinearMove(buffer0, dance_speed);
 
 	buffer0.set(0.00, 0.00, 150.00, 0.00, 0.00, 0.00);
