@@ -92,6 +92,7 @@ class TeensyGait(Node):
         
         neutral = msg.buttons[0] #A
         sit = msg.buttons[1] #B
+        detach = msg.buttons[12] #Xbox button
         dance0 = msg.buttons[3] #X
         dance1 = msg.buttons[4] #Y
         dance2 = msg.buttons[6] #LB
@@ -116,6 +117,8 @@ class TeensyGait(Node):
             joy_cmd = {"PRE": "DNC5"}
         elif sit:
             joy_cmd = {"PRE": "SIT"}
+        elif detach:
+            joy_cmd = {"PRE": "DTCH"}
         elif neutral:
             joy_cmd = {
                 "MV": "RPD",
