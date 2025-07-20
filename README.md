@@ -1,4 +1,4 @@
-> The BOM for HEX2 is currently out of date; finalized files for HEX2 will be uploading in the coming weeks.
+> The BOM for HEX2 is currently out of date; finalized files for HEX2 will be uploaded in the coming weeks.
 
 # Hex
 
