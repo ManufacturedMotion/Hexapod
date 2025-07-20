@@ -38,7 +38,7 @@
 			void stand();
 			void wait(uint32_t time_ms);
 			Leg legs[NUM_LEGS];
-			void forwardKinematics(double angle0, double angle1, double angle2);
+			ThreeByOne forwardKinematics(double angle0, double angle1, double angle2);
 			void rapidMove(double x, double y, double z, double roll, double pitch, double yaw);
 			uint8_t linearMoveSetup(double x, double y, double z, double roll, double pitch, double yaw, double target_speed);
 			uint8_t linearMoveSetup(Position next_pos, double target_speed);

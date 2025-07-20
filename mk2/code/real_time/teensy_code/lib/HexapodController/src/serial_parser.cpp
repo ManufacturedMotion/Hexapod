@@ -134,8 +134,6 @@ void SerialParser::performPreset(String preset) {
 
 void SerialParser::performMovement(String movement) {
     
-    // JsonDocument ack;
-    uint32_t move_time = 0;
     if (movement == "RPD") {
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON rapid move parsing success; x, y, z is " + String (x) + " " + String (y) + " " + String (z) + "\nroll, pitch, yaw, speed are " + 
@@ -149,7 +147,7 @@ void SerialParser::performMovement(String movement) {
             Serial.println("JSON walk setup parsing success; x, y, z is " + String (x) + " " + String (y) + " " + String (z) + "\nroll, pitch, yaw, speed are " + 
                     String (roll) + " " + String (pitch) + " " + String (yaw) + " " + String(speed) + "\n");
         #endif
-        move_time = _Hexapod.walkSetup(_position, speed);
+        _Hexapod.walkSetup(_position, speed);
     }
     else if (movement == "VSET") {
         #if LOG_LEVEL >= BASIC_DEBUG
@@ -171,7 +169,6 @@ void SerialParser::performMovement(String movement) {
                 Serial.println("JSON move to pos at speed x18 parsing success.\n");
             #endif
             valid_MTPS = false;
-            move_time = 0; //TODO max move time of all motors
         }
     }
     else if (movement == "TUNE") {
@@ -182,7 +179,6 @@ void SerialParser::performMovement(String movement) {
             #endif
             _Hexapod.moveLegAxisToPos(_tune_leg, _tune_axis, _tune_pos);
         }
-        move_time = 0; //TODO above has no time return
     }
     else if (movement == "3B1") {
         if (_movement_time != 0) {
@@ -193,21 +189,17 @@ void SerialParser::performMovement(String movement) {
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON leg enqueue parsing success.\n");
         #endif
-        move_time = 0; //TODO above has no time return
     }
     else if (movement == "LMS") {
         #if LOG_LEVEL >= BASIC_DEBUG
             Serial.println("JSON linear move setup parsing success; x, y, z is " + String (x) + " " + String (y) + " " + String (z) + "\nroll, pitch, yaw, speed are " + 
                     String (roll) + " " + String (pitch) + " " + String (yaw) + " " + String(speed) + "\n");
         #endif
-        move_time = _Hexapod.linearMoveSetup(_position, speed);
+        _Hexapod.linearMoveSetup(_position, speed);
     }
     else {
         Serial.println("ERROR: JSON parser detected input for a movement that is not yet supported: " + String(movement) + "\n");
     }
-
-    // ack["MOVE_TIME"] = move_time;
-    // serializeJson(ack, Serial4);
     return;
 }
 
