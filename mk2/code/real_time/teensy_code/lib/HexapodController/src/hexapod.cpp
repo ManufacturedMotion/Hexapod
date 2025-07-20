@@ -1000,11 +1000,12 @@ _Bool Hexapod::_postCheckSafeCoords(double x, double y, double z) {
 	return true;
 }
 
-void Hexapod::forwardKinematics(double angle0, double angle1, double angle2) {
+ThreeByOne Hexapod::forwardKinematics(double angle0, double angle1, double angle2) {
 	ThreeByOne resulting_pos = legs[0].forwardKinematics(angle0, angle1, angle2);
 	#if LOG_LEVEL >= CALCULATION_LOGGING
 		Serial.println("FK value; x: " + String(resulting_pos.values[0]) + " y:" + String(resulting_pos.values[1]) + " z:" + String(resulting_pos.values[2]) + "\n");
 	#endif
+	return resulting_pos;
 }
 
 void Hexapod::runSpeed() {
