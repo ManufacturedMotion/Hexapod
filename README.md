@@ -4,7 +4,7 @@ Hex is a six legged OpenSource Hexapod designed to serve as a moving platform fo
 
 If you're interested in learning more about the project, [visit our wiki!](https://github.com/ManufacturedMotion/Hexapod/wiki). If you want to build your own or join the community, check out our [Hex Discord](https://discord.gg/v3bbvRtFUr).
 
-To find out info on what we're planning to change, [checkout our Github issues!](https://github.com/ManufacturedMotion/Hexapod/issues).
+To find out info on what we're planning to change, [checkout our GitHub issues!](https://github.com/ManufacturedMotion/Hexapod/issues).
 
 ## Generations
 
