@@ -1,3 +1,5 @@
+> The BOM for HEX2 is currently out of date; finalized files for HEX2 will be uploading in the coming weeks.
+
 # Hex
 
 Hex is a six legged OpenSource Hexapod designed to serve as a moving platform for you to tinker with and build on top of! We are currently working on the third generation of the platform, HEX1.
