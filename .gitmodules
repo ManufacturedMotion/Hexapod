@@ -1,9 +1,12 @@
 [submodule "Hex1"]
 	path = Hex1
 	url = git@github.com:ManufacturedMotion/Hex1.git
+    branch = main
 [submodule "Hex2"]
 	path = Hex2
 	url = git@github.com:ManufacturedMotion/Hex2.git
+    branch = main
 [submodule "Hex3"]
 	path = Hex3
 	url = git@github.com:ManufacturedMotion/Hex3.git
+    branch = main
