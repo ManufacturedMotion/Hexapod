@@ -1,1 +1,0 @@
-@reboot /bin/bash /scripts/start_container >> /var/log/start_display.log 2>&1
