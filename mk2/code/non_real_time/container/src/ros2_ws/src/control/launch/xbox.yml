@@ -1,8 +1,0 @@
-launch:
-  - node:
-      pkg: joy_linux
-      exec: joy_linux_node
-
-  - node:
-      pkg: control
-      exec: xbox_joy_config

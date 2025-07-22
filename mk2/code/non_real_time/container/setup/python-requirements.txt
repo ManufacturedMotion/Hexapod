@@ -1,6 +1,0 @@
-pygame
-pyserial
-adafruit-circuitpython-neopixel-spi
-adafruit-blinka
-pyqt5
-python_qt_binding

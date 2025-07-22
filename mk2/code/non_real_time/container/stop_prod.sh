@@ -1,1 +1,0 @@
-docker stop hexapod_latest
